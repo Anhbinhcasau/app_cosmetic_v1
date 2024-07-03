@@ -1,16 +1,15 @@
-import 'package:app_cosmetic/screen/dashboard.dart';
+import 'package:app_cosmetic/screen/admin/characteristics.dart';
+import 'package:app_cosmetic/screen/admin/dashboard.dart';
 import 'package:app_cosmetic/screen/forgot_pass.dart';
-import 'package:app_cosmetic/screen/order/dashboard_order.dart';
-import 'package:app_cosmetic/screen/products/productdeatail.dart';
-import 'package:app_cosmetic/screen/sign_in.dart';
-import 'package:app_cosmetic/screen/user/dashboard_user.dart';
+import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
+import 'package:app_cosmetic/screen/admin/users/dashboard_user.dart';
 import 'package:flutter/material.dart';
 
 class NavBarApp extends StatelessWidget {
   const NavBarApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return const MaterialApp(
       home: NavBar(),
     );
@@ -26,14 +25,14 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
+  static const TextStyle optionStyle = 
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     DashboardOrder(),
-    LoginPage(),
+    Characteristics(),
     DashboardMenu(),
     ForgotPassPage(),
-    ProductDetail(),
+    UserListDB(),
   ];
 
   void _onItemTapped(int index) {
@@ -72,27 +71,27 @@ class _NavBarState extends State<NavBar> {
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.assignment),
-                label: 'Orders',
+                label: 'Đơn Hàng',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.token),
-                label: 'Categories',
+                label: 'Đặc Tính',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: 'Dashboard',
+                label: 'Thống Kê',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.feedback),
-                label: 'Comments',
+                label: 'Bình Luận',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
-                label: 'Users',
+                label: 'Người dùng',
               ),
             ],
             currentIndex: _selectedIndex,
-            selectedItemColor: Colors.green[800],
+            selectedItemColor: Colors.green[500],
             unselectedItemColor: Colors.grey[600],
             selectedIconTheme: const IconThemeData(size: 32),
             unselectedIconTheme: const IconThemeData(size: 25),

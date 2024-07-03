@@ -1,26 +1,6 @@
+// navbar_order.dart
 import 'package:flutter/material.dart';
 
-// Define the ListView screens
-class OrderListScreen extends StatelessWidget {
-  final List<String> orders;
-
-  const OrderListScreen({required this.orders, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: orders.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: Icon(Icons.shopping_cart),
-          title: Text(orders[index]),
-        );
-      },
-    );
-  }
-}
-
-// NavbarOrder widget
 class NavbarOrder extends StatefulWidget {
   final ValueChanged<int> onSelectedButtonChanged;
 

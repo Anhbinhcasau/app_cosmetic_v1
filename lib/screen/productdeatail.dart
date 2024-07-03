@@ -1,6 +1,6 @@
-import 'package:app_cosmetic/screen/comment/comment.dart';
-import 'package:app_cosmetic/widgets/comment/rating_star.dart';
-import 'package:app_cosmetic/widgets/products/decription_text.dart';
+import 'package:app_cosmetic/screen/admin/comment/comment.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/comment/rating_star.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/products/decription_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
