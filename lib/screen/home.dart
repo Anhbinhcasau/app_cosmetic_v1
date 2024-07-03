@@ -2,23 +2,23 @@ import 'package:app_cosmetic/screen/cart.dart';
 import 'package:app_cosmetic/screen/category.dart';
 import 'package:app_cosmetic/screen/coupon.dart';
 import 'package:app_cosmetic/screen/profile_user.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
+void main() {
+  runApp(MyApp());
 }
 
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'E-commerce App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.poppinsTextTheme(
-          // Changed to Poppins
           Theme.of(context).textTheme,
         ),
       ),
@@ -28,6 +28,64 @@ class _MyAppState extends State<MyApp> {
 }
 
 class HomePage extends StatelessWidget {
+  final List<Product> products = [
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/564x/e6/75/1b/e6751bb5a46ac866e8bea8848773dcb2.jpg',
+      name: 'Granactive Retinoid 5%',
+      price: '699 VND',
+      description:
+          'This water-free solution contains a 5% concentration of retinoid.',
+    ),
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/564x/0c/8c/f6/0c8cf6a694d4eeb9a168740170af7f41.jpg',
+      name: 'Granactive Retinoid 2%',
+      price: '499 VND',
+      description:
+          'This water-free solution contains a 2% concentration of retinoid.',
+    ),
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/736x/a6/9b/96/a69b969e541bf2acd971dd43090ce5c5.jpg',
+      name: 'Granactive Retinoid 2%',
+      price: '499 VND',
+      description:
+          'This water-free solution contains a 2% concentration of retinoid.',
+    ),
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/564x/12/b4/3c/12b43c39dc7c8799bb40bb4bec702d62.jpg',
+      name: 'Granactive Retinoid 2%',
+      price: '499 VND',
+      description:
+          'This water-free solution contains a 2% concentration of retinoid.',
+    ),
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/564x/87/47/c0/8747c00c9bc9cbbcbc466d97fe157d6b.jpg',
+      name: 'Granactive Retinoid 2%',
+      price: '499 VND',
+      description:
+          'This water-free solution contains a 2% concentration of retinoid.',
+    ),
+    // Add more products here...
+  ];
+
+  final List<String> bannerImages = [
+    'https://i.pinimg.com/564x/fd/eb/21/fdeb21f500f0305214d74f1dee813c7d.jpg',
+    'https://i.pinimg.com/564x/01/cc/05/01cc0529b91c88759bcc9e98064458f8.jpg',
+    'https://i.pinimg.com/564x/78/bd/88/78bd88af7a5e24fc9cdbebbbdbbf2c2a.jpg',
+    'https://i.pinimg.com/564x/76/10/ab/7610ab20bec83a39dad2a27cc49cb73c.jpg',
+  ];
+
+  final List<String> brandImages = [
+    'https://i.pinimg.com/564x/f8/1d/b3/f81db3b4c959e750381f01e2aeb330de.jpg',
+    'https://i.pinimg.com/564x/c3/4e/f4/c34ef4c5b543e1701cc00adf40210b0f.jpg',
+    'https://i.pinimg.com/564x/28/9e/1f/289e1f83727c48e2beb7e01a825e6d7f.jpg',
+    'https://i.pinimg.com/564x/5e/18/4f/5e184f8a711ff50799360a625b423893.jpg',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +125,7 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: 'Search products',
+                  hintText: 'Tìm kiếm sản phẩm',
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -78,10 +136,84 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 200.0,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 3),
+                enlargeCenterPage: true,
+              ),
+              items: bannerImages.map((imagePath) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Thêm border-radius
+                      ),
+                      child: ClipRRect(
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Thêm border-radius
+                        child: Image.network(
+                          imagePath,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'Browse by categories',
+                'Brand',
+                style: GoogleFonts.poppins(
+                  textStyle:
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: brandImages
+                      .map((imgPath) => Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 5.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                // Thực hiện hành động khi người dùng nhấp vào ảnh
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.network(
+                                    imgPath,
+                                    width: 150.0,
+                                    height: 150.0,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                'Category',
                 style: GoogleFonts.poppins(
                   textStyle:
                       TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -97,15 +229,16 @@ class HomePage extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
-                      child: CategoryChip(label: 'Trending', selected: true),
+                      child:
+                          CategoryChip(label: 'Kem chống nắng', selected: true),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
-                      child: CategoryChip(label: 'New Products'),
+                      child: CategoryChip(label: 'Trang điểm mặt'),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
-                      child: CategoryChip(label: 'Highly Rated'),
+                      child: CategoryChip(label: 'Sữa rửa mặt'),
                     ),
                     TextButton(
                       onPressed: () {
@@ -131,23 +264,58 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            ProductCard(
-              imageUrl:
-                  'https://edited.beautybay.com/wp-content/uploads/2023/01/1-EDITED-ARTICLE-1.jpg',
-              name: 'Granactive Retinoid 5%',
-              price: '₹699',
-              description:
-                  'This water-free solution contains a 5% concentration of retinoid.',
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                'Product Collection',
+                style: GoogleFonts.poppins(
+                  textStyle:
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
-            ProductCard(
-              imageUrl:
-                  'https://product.hstatic.net/1000006063/product/bthe_2e4d05fa682a48e186a60839f42bd311_1024x1024.jpg',
-              name: 'Granactive Retinoid 2%',
-              price: '₹499',
-              description:
-                  'This water-free solution contains a 2% concentration of retinoid.',
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: products
+                      .map((product) => ProductCard(
+                            imageUrl: product.imageUrl,
+                            name: product.name,
+                            price: product.price,
+                            description: product.description,
+                          ))
+                      .toList(),
+                ),
+              ),
             ),
+
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: GridView.builder(
+            //     shrinkWrap: true,
+            //     physics: NeverScrollableScrollPhysics(),
+            //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //       crossAxisCount: 2,
+            //       crossAxisSpacing: 10,
+            //       mainAxisSpacing: 10,
+            //       childAspectRatio: 0.9,
+            //     ),
+            //     itemCount: products.length,
+            //     itemBuilder: (context, index) {
+            //       final product = products[index];
+            //       return ProductCard(
+            //         imageUrl: product.imageUrl,
+            //         name: product.name,
+            //         price: product.price,
+            //         description: product.description,
+            //       );
+            //     },
+            //   ),
+            // )
           ],
         ),
       ),
@@ -199,6 +367,20 @@ class CategoryChip extends StatelessWidget {
   }
 }
 
+class Product {
+  final String imageUrl;
+  final String name;
+  final String price;
+  final String description;
+
+  Product({
+    required this.imageUrl,
+    required this.name,
+    required this.price,
+    required this.description,
+  });
+}
+
 class ProductCard extends StatelessWidget {
   final String imageUrl;
   final String name;
@@ -214,102 +396,117 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Stack(
-          children: [
-            Image.network(
-              imageUrl,
-              width: double.infinity,
-              height: 350,
-              fit: BoxFit.cover,
-            ),
-            Container(
-              width: double.infinity,
-              height: 350,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.6),
-                    Colors.transparent,
-                  ],
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      width: 250,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                ),
+                child: Image.network(
+                  imageUrl,
+                  width: 260,
+                  height: 180,
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-            Positioned(
-              top: 16,
-              right: 16,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200.withOpacity(0.7),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
                     icon: Icon(
                       Icons.favorite_border,
-                      color: Colors.black,
+                      color: Colors.red.shade400,
                     ),
                     onPressed: () {
                       // Add to favorites action
                     },
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.shopping_cart_outlined,
+                ),
+              )
+            ],
+          ),
+          Container(
+            width: 260,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+                bottomRight: Radius.circular(12),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
-                    onPressed: () {
-                      // Add to cart action
-                    },
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  description,
+                  style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      price,
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        // Add to cart action
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Positioned(
-              bottom: 16,
-              left: 16,
-              right: 16,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    price,
-                    style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

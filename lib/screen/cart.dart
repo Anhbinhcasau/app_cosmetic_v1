@@ -1,3 +1,4 @@
+import 'package:app_cosmetic/screen/checkout.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -60,14 +61,17 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                 return Card(
                   margin: EdgeInsets.all(10),
                   child: ListTile(
-                    leading: Image.network(
-                      'https://product.hstatic.net/1000006063/product/bthe_2e4d05fa682a48e186a60839f42bd311_1024x1024.jpg',
-                      fit: BoxFit.cover,
-                      width: 60,
-                      height: 60,
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        'https://product.hstatic.net/1000006063/product/bthe_2e4d05fa682a48e186a60839f42bd311_1024x1024.jpg',
+                        fit: BoxFit.cover,
+                        width: 60,
+                        height: 60,
+                      ),
                     ),
                     title: Text(cartItems[index]['name']),
-                    subtitle: Text('Size: ${cartItems[index]['size']}'),
+                    subtitle: Text('Price: \$${cartItems[index]['price']}'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -126,7 +130,12 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CheckoutPage()),
+                    );
+                  },
                   child: Text('Proceed to Checkout'),
                 ),
               ],
