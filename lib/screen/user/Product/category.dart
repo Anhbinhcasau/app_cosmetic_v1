@@ -1,3 +1,5 @@
+import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
+import 'package:app_cosmetic/screen/user/Product/product_user.dart';
 import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 
@@ -99,7 +101,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // Handle the continue button press
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProductList_User()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green.shade400,
@@ -108,6 +113,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 ),
                 minimumSize: Size(double.infinity, 48),
               ),
+              //ProductList
               child: Text('Continue'),
             ),
             TextButton(

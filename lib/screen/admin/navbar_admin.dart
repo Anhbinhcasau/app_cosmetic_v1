@@ -1,6 +1,6 @@
 import 'package:app_cosmetic/screen/admin/characteristics.dart';
 import 'package:app_cosmetic/screen/admin/dashboard.dart';
-import 'package:app_cosmetic/screen/forgot_pass.dart';
+import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
 import 'package:app_cosmetic/screen/admin/users/dashboard_user.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ class NavBarApp extends StatelessWidget {
   const NavBarApp({super.key});
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     return const MaterialApp(
       home: NavBar(),
     );
@@ -25,7 +25,7 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = 
+  static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     DashboardOrder(),

@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/screen/home.dart';
+import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:flutter/material.dart';
 
 class CouponsScreen extends StatefulWidget {

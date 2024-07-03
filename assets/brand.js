@@ -27,12 +27,12 @@
     {
         "id": "#6",
         "brand": "L'Oréal",
-        "img": "https://picsum.photos/200?random=6"
+        "img": "https://i.pinimg.com/564x/f8/1d/b3/f81db3b4c959e750381f01e2aeb330de.jpg"
     },
     {
         "id": "#7",
         "brand": "Estée Lauder",
-        "img": "https://picsum.photos/200?random=7"
+        "img": "https://i.pinimg.com/564x/c3/4e/f4/c34ef4c5b543e1701cc00adf40210b0f.jpg"
     },
     {
         "id": "#8",
@@ -97,6 +97,6 @@
     {
         "id": "#20",
         "brand": "Kiehl's",
-        "img": "https://picsum.photos/200?random=20"
+        "img": "https://i.pinimg.com/564x/5e/18/4f/5e184f8a711ff50799360a625b423893.jpg"
     }
 ]

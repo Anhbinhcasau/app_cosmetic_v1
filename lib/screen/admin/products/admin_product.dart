@@ -17,10 +17,10 @@ class _ProductListState extends State<ProductList> {
         title: Text("Product"),
         actions: [
           IconButton(
-              onPressed: () { Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddProductPage()));},
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddProductPage()));
+              },
               icon: Icon(
                 Icons.add_circle_outline,
                 size: 40,
@@ -35,7 +35,7 @@ class _ProductListState extends State<ProductList> {
           crossAxisSpacing: 16.0,
           mainAxisSpacing: 16.0,
         ),
-        itemCount: 3,
+        itemCount: 4,
         itemBuilder: (context, index) {
           return Card(
             child: Column(

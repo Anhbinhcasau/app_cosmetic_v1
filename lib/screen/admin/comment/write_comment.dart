@@ -1,6 +1,6 @@
 import 'package:app_cosmetic/screen/admin/comment/comment_thank.dart';
 import 'package:app_cosmetic/screen/admin/comment/picker_image.dart';
-import 'package:app_cosmetic/screen/productdeatail.dart';
+import 'package:app_cosmetic/screen/productdetail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -59,7 +59,7 @@ class _WriteCommentState extends State<WriteComment> {
                 maxLines: 5,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.grey[400],
+                  fillColor: Colors.grey.shade200,
                   hintText: 'Nhập cảm nhận của bạn...',
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.red),
@@ -90,7 +90,6 @@ class _WriteCommentState extends State<WriteComment> {
                 ),
               ),
             ),
-            
           ],
         ),
       ),
