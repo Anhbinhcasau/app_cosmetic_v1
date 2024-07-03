@@ -13,28 +13,6 @@ class _DashboardMenuState extends State<DashboardMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey[800],
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {},
-        ),
-        title: TextField(
-          decoration: InputDecoration(
-            hintText: 'Search',
-            hintStyle: TextStyle(color: Colors.white),
-            border: InputBorder.none,
-            prefixIcon: Icon(Icons.search, color: Colors.white),
-          ),
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -43,15 +21,22 @@ class _DashboardMenuState extends State<DashboardMenu> {
             children: [
               Text(
                 'Overview',
-                style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
               DropdownButton<String>(
                 value: 'This Year',
                 dropdownColor: Colors.black,
                 style: TextStyle(color: Colors.white),
-                items: <String>['This Year', 'Last Year', 'This Month', 'Last Month']
-                    .map((String value) {
+                items: <String>[
+                  'This Year',
+                  'Last Year',
+                  'This Month',
+                  'Last Month'
+                ].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -78,7 +63,10 @@ class _DashboardMenuState extends State<DashboardMenu> {
               SizedBox(height: 16),
               Text(
                 'Sales Figures',
-                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 16),
               Container(
@@ -137,7 +125,8 @@ class _DashboardMenuState extends State<DashboardMenu> {
     );
   }
 
-  Widget _buildInfoCard(String title, String value, String percentage, Color percentageColor) {
+  Widget _buildInfoCard(
+      String title, String value, String percentage, Color percentageColor) {
     return Expanded(
       child: Card(
         color: Colors.grey[900],
@@ -153,7 +142,10 @@ class _DashboardMenuState extends State<DashboardMenu> {
               SizedBox(height: 8),
               Text(
                 value,
-                style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
               Text(
