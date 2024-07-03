@@ -53,7 +53,7 @@ class _ListProductState extends State<ListProduct> {
                   child: CircleAvatar(
                     backgroundColor: Colors.transparent,
                     child: ClipOval(
-                      child: Image.network(product?.imageUrl ?? ""),
+                      child: Image.network(product?.imageBase ?? ""),
                     ),
                   ),
                 ),

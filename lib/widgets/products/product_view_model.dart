@@ -7,7 +7,7 @@ class ProductListViewModel extends ChangeNotifier {
   List<Product?> products = [];
 
   void fetchProductList() async {
-    products = await ProductService.fetchProductList();
+    products = await ProductService.fetchProducts();
     notifyListeners();
   }
 }
