@@ -29,7 +29,7 @@ class Splashscreen1 extends StatelessWidget {
           ],
         ),
         nextScreen: Splashscreen2(),
-        splashIconSize: 250,
+        splashIconSize: 550,
         duration: 5000);
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/sign_in.dart';
 import 'package:flutter/widgets.dart';
@@ -43,7 +42,9 @@ class _SignUpPageState extends State<SignUpPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       }),
       child: Scaffold(
-        appBar: AppBar(elevation: 0,),
+        appBar: AppBar(
+          elevation: 0,
+        ),
         body: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -65,7 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   const SizedBox(height: 50),
                   //Name
                   TextFormField(
-                    controller: _nameController,  
+                    controller: _nameController,
                     decoration: const InputDecoration(
                       hintText: 'Tên',
                       prefixIcon:
@@ -90,9 +91,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(
-                      hintText: 'Email', 
-                      prefixIcon:
-                          Icon(Icons.mail),
+                      hintText: 'Email',
+                      prefixIcon: Icon(Icons.mail),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide.none, // Remove the border
@@ -116,9 +116,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextFormField(
                     controller: _passwordController,
                     decoration: const InputDecoration(
-                      hintText: 'Mật khẩu', 
-                      prefixIcon:
-                          Icon(Icons.key),
+                      hintText: 'Mật khẩu',
+                      prefixIcon: Icon(Icons.key),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide.none, // Remove the border
