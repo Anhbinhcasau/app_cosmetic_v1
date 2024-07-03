@@ -1,6 +1,8 @@
-import 'package:app_cosmetic/screen/comment/comment.dart';
-import 'package:app_cosmetic/widgets/comment/rating_star.dart';
-import 'package:app_cosmetic/widgets/products/decription_text.dart';
+import 'package:app_cosmetic/screen/admin/comment/comment.dart';
+import 'package:app_cosmetic/screen/cart.dart';
+import 'package:app_cosmetic/screen/checkout.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/comment/rating_star.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/products/decription_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -286,21 +288,31 @@ class _ProductDetailState extends State<ProductDetail> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                //mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.add_shopping_cart,
-                    size: 25,
-                  ),
-                  Text(
-                    'Thêm vào giỏ hàng',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
+              InkWell(
+                onTap: () {
+                  ////diều kiện nhé
+                },
+                child: Column(
+                  //mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.add_shopping_cart,
+                      size: 25,
+                    ),
+                    Text(
+                      'Thêm vào giỏ hàng',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CheckoutPage()),
+                  );
+                },
                 child: Text(
                   'Mua ngay',
                   style: TextStyle(

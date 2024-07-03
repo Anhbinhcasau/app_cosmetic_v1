@@ -1,14 +1,13 @@
 import 'package:app_cosmetic/screen/cart.dart';
 import 'package:app_cosmetic/screen/category.dart';
 import 'package:app_cosmetic/screen/coupon.dart';
+import 'package:app_cosmetic/screen/productdeatail.dart';
 import 'package:app_cosmetic/screen/profile_user.dart';
+import 'package:app_cosmetic/widgets/appbar_home.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-void main() {
-  runApp(MyApp());
-}
 
 class MyApp extends StatelessWidget {
   @override
@@ -90,32 +89,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: Text(
-          'The Ordinary',
-          style: TextStyle(color: Colors.black),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.shopping_bag_outlined, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ShoppingCartPage()),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.notifications_none, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfileScreen()),
-              );
-            },
-          ),
-        ],
+        title: AppBarHome(),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -250,16 +224,6 @@ class HomePage extends StatelessWidget {
                       },
                       child: Text('View all'),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CouponsScreen()),
-                        );
-                      },
-                      child: Text('Coupon'),
-                    ),
                   ],
                 ),
               ),
@@ -282,65 +246,27 @@ class HomePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: products
-                      .map((product) => ProductCard(
-                            imageUrl: product.imageUrl,
-                            name: product.name,
-                            price: product.price,
-                            description: product.description,
+                      .map((product) => InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductDetail()),
+                              );
+                            },
+                            child: ProductCard(
+                              imageUrl: product.imageUrl,
+                              name: product.name,
+                              price: product.price,
+                              description: product.description,
+                            ),
                           ))
                       .toList(),
                 ),
               ),
             ),
-
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: GridView.builder(
-            //     shrinkWrap: true,
-            //     physics: NeverScrollableScrollPhysics(),
-            //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //       crossAxisCount: 2,
-            //       crossAxisSpacing: 10,
-            //       mainAxisSpacing: 10,
-            //       childAspectRatio: 0.9,
-            //     ),
-            //     itemCount: products.length,
-            //     itemBuilder: (context, index) {
-            //       final product = products[index];
-            //       return ProductCard(
-            //         imageUrl: product.imageUrl,
-            //         name: product.name,
-            //         price: product.price,
-            //         description: product.description,
-            //       );
-            //     },
-            //   ),
-            // )
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_offer),
-            label: 'Explore',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profile',
-          ),
-        ],
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
       ),
     );
   }

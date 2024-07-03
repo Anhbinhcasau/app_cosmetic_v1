@@ -1,6 +1,7 @@
 import 'package:app_cosmetic/screen/category.dart';
 import 'package:app_cosmetic/screen/home.dart';
 import 'package:app_cosmetic/screen/profile_user.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 
 class Splashscreen2 extends StatelessWidget {
@@ -32,7 +33,7 @@ class Splashscreen2 extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(builder: (context) => MainScreen()),
                       );
                     },
                     child: Text(

@@ -1,23 +1,23 @@
 // list_product.dart
-import 'package:app_cosmetic/widgets/products/product_view_model.dart';
+import 'package:app_cosmetic/model/brand.model.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/brands/brand_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:app_cosmetic/model/product.model.dart';
 
-class ListProduct extends StatefulWidget {
-  const ListProduct({super.key});
+class ListBrand extends StatefulWidget {
+  const ListBrand({super.key});
 
   @override
-  State<ListProduct> createState() => _ListProductState();
+  State<ListBrand> createState() => _ListBrandState();
 }
 
-class _ListProductState extends State<ListProduct> {
-  ProductListViewModel productListViewModel = ProductListViewModel();
+class _ListBrandState extends State<ListBrand> {
+  BrandListViewModel brandListViewModel = BrandListViewModel();
 
   @override
   void initState() {
     super.initState();
-    productListViewModel.fetchProductList();
+    brandListViewModel.fetchBrandsList();
   }
 
   @override
@@ -25,7 +25,7 @@ class _ListProductState extends State<ListProduct> {
     return Scaffold(
       body: Center(
         child: ChangeNotifierProvider(
-          create: (context) => productListViewModel,
+          create: (context) => brandListViewModel,
           child: body(),
         ),
       ),
@@ -33,13 +33,13 @@ class _ListProductState extends State<ListProduct> {
   }
 
   Widget body() {
-    return Consumer<ProductListViewModel>(
+    return Consumer<BrandListViewModel>(
       builder: (context, value, child) => ListView.separated(
         separatorBuilder: (context, index) => Divider(),
         padding: const EdgeInsets.all(8),
-        itemCount: value.products.length,
+        itemCount: value.brands.length,
         itemBuilder: (BuildContext context, int index) {
-          Product? product = value.products[index];
+          Brand? brand = value.brands[index];
           return GestureDetector(
             onTap: () {
               // Xử lý sự kiện khi người dùng nhấn vào sản phẩm
@@ -53,23 +53,18 @@ class _ListProductState extends State<ListProduct> {
                   child: CircleAvatar(
                     backgroundColor: Colors.transparent,
                     child: ClipOval(
-                      child: Image.network(product?.imageBase ?? ""),
+                      child: Image.network(brand?.image ?? ""),
                     ),
                   ),
                 ),
                 SizedBox(width: 12),
                 Expanded(
-                  flex: 2,
+                  flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        product?.name ?? '',
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                      Text(
-                        '${product?.brand ?? ''} - ${product?.price?.toStringAsFixed(2) ?? ''} \$',
+                        brand?.brand ?? '',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -77,11 +72,22 @@ class _ListProductState extends State<ListProduct> {
                   ),
                 ),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Xử lý sự kiện khi nhấn vào nút
-                    },
-                    child: Text('Change'),
+                  flex: 1,
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          // Xử lý sự kiện khi nhấn vào nút
+                        },
+                        child: Icon(Icons.edit),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Xử lý sự kiện khi nhấn vào nút
+                        },
+                        child: Icon(Icons.delete),
+                      ), 
+                    ],
                   ),
                 )
               ],

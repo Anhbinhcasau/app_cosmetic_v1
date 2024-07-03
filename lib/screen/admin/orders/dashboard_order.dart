@@ -1,8 +1,7 @@
-import 'package:app_cosmetic/screen/order/navbar_order.dart';
-import 'package:app_cosmetic/screen/products/dashboard_product.dart';
-import 'package:app_cosmetic/widgets/products/product.dart';
-import 'package:app_cosmetic/widgets/user/user.dart';
+// dashboard_order.dart
+import 'package:app_cosmetic/widgets/admin_widgets/orders/order.dart';
 import 'package:flutter/material.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/orders/navbar_order.dart';
 
 
 class DashboardOrder extends StatefulWidget {
@@ -16,8 +15,10 @@ class _DashboardOrderState extends State<DashboardOrder> {
   int _selectedIndex = 0;
 
   final List<Widget> _orderScreens = [
-    ProductList(),
-    ListUser(),
+    const OrderListScreen(status: 1), // Xác nhận
+    const OrderListScreen(status: 2), // Giao hàng
+    const OrderListScreen(status: 3), // Hoàn tất
+    const OrderListScreen(status: 4), // Đơn hủy
   ];
 
   void _onSelectedButtonChanged(int index) {

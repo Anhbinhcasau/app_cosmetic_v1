@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/sign_in.dart';
 import 'package:flutter/widgets.dart';
@@ -206,10 +207,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       const SizedBox(
                         width: 30,
                       ),
-                      Image.asset(
-                        'assets/twitter.png',
-                        width: 40,
-                        height: 40,
+                      ElevatedButton(
+                        child: Image.asset(
+                          'assets/twitter.png',
+                          width: 40,
+                          height: 40,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NavBar()),
+                          );
+                        },
                       ),
                     ],
                   )

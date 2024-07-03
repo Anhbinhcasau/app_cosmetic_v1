@@ -1,18 +1,6 @@
 import 'package:app_cosmetic/screen/home.dart';
+import 'package:app_cosmetic/screen/sign_up.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ProfileScreen(),
-    );
-  }
-}
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -23,21 +11,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-          },
-        ),
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -128,7 +102,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: Text('Log out'),
                 trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
                 onTap: () {
-                  // Handle "Log out"
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignUpPage()),
+                  );
                 },
               ),
             ],
