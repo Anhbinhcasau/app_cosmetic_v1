@@ -1,6 +1,7 @@
 import 'package:app_cosmetic/screen/dashboard.dart';
 import 'package:app_cosmetic/screen/forgot_pass.dart';
 import 'package:app_cosmetic/screen/order/dashboard_order.dart';
+import 'package:app_cosmetic/screen/products/productdeatail.dart';
 import 'package:app_cosmetic/screen/sign_in.dart';
 import 'package:app_cosmetic/screen/user/dashboard_user.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class _NavBarState extends State<NavBar> {
     LoginPage(),
     DashboardMenu(),
     ForgotPassPage(),
-    UserListDB(),
+    ProductDetail(),
   ];
 
   void _onItemTapped(int index) {
