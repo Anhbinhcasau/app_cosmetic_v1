@@ -1,6 +1,6 @@
-import 'package:app_cosmetic/screen/comment/comment_thank.dart';
-import 'package:app_cosmetic/screen/comment/picker_image.dart';
-import 'package:app_cosmetic/screen/products/productdeatail.dart';
+import 'package:app_cosmetic/screen/admin/comment/comment_thank.dart';
+import 'package:app_cosmetic/screen/admin/comment/picker_image.dart';
+import 'package:app_cosmetic/screen/productdeatail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';

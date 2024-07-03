@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/widgets/products/product.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/products/product.dart';
 import 'package:flutter/material.dart';
 
 class ProductList extends StatefulWidget {

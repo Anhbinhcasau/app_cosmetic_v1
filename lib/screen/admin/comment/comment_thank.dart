@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/screen/products/productdeatail.dart';
+import 'package:app_cosmetic/screen/productdeatail.dart';
 import 'package:flutter/material.dart';
 
 class CommentThank extends StatefulWidget {

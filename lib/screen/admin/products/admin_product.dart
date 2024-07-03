@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/screen/products/addproduct.dart';
+import 'package:app_cosmetic/screen/admin/products/addproduct.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
