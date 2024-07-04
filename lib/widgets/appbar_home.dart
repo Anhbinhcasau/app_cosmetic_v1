@@ -28,15 +28,6 @@ class AppBarHome extends StatelessWidget {
             );
           },
         ),
-        IconButton(
-          icon: Icon(Icons.notifications_none, color: Colors.black),
-          onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => ProfileScreen()),
-            // );
-          },
-        ),
       ],
     );
   }

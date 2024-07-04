@@ -5,6 +5,7 @@ import 'package:app_cosmetic/widgets/admin_widgets/comment/rating_star.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/products/decription_text.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/products/product_card.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/products/showbottomsheet.dart';
+import 'package:app_cosmetic/widgets/appbar_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -67,12 +68,7 @@ class _ProductDetailState extends State<ProductDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: Icon(Icons.shopping_bag),
-          )
-        ],
+        title: AppBarHome(),
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 20),
