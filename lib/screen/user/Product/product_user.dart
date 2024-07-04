@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/screen/productdetail.dart';
+import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
 import 'package:app_cosmetic/screen/user/cart/cart.dart';
 import 'package:flutter/material.dart';
 

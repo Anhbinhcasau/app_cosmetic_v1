@@ -1,7 +1,7 @@
 import 'package:app_cosmetic/screen/user/cart/cart.dart';
 import 'package:app_cosmetic/screen/user/Product/category.dart';
 import 'package:app_cosmetic/screen/user/coupon/coupon.dart';
-import 'package:app_cosmetic/screen/productdetail.dart';
+import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
 import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
 import 'package:app_cosmetic/widgets/appbar_home.dart';
 import 'package:app_cosmetic/widgets/navbar_user.dart';
