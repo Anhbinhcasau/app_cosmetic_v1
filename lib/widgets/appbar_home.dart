@@ -14,6 +14,7 @@ class AppBarHome extends StatelessWidget {
             child: Text(
               'The Ordinary',
               style: TextStyle(color: Colors.black),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),

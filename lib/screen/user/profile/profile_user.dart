@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               CircleAvatar(
                 radius: 50,
                 backgroundImage: NetworkImage(
-                    'https://i.pinimg.com/564x/5f/6b/50/5f6b50ae839f59f5f002d25eb0e42a44.jpg'),
+                    'https://i.pinimg.com/564x/b3/e5/db/b3e5db5a3bf1399f74500a6209462794.jpg'),
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: CircleAvatar(
