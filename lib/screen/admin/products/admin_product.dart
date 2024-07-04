@@ -17,10 +17,10 @@ class _ProductListState extends State<ProductList> {
         title: Text("Product"),
         actions: [
           IconButton(
-              onPressed: () { Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddProductPage()));},
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddProductPage()));
+              },
               icon: Icon(
                 Icons.add_circle_outline,
                 size: 40,
@@ -43,8 +43,8 @@ class _ProductListState extends State<ProductList> {
               children: [
                 Expanded(
                   child: Center(
-                    child: Image.asset(
-                      "assets/facebook.png",
+                    child: Image.network(
+                      "https://media.hcdn.vn/catalog/product/p/r/promotions-auto-kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml_2mALK46d83RhR9S2.png",
                       fit: BoxFit.cover,
                     ),
                   ),

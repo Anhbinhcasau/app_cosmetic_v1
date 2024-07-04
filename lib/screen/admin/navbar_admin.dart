@@ -1,6 +1,7 @@
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/admin/characteristics.dart';
 import 'package:app_cosmetic/screen/admin/dashboard.dart';
+import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
 import 'package:app_cosmetic/screen/forgot_pass.dart';
 import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
 import 'package:app_cosmetic/screen/admin/users/dashboard_user.dart';
@@ -33,11 +34,9 @@ class _NavBarState extends State<NavBar> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     DashboardMenu(),
-    ListBrand(),
-    ListCategory(),
-    DashboardOrder(),
-    ListProduct(),
-    ForgotPassPage(),
+
+    ProductList(),
+
     UserListDB(),
   ];
 
