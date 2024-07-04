@@ -23,6 +23,14 @@ class _ListProductState extends State<ListProduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: const Color(0xFF13131A),
+        title: const Text(
+          '# SẢN PHẨM',
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+        ),
+      ),
       body: Center(
         child: ChangeNotifierProvider(
           create: (context) => productListViewModel,
