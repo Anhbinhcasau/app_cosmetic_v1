@@ -29,7 +29,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: MainScreen(),
+        body: Splashscreen1(),
       ),
     );
   }
