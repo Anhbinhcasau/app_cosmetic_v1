@@ -1,5 +1,6 @@
-// list_product.dart
 import 'package:app_cosmetic/model/category.model.dart';
+import 'package:app_cosmetic/screen/admin/categories/edit_category.dart';
+import 'package:app_cosmetic/screen/admin/categories/add_category.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/categories/category_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,11 +24,32 @@ class _ListCategoryState extends State<ListCategory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: const Color(0xFF13131A),
+          title: const Text(
+            '# DANH MỤC',
+            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+          ),
+        ),
       body: Center(
         child: ChangeNotifierProvider(
           create: (context) => categoryListViewModel,
           child: body(),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddCategoryScreen(),
+            ),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.green, // Customize the color
       ),
     );
   }
@@ -42,7 +64,7 @@ class _ListCategoryState extends State<ListCategory> {
           Category? category = value.categories[index];
           return GestureDetector(
             onTap: () {
-              // Xử lý sự kiện khi người dùng nhấn vào sản phẩm
+              // Handle the tap event here
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,16 +99,22 @@ class _ListCategoryState extends State<ListCategory> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Xử lý sự kiện khi nhấn vào nút
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  EditCategoryScreen(category: category!),
+                            ),
+                          );
                         },
                         child: Icon(Icons.edit),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          // Xử lý sự kiện khi nhấn vào nút
+                          _showDeleteDialog(context, category!);
                         },
                         child: Icon(Icons.delete),
-                      ), 
+                      ),
                     ],
                   ),
                 )
@@ -95,6 +123,49 @@ class _ListCategoryState extends State<ListCategory> {
           );
         },
       ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context, Category category) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Xóa Danh mục'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Bạn chắc chắn muốn xóa danh mục này?',
+                style: TextStyle(color: Colors.amber),
+              ),
+              SizedBox(height: 16),
+              Text('ID: ${category.id}', style: TextStyle(fontSize: 20)),
+              Text('Name: ${category.nameCate}',
+                  style: TextStyle(fontSize: 20)),
+              Image.network(
+                category.image,
+                height: 200,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Hủy', style: TextStyle(fontSize: 20)),
+            ),
+            TextButton(
+              onPressed: () {
+                // Handle the delete action here
+                Navigator.of(context).pop();
+              },
+              child: Text('Xác nhận', style: TextStyle(fontSize: 20)),
+            ),
+          ],
+        );
+      },
     );
   }
 }
