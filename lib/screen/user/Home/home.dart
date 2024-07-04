@@ -1,8 +1,8 @@
-import 'package:app_cosmetic/screen/cart.dart';
-import 'package:app_cosmetic/screen/category.dart';
-import 'package:app_cosmetic/screen/coupon.dart';
-import 'package:app_cosmetic/screen/productdeatail.dart';
-import 'package:app_cosmetic/screen/profile_user.dart';
+import 'package:app_cosmetic/screen/user/cart/cart.dart';
+import 'package:app_cosmetic/screen/user/Product/category.dart';
+import 'package:app_cosmetic/screen/user/coupon/coupon.dart';
+import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
+import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
 import 'package:app_cosmetic/widgets/appbar_home.dart';
 import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -334,7 +334,6 @@ class ProductCard extends StatelessWidget {
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
                 ),
                 child: Image.network(
                   imageUrl,

@@ -1,8 +1,10 @@
-import 'package:app_cosmetic/screen/category.dart';
-import 'package:app_cosmetic/screen/coupon.dart';
-import 'package:app_cosmetic/screen/home.dart';
-import 'package:app_cosmetic/screen/profile_user.dart';
+import 'package:app_cosmetic/data/config.app.dart';
 import 'package:flutter/material.dart';
+import 'package:app_cosmetic/screen/user/Product/category.dart';
+import 'package:app_cosmetic/screen/user/Product/product_user.dart';
+import 'package:app_cosmetic/screen/user/coupon/coupon.dart';
+import 'package:app_cosmetic/screen/user/Home/home.dart';
+import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     HomePage(),
     CouponsScreen(),
-    CategoriesScreen(),
+    ProductList_User(),
     ProfileScreen(),
   ];
 
@@ -27,11 +29,14 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: _pages.elementAt(_selectedIndex),
-      ),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
+        currentIndex: _selectedIndex,
+        selectedItemColor: AppColors.primaryColor,
+        unselectedItemColor: Colors.grey[600],
+        selectedIconTheme: const IconThemeData(size: 32),
+        unselectedIconTheme: const IconThemeData(size: 25),
+        onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -39,20 +44,17 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.local_offer),
-            label: 'Explore',
+            label: 'Coupon',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite_border),
-            label: 'Saved',
+            label: 'Wishlist',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             label: 'Profile',
           ),
         ],
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
       ),
     );
   }

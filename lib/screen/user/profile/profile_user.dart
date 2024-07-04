@@ -1,4 +1,6 @@
-import 'package:app_cosmetic/screen/home.dart';
+import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
+import 'package:app_cosmetic/screen/user/profile/process_oder.dart';
+import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/sign_up.dart';
 import 'package:flutter/material.dart';
 
@@ -62,39 +64,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: Text('My Orders'),
                 trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
                 onTap: () {
-                  // Handle navigation to "My Orders"
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProcessOder()),
+                  );
                 },
               ),
               ListTile(
                 leading: Icon(Icons.settings, color: Colors.brown),
-                title: Text('Settings'),
+                title: Text('Change Password'),
                 trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
                 onTap: () {
-                  // Handle navigation to "Settings"
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.help, color: Colors.brown),
-                title: Text('Help Center'),
-                trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
-                onTap: () {
-                  // Handle navigation to "Help Center"
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.policy, color: Colors.brown),
-                title: Text('Privacy Policy'),
-                trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
-                onTap: () {
-                  // Handle navigation to "Privacy Policy"
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.group_add, color: Colors.brown),
-                title: Text('Invites Friends'),
-                trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
-                onTap: () {
-                  // Handle navigation to "Invites Friends"
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ForgotPassPage()),
+                  );
                 },
               ),
               ListTile(

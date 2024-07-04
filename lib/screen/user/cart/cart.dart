@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/screen/checkout.dart';
+import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingCartPage extends StatefulWidget {
@@ -8,9 +8,24 @@ class ShoppingCartPage extends StatefulWidget {
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
   List<Map<String, dynamic>> cartItems = [
-    {'name': 'Brown Jacket', 'size': 'XL', 'price': 83.98, 'quantity': 1},
-    {'name': 'Brown Suite', 'size': 'L', 'price': 120.0, 'quantity': 1},
-    {'name': 'Brown Jacket', 'size': 'XL', 'price': 83.97, 'quantity': 1},
+    {
+      'name': 'Kem chống nắng Anessa',
+      'size': 'XL',
+      'price': 83.98,
+      'quantity': 1
+    },
+    {
+      'name': 'Kem chống nắng Anessa',
+      'size': 'L',
+      'price': 120.0,
+      'quantity': 1
+    },
+    {
+      'name': 'Kem chống nắng Anessa',
+      'size': 'XL',
+      'price': 83.97,
+      'quantity': 1
+    },
   ];
 
   double deliveryFee = 25.0;

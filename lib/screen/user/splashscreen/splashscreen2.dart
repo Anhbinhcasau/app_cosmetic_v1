@@ -1,6 +1,6 @@
-import 'package:app_cosmetic/screen/category.dart';
-import 'package:app_cosmetic/screen/home.dart';
-import 'package:app_cosmetic/screen/profile_user.dart';
+import 'package:app_cosmetic/screen/user/Product/category.dart';
+import 'package:app_cosmetic/screen/user/Home/home.dart';
+import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
 import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/screen/forgot_pass.dart';
+import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/sign_up.dart';
 import 'package:flutter/material.dart';
 
