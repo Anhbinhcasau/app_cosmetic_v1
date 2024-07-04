@@ -43,8 +43,8 @@ class _ProductListState extends State<ProductList> {
               children: [
                 Expanded(
                   child: Center(
-                    child: Image.asset(
-                      "assets/facebook.png",
+                    child: Image.network(
+                      "https://media.hcdn.vn/catalog/product/p/r/promotions-auto-kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml_2mALK46d83RhR9S2.png",
                       fit: BoxFit.cover,
                     ),
                   ),
