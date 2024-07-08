@@ -2,6 +2,7 @@ import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/profile/process_oder.dart';
 import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -61,7 +62,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => MainScreen()),
                     );
                   },
                   style: ElevatedButton.styleFrom(

@@ -34,7 +34,11 @@ class _NavBarState extends State<NavBar> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     DashboardMenu(),
-    ProductList(),
+    ListBrand(),
+    ListCategory(),
+    DashboardOrder(),
+    ListProduct(),
+    ForgotPassPage(),
     UserListDB(),
   ];
 
