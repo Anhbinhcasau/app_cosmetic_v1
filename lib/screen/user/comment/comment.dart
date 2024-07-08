@@ -2,7 +2,7 @@ import 'package:app_cosmetic/widgets/admin_widgets/comment/comment_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_cosmetic/model/comment.model.dart';
-import 'package:app_cosmetic/screen/admin/comment/write_comment.dart';
+import 'package:app_cosmetic/screen/user/comment/write_comment.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/comment/rating_star.dart';
 
 class CommentList extends StatefulWidget {
@@ -95,11 +95,31 @@ class _CommentListState extends State<CommentList> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // const CircleAvatar(
+                              //   radius: 25.0,
+                              //   backgroundColor: Colors.grey,
+                              //   child: const Text('AH'),
+                              // ),
+                              Text(
+                                "Pham Ha",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                ' ${comment?.date}',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ],
+                          ),
                           RatingStar(initialRating: comment?.rating ?? 0),
+                          SizedBox(height: 10),
+                          Text(
+                            '${comment?.comment}',
+                            style: TextStyle(fontSize: 15),
+                          ),
                           SizedBox(height: 5),
-                          Text('Comment: ${comment?.comment}'),
-                          SizedBox(height: 5),
-                          Text('Date: ${comment?.date}'),
                           SizedBox(height: 10),
                           SizedBox(
                             height: 100, // Set a fixed height for the GridView

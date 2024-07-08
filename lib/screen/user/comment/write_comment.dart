@@ -1,5 +1,5 @@
-import 'package:app_cosmetic/screen/admin/comment/comment_thank.dart';
-import 'package:app_cosmetic/screen/admin/comment/picker_image.dart';
+import 'package:app_cosmetic/screen/user/comment/comment_thank.dart';
+import 'package:app_cosmetic/screen/user/comment/picker_image.dart';
 import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

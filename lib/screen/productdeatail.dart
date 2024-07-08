@@ -1,5 +1,4 @@
 import 'package:app_cosmetic/screen/user/comment/comment.dart';
-import 'package:app_cosmetic/screen/user/cart/cart.dart';
 import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/comment/rating_star.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/products/decription_text.dart';
