@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_cosmetic/model/category.model.dart';
 import 'package:app_cosmetic/screen/admin/categories/edit_category.dart';
 import 'package:app_cosmetic/screen/admin/categories/add_category.dart';
@@ -14,17 +16,19 @@ class ListCategory extends StatefulWidget {
 
 class _ListCategoryState extends State<ListCategory> {
   CategoryListViewModel categoryListViewModel = CategoryListViewModel();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
     super.initState();
-    categoryListViewModel.fetchCategoriesList();
+    categoryListViewModel.getCategoriesList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      key: _scaffoldMessengerKey,
       appBar: AppBar(
           centerTitle: true,
           backgroundColor: const Color(0xFF13131A),
@@ -62,6 +66,25 @@ class _ListCategoryState extends State<ListCategory> {
         itemCount: value.categories.length,
         itemBuilder: (BuildContext context, int index) {
           Category? category = value.categories[index];
+          if (category == null || category.image == null) {
+            return SizedBox(); 
+          }
+
+          Widget categoryImage;
+          if (category.image!.startsWith('http')) {
+            // Network image
+            categoryImage = Image.network(
+              category.image!,
+              fit: BoxFit.cover,
+            );
+          } else {
+            // Local file image
+            categoryImage = Image.file(
+              File(category.image!),
+              fit: BoxFit.cover,
+            );
+          }
+
           return GestureDetector(
             onTap: () {
               // Handle the tap event here
@@ -74,9 +97,7 @@ class _ListCategoryState extends State<ListCategory> {
                   height: 60,
                   child: CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    child: ClipOval(
-                      child: Image.network(category?.image ?? ""),
-                    ),
+                    child: categoryImage,
                   ),
                 ),
                 SizedBox(width: 12),
@@ -143,10 +164,7 @@ class _ListCategoryState extends State<ListCategory> {
               Text('ID: ${category.id}', style: TextStyle(fontSize: 20)),
               Text('Name: ${category.nameCate}',
                   style: TextStyle(fontSize: 20)),
-              Image.network(
-                category.image,
-                height: 200,
-              ),
+              _buildCategoryImage(category)
             ],
           ),
           actions: [
@@ -157,15 +175,45 @@ class _ListCategoryState extends State<ListCategory> {
               child: Text('Hủy', style: TextStyle(fontSize: 20)),
             ),
             TextButton(
-              onPressed: () {
-                // Handle the delete action here
-                Navigator.of(context).pop();
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                // Perform the deletion and handle the result
+                bool isDeleted = await Provider.of<CategoryListViewModel>(context,
+                        listen: false)
+                    .deleteCategory(category.id);
+                if (isDeleted) {
+                  _scaffoldMessengerKey.currentState?.showSnackBar(
+                    SnackBar(content: Text('Category deleted successfully')),
+                  );
+                } else {
+                  _scaffoldMessengerKey.currentState?.showSnackBar(
+                    SnackBar(content: Text('Failed to delete category')),
+                  );
+                }
               },
               child: Text('Xác nhận', style: TextStyle(fontSize: 20)),
             ),
           ],
         );
       },
+    );
+  }
+  Widget _buildCategoryImage(Category category) {
+    return SizedBox(
+      height: 200,
+      width: double.infinity,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0), // Optional: Add border radius
+        child: category.image.startsWith('http')
+            ? Image.network(
+                category.image,
+                fit: BoxFit.cover,
+              )
+            : Image.file(
+                File(category.image),
+                fit: BoxFit.cover,
+              ),
+      ),
     );
   }
 }

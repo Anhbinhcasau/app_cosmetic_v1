@@ -1,3 +1,4 @@
+import 'package:app_cosmetic/widgets/admin_widgets/categories/category_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -9,24 +10,50 @@ class AddCategoryScreen extends StatefulWidget {
 
 class _AddCategoryScreenState extends State<AddCategoryScreen> {
   late TextEditingController _categoryController;
-  late File? _imageFile;
-  final String placeholderImage = 'https://via.placeholder.com/150';
+  String _imageFile = '';
+  final String placeholderImage = 'assets/basic.jpg';
+  CategoryListViewModel categoryListViewModel = CategoryListViewModel();
 
   @override
   void initState() {
     super.initState();
     _categoryController = TextEditingController();
-    _imageFile = null;
   }
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
-        _imageFile = File(pickedFile.path);
+        _imageFile = pickedFile.path; // Assign path to _imageFile
       }
     });
+  }
+
+  Future<void> _saveCategory() async {
+    final String categoryName = _categoryController.text;
+    if (categoryName.isEmpty || _imageFile.isEmpty) {
+      // Show error message if brand name or image is not provided
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please provide category name and image')));
+      return;
+    }
+    try {
+      // Call your method to create brand with _imageFile here
+      await categoryListViewModel.addCategories(categoryName, _imageFile);
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Category created successfully')));
+      // Clear text field and image file after successful creation
+      _categoryController.clear();
+      setState(() {
+        _imageFile = ''; // Reset _imageFile after successful creation
+      });
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to create category')));
+    }
   }
 
   @override
@@ -39,9 +66,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Thêm danh mục mới'),
+        title: Text('Thêm Danh Mục'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -49,23 +76,24 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
               style: TextStyle(fontSize: 30),
               controller: _categoryController,
               decoration: InputDecoration(
-                labelText: 'Tên danh mục',
+                labelText: 'Category Name',
                 labelStyle: TextStyle(fontSize: 20),
               ),
             ),
             SizedBox(height: 16),
             GestureDetector(
               onTap: _pickImage,
-              child: _imageFile != null
-                  ? Image.file(_imageFile!, height: 450)
-                  : Image.network(placeholderImage, height: 450),
+              child: _imageFile.isNotEmpty // Check if _imageFile is not empty
+                  ? Image.file(File(_imageFile),
+                      height: 450) // Use File constructor to show image
+                  : Image.asset(placeholderImage, height: 450),
             ),
             SizedBox(height: 16),
+            Text('Select an image for the category'),
+            SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                // Handle the save action here
-              },
-              child: Text('Xác nhận', style: TextStyle(fontSize: 25)),
+              onPressed: _saveCategory,
+              child: Text('Save', style: TextStyle(fontSize: 25)),
             ),
           ],
         ),
