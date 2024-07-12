@@ -96,6 +96,7 @@ class _HomePageState extends State<HomePage> {
             BrandWidget(),         
             const SizedBox(height: 10),
             CategoryWidget(),
+            //// tiếp tục ở đây
           ],
         ),
       ),

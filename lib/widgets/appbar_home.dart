@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/screen/cart.dart';
+import 'package:app_cosmetic/screen/user/cart/cart.dart';
 import 'package:flutter/material.dart';
 
 class AppBarHome extends StatelessWidget {
@@ -14,6 +14,7 @@ class AppBarHome extends StatelessWidget {
             child: Text(
               'The Ordinary',
               style: TextStyle(color: Colors.black),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
@@ -25,15 +26,6 @@ class AppBarHome extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => ShoppingCartPage()),
             );
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.notifications_none, color: Colors.black),
-          onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => ProfileScreen()),
-            // );
           },
         ),
       ],

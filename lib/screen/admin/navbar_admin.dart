@@ -1,7 +1,8 @@
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/admin/characteristics.dart';
 import 'package:app_cosmetic/screen/admin/dashboard.dart';
-import 'package:app_cosmetic/screen/forgot_pass.dart';
+import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
+import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
 import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
 import 'package:app_cosmetic/screen/admin/users/dashboard_user.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/brands/brand.dart';

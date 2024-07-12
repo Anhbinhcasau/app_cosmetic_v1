@@ -1,8 +1,11 @@
-import 'package:app_cosmetic/screen/admin/comment/comment.dart';
-import 'package:app_cosmetic/screen/cart.dart';
-import 'package:app_cosmetic/screen/checkout.dart';
+import 'package:app_cosmetic/screen/user/comment/comment.dart';
+import 'package:app_cosmetic/screen/user/cart/cart.dart';
+import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/comment/rating_star.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/products/decription_text.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/products/product_card.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/products/showbottomsheet.dart';
+import 'package:app_cosmetic/widgets/appbar_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -17,39 +20,78 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
+  final List<Product> products = [
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/564x/e6/75/1b/e6751bb5a46ac866e8bea8848773dcb2.jpg',
+      name: 'Granactive Retinoid 5%',
+      price: '699 VND',
+      description:
+          'This water-free solution contains a 5% concentration of retinoid.',
+    ),
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/564x/0c/8c/f6/0c8cf6a694d4eeb9a168740170af7f41.jpg',
+      name: 'Granactive Retinoid 2%',
+      price: '499 VND',
+      description:
+          'This water-free solution contains a 2% concentration of retinoid.',
+    ),
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/736x/a6/9b/96/a69b969e541bf2acd971dd43090ce5c5.jpg',
+      name: 'Granactive Retinoid 2%',
+      price: '499 VND',
+      description:
+          'This water-free solution contains a 2% concentration of retinoid.',
+    ),
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/564x/12/b4/3c/12b43c39dc7c8799bb40bb4bec702d62.jpg',
+      name: 'Granactive Retinoid 2%',
+      price: '499 VND',
+      description:
+          'This water-free solution contains a 2% concentration of retinoid.',
+    ),
+    Product(
+      imageUrl:
+          'https://i.pinimg.com/564x/87/47/c0/8747c00c9bc9cbbcbc466d97fe157d6b.jpg',
+      name: 'Granactive Retinoid 2%',
+      price: '499 VND',
+      description:
+          'This water-free solution contains a 2% concentration of retinoid.',
+    ),
+    // Add more products here...
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: Icon(Icons.shopping_bag),
-          )
-        ],
+        title: AppBarHome(),
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 20),
         children: [
           ImageSlideshow(
             height: 300,
+            autoPlayInterval: null,
             indicatorColor: Colors.blue,
             onPageChanged: (value) {
               debugPrint('Page changed: $value');
             },
-            autoPlayInterval: 3000,
             isLoop: false,
             children: [
-              Image.asset(
-                "assets/instagram.png",
+              Image.network(
+                "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml-1716439945_img_800x800_eb97c5_fit_center.jpg",
                 fit: BoxFit.cover,
               ),
-              Image.asset(
-                "assets/google.png",
+              Image.network(
+                "https://media.hcdn.vn/catalog/product/p/r/promotions-auto-kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml_2mALK46d83RhR9S2.png",
                 fit: BoxFit.cover,
               ),
-              Image.asset(
-                "assets/instagram.png",
+              Image.network(
+                "https://media.hcdn.vn/catalog/product/k/e/kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml-5-1716439966_img_800x800_eb97c5_fit_center.jpg",
                 fit: BoxFit.cover,
               ),
             ],
@@ -61,19 +103,11 @@ class _ProductDetailState extends State<ProductDetail> {
                 '256,000 VNĐ',
                 style: TextStyle(color: Colors.red, fontSize: 25),
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.favorite,
-                  color: Colors.red,
-                  size: 40,
-                ),
-                onPressed: null,
-              )
             ],
           ),
           const Text(
-            "Đây là sản phẩm nhé",
-            style: TextStyle(fontSize: 30),
+            "Kem Dưỡng La Roche-Posay Giúp Phục Hồi Da Đa Công Dụng 40ml",
+            style: TextStyle(fontSize: 20),
           ),
           SizedBox(
             height: 15,
@@ -81,7 +115,13 @@ class _ProductDetailState extends State<ProductDetail> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              RatingStar(initialRating: 4),
+              const Text(
+                "4.9/5.0",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.red,
+                ),
+              ),
               const Text(
                 "Đã bán 50",
                 style: TextStyle(fontSize: 20),
@@ -173,22 +213,24 @@ class _ProductDetailState extends State<ProductDetail> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Row(
-                children: [
-                  const Text(
-                    "Xem tất cả ",
-                    style: TextStyle(fontSize: 17, color: Colors.red),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CommentList()),
-                        );
-                      },
-                      icon: const Icon(Icons.chevron_right)),
-                ],
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CommentList()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    const Text(
+                      "Xem tất cả ",
+                      style: TextStyle(fontSize: 17, color: Colors.red),
+                    ),
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.chevron_right)),
+                  ],
+                ),
               ),
             ],
           ),
@@ -274,8 +316,31 @@ class _ProductDetailState extends State<ProductDetail> {
           const Text(
             "Sản phẩm gợi ý ",
             style: TextStyle(
-              fontSize: 2,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: products
+                  .map((product) => InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProductDetail()),
+                          );
+                        },
+                        child: ProductCard(
+                          imageUrl: product.imageUrl,
+                          name: product.name,
+                          price: product.price,
+                          description: product.description,
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
         ],
@@ -292,18 +357,28 @@ class _ProductDetailState extends State<ProductDetail> {
                 onTap: () {
                   ////diều kiện nhé
                 },
-                child: Column(
-                  //mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.add_shopping_cart,
-                      size: 25,
-                    ),
-                    Text(
-                      'Thêm vào giỏ hàng',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
+                child: InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AddToCartSheet();
+                      },
+                    );
+                  },
+                  child: Column(
+                    //mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.add_shopping_cart,
+                        size: 25,
+                      ),
+                      Text(
+                        'Thêm vào giỏ hàng',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               ElevatedButton(
@@ -331,4 +406,18 @@ class _ProductDetailState extends State<ProductDetail> {
       ),
     );
   }
+}
+
+class Product {
+  final String imageUrl;
+  final String name;
+  final String price;
+  final String description;
+
+  Product({
+    required this.imageUrl,
+    required this.name,
+    required this.price,
+    required this.description,
+  });
 }

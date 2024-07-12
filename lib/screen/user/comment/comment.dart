@@ -2,7 +2,7 @@ import 'package:app_cosmetic/widgets/admin_widgets/comment/comment_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_cosmetic/model/comment.model.dart';
-import 'package:app_cosmetic/screen/admin/comment/write_comment.dart';
+import 'package:app_cosmetic/screen/user/comment/write_comment.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/comment/rating_star.dart';
 
 class CommentList extends StatefulWidget {
