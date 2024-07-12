@@ -1,6 +1,6 @@
+import 'dart:io';
 import 'package:app_cosmetic/model/brand.model.dart';
-import 'package:app_cosmetic/screen/admin/brands/edit_brand.dart';
-import 'package:app_cosmetic/screen/admin/brands/add_brand.dart';
+import 'package:app_cosmetic/screen/admin/brands/screen_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/brands/brand_view_model.dart';
@@ -14,6 +14,8 @@ class ListBrand extends StatefulWidget {
 
 class _ListBrandState extends State<ListBrand> {
   BrandListViewModel brandListViewModel = BrandListViewModel();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
@@ -24,14 +26,15 @@ class _ListBrandState extends State<ListBrand> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldMessengerKey,
       appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: const Color(0xFF13131A),
-          title: const Text(
-            '# THƯƠNG HIỆU',
-            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
-          ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF13131A),
+        title: const Text(
+          '# THƯƠNG HIỆU',
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
+      ),
       body: Center(
         child: ChangeNotifierProvider(
           create: (context) => brandListViewModel,
@@ -43,12 +46,12 @@ class _ListBrandState extends State<ListBrand> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddBrandScreen(),
+              builder: (context) => BrandScreen(),
             ),
           );
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.green, // You can customize the color
+        backgroundColor: Colors.green,
       ),
     );
   }
@@ -61,6 +64,26 @@ class _ListBrandState extends State<ListBrand> {
         itemCount: value.brands.length,
         itemBuilder: (BuildContext context, int index) {
           Brand? brand = value.brands[index];
+          // Check if brand or brand.image is null
+          if (brand == null || brand.image == null) {
+            return SizedBox();
+          }
+
+          Widget brandImage;
+          if (brand.image!.startsWith('http')) {
+            // Network image
+            brandImage = Image.network(
+              brand.image!,
+              fit: BoxFit.cover,
+            );
+          } else {
+            // Local file image
+            brandImage = Image.file(
+              File(brand.image!),
+              fit: BoxFit.cover,
+            );
+          }
+
           return GestureDetector(
             onTap: () {
               // Handle the tap event here
@@ -73,9 +96,7 @@ class _ListBrandState extends State<ListBrand> {
                   height: 60,
                   child: CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    child: ClipOval(
-                      child: Image.network(brand?.image ?? ""),
-                    ),
+                    child: brandImage,
                   ),
                 ),
                 SizedBox(width: 12),
@@ -85,7 +106,7 @@ class _ListBrandState extends State<ListBrand> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        brand?.brand ?? '',
+                        brand.name ?? '',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -101,8 +122,7 @@ class _ListBrandState extends State<ListBrand> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  BrandEditScreen(brand: brand!),
+                              builder: (context) => BrandScreen(brand: brand),
                             ),
                           );
                         },
@@ -110,7 +130,7 @@ class _ListBrandState extends State<ListBrand> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          _showDeleteDialog(context, brand!);
+                          _showDeleteDialog(context, brand);
                         },
                         child: Icon(Icons.delete),
                       ),
@@ -140,11 +160,8 @@ class _ListBrandState extends State<ListBrand> {
               ),
               SizedBox(height: 16),
               Text('ID: ${brand.id}', style: TextStyle(fontSize: 20)),
-              Text('Name: ${brand.brand}', style: TextStyle(fontSize: 20)),
-              Image.network(
-                brand.image,
-                height: 200,
-              ),
+              Text('Name: ${brand.name}', style: TextStyle(fontSize: 20)),
+              _buildBrandImage(brand), // Display brand image based on type
             ],
           ),
           actions: [
@@ -155,15 +172,46 @@ class _ListBrandState extends State<ListBrand> {
               child: Text('Hủy', style: TextStyle(fontSize: 20)),
             ),
             TextButton(
-              onPressed: () {
-                // Handle the delete action here
-                Navigator.of(context).pop();
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                // Perform the deletion and handle the result
+                bool isDeleted = await Provider.of<BrandListViewModel>(context,
+                        listen: false)
+                    .deleteBrand(brand.id);
+                if (isDeleted) {
+                  _scaffoldMessengerKey.currentState?.showSnackBar(
+                    SnackBar(content: Text('Brand deleted successfully')),
+                  );
+                } else {
+                  _scaffoldMessengerKey.currentState?.showSnackBar(
+                    SnackBar(content: Text('Failed to delete brand')),
+                  );
+                }
               },
               child: Text('Xác nhận', style: TextStyle(fontSize: 20)),
             ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildBrandImage(Brand brand) {
+    return SizedBox(
+      height: 200,
+      width: double.infinity,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0), // Optional: Add border radius
+        child: brand.image.startsWith('http')
+            ? Image.network(
+                brand.image,
+                fit: BoxFit.cover,
+              )
+            : Image.file(
+                File(brand.image),
+                fit: BoxFit.cover,
+              ),
+      ),
     );
   }
 }

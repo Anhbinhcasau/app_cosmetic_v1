@@ -11,17 +11,17 @@ class Category {
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
-      id: json['id'],
-      nameCate: json['cate'],
-      image: json['image']
+      id: json['_id'],
+      nameCate: json['name'],
+      image: json['logo']
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'cate': nameCate,
-      'image': image,
+      '_id': id,
+      'name': nameCate,
+      'logo': image,
     };
   }
 }
