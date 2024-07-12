@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/model/category.model.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/categories/category_view_model.dart';
+import 'package:app_cosmetic/screen/admin/categories/category_view_model.dart';
 import 'package:http/http.dart' as http;
-
 
 class CategoryService {
   static Future<List<Category>> fetchCategoryList() async {
@@ -19,7 +18,7 @@ class CategoryService {
 
         // Update the brand list in BrandListViewModel
         categoryListViewModel.categories = category;
-        categoryListViewModel.notifyListeners(); 
+        categoryListViewModel.notifyListeners();
 
         print('done $category');
         return category;
@@ -65,8 +64,8 @@ class CategoryService {
     return response.statusCode == 200;
   }
 
-  static Future<Category?> updateCategory(String id, String name, String imagePath) async {
-
+  static Future<Category?> updateCategory(
+      String id, String name, String imagePath) async {
     final response = await http.put(
       Uri.parse('${Api.DB_URI}/category/$id'),
       headers: {

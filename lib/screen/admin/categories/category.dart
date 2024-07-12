@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:app_cosmetic/model/category.model.dart';
+import 'package:app_cosmetic/screen/admin/categories/category_view_model.dart';
 import 'package:app_cosmetic/screen/admin/categories/screen_category.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/categories/category_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,7 +65,7 @@ class _ListCategoryState extends State<ListCategory> {
         itemBuilder: (BuildContext context, int index) {
           Category? category = value.categories[index];
           if (category == null || category.image == null) {
-            return SizedBox(); 
+            return SizedBox();
           }
 
           Widget categoryImage;
@@ -121,7 +121,8 @@ class _ListCategoryState extends State<ListCategory> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CategoryScreen(category: category),
+                              builder: (context) =>
+                                  CategoryScreen(category: category),
                             ),
                           );
                         },
@@ -159,7 +160,8 @@ class _ListCategoryState extends State<ListCategory> {
               ),
               SizedBox(height: 16),
               Text('ID: ${category.id}', style: TextStyle(fontSize: 20)),
-              Text('Name: ${category.nameCate}', style: TextStyle(fontSize: 20)),
+              Text('Name: ${category.nameCate}',
+                  style: TextStyle(fontSize: 20)),
               _buildCategoryImage(category)
             ],
           ),
@@ -174,7 +176,10 @@ class _ListCategoryState extends State<ListCategory> {
               onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
                 // Perform the deletion and handle the result
-                bool isDeleted = await Provider.of<CategoryListViewModel>(context, listen: false).deleteCategory(category.id);
+                bool isDeleted = await Provider.of<CategoryListViewModel>(
+                        context,
+                        listen: false)
+                    .deleteCategory(category.id);
                 if (isDeleted) {
                   _scaffoldMessengerKey.currentState?.showSnackBar(
                     SnackBar(content: Text('Category deleted successfully')),

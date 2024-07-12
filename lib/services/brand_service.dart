@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:app_cosmetic/widgets/admin_widgets/brands/brand_view_model.dart';
+import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/model/brand.model.dart';
@@ -18,7 +18,7 @@ class BrandService {
 
         // Update the brand list in BrandListViewModel
         brandListViewModel.brands = brands;
-        brandListViewModel.notifyListeners(); 
+        brandListViewModel.notifyListeners();
 
         print('done $brands');
         return brands;
@@ -64,8 +64,8 @@ class BrandService {
     return response.statusCode == 200;
   }
 
-  static Future<Brand?> updateBrand(String id, String name, String imagePath) async {
-
+  static Future<Brand?> updateBrand(
+      String id, String name, String imagePath) async {
     final response = await http.put(
       Uri.parse('${Api.DB_URI}/brand/$id'),
       headers: {

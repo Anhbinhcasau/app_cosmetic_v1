@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/widgets/admin_widgets/products/product.dart';
+import 'package:app_cosmetic/widgets/products/product.dart';
 import 'package:flutter/material.dart';
 
 class ProductList extends StatefulWidget {
@@ -9,11 +9,10 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
-
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: ListProduct(), 
+      body: ListProduct(),
     );
   }
 }

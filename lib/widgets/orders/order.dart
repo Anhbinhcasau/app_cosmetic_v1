@@ -1,7 +1,7 @@
-import 'package:app_cosmetic/widgets/order_detail.dart';
+import 'package:app_cosmetic/widgets/orders/order_detail.dart';
+import 'package:app_cosmetic/widgets/orders/order_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/orders/order_view_model.dart';
 
 class OrderListScreen extends StatelessWidget {
   final int status;
@@ -63,7 +63,8 @@ class OrderListScreen extends StatelessWidget {
                   );
                 },
                 child: Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   color: Color(0xFFE3E7D3),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -101,7 +102,7 @@ class OrderListScreen extends StatelessWidget {
                                   Icon(Icons.calendar_month_outlined, size: 20),
                                   SizedBox(width: 4),
                                   Text(
-                                    '${order?.createdAt.hour}:${order?.createdAt.minute} - ${order?.createdAt.day}/${order?.createdAt.month}/${order?.createdAt.year}', 
+                                    '${order?.createdAt.hour}:${order?.createdAt.minute} - ${order?.createdAt.day}/${order?.createdAt.month}/${order?.createdAt.year}',
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 ],

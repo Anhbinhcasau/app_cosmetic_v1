@@ -1,8 +1,7 @@
 import 'dart:io';
-
 import 'package:app_cosmetic/model/category.model.dart';
-import 'package:app_cosmetic/screen/category.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/categories/category_view_model.dart';
+import 'package:app_cosmetic/screen/admin/categories/category_view_model.dart';
+import 'package:app_cosmetic/screen/user/Product/category.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -54,7 +53,8 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                             .map((category) => Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: Chip(
-                                    label: Text(category!.nameCate.toUpperCase()),
+                                    label:
+                                        Text(category!.nameCate.toUpperCase()),
                                   ),
                                 ))
                             .toList(),

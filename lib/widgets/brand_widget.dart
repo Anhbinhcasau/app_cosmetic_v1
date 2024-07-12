@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/widgets/admin_widgets/brands/brand_view_model.dart';
+import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
