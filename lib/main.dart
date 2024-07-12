@@ -3,6 +3,7 @@ import 'package:app_cosmetic/widgets/admin_widgets/brands/brand_view_model.dart'
 import 'package:app_cosmetic/widgets/admin_widgets/categories/category_view_model.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/comment/comment_view.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/orders/order_view_model.dart';
+import 'package:app_cosmetic/widgets/brand_widget.dart';
 import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => CategoryListViewModel(),
         ),
+        
       ],
       child: const MainApp(),
     ),

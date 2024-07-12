@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:app_cosmetic/model/category.model.dart';
-import 'package:app_cosmetic/screen/admin/categories/edit_category.dart';
-import 'package:app_cosmetic/screen/admin/categories/add_category.dart';
+import 'package:app_cosmetic/screen/admin/categories/screen_category.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/categories/category_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,13 +28,13 @@ class _ListCategoryState extends State<ListCategory> {
     return Scaffold(
       key: _scaffoldMessengerKey,
       appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: const Color(0xFF13131A),
-          title: const Text(
-            '# DANH MỤC',
-            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
-          ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF13131A),
+        title: const Text(
+          '# DANH MỤC',
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
+      ),
       body: Center(
         child: ChangeNotifierProvider(
           create: (context) => categoryListViewModel,
@@ -48,7 +46,7 @@ class _ListCategoryState extends State<ListCategory> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddCategoryScreen(),
+              builder: (context) => CategoryScreen(),
             ),
           );
         },
@@ -107,7 +105,7 @@ class _ListCategoryState extends State<ListCategory> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        category?.nameCate ?? '',
+                        category.nameCate ?? '',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -123,8 +121,7 @@ class _ListCategoryState extends State<ListCategory> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  EditCategoryScreen(category: category!),
+                              builder: (context) => CategoryScreen(category: category),
                             ),
                           );
                         },
@@ -132,7 +129,7 @@ class _ListCategoryState extends State<ListCategory> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          _showDeleteDialog(context, category!);
+                          _showDeleteDialog(context, category);
                         },
                         child: Icon(Icons.delete),
                       ),
@@ -162,8 +159,7 @@ class _ListCategoryState extends State<ListCategory> {
               ),
               SizedBox(height: 16),
               Text('ID: ${category.id}', style: TextStyle(fontSize: 20)),
-              Text('Name: ${category.nameCate}',
-                  style: TextStyle(fontSize: 20)),
+              Text('Name: ${category.nameCate}', style: TextStyle(fontSize: 20)),
               _buildCategoryImage(category)
             ],
           ),
@@ -178,9 +174,7 @@ class _ListCategoryState extends State<ListCategory> {
               onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
                 // Perform the deletion and handle the result
-                bool isDeleted = await Provider.of<CategoryListViewModel>(context,
-                        listen: false)
-                    .deleteCategory(category.id);
+                bool isDeleted = await Provider.of<CategoryListViewModel>(context, listen: false).deleteCategory(category.id);
                 if (isDeleted) {
                   _scaffoldMessengerKey.currentState?.showSnackBar(
                     SnackBar(content: Text('Category deleted successfully')),
@@ -198,6 +192,7 @@ class _ListCategoryState extends State<ListCategory> {
       },
     );
   }
+
   Widget _buildCategoryImage(Category category) {
     return SizedBox(
       height: 200,

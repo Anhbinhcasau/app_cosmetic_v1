@@ -1,6 +1,6 @@
 // dashboard_order.dart
-import 'package:app_cosmetic/screen/admin/brands/dashboard_brand.dart';
-import 'package:app_cosmetic/screen/admin/categories/dashboard_category.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/brands/brand.dart';
+import 'package:app_cosmetic/widgets/admin_widgets/categories/category.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/navbar_characteristics.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/orders/navbar_order.dart';
@@ -17,8 +17,8 @@ class CharacteristicsState extends State<Characteristics> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const DashboardBrand(),
-    const DashboardCategory(), 
+    const ListBrand(),
+    const ListCategory(), 
   ];
 
   void _onSelectedButtonChanged(int index) {

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:app_cosmetic/model/brand.model.dart';
-import 'package:app_cosmetic/screen/admin/brands/edit_brand.dart';
-import 'package:app_cosmetic/screen/admin/brands/add_brand.dart';
+import 'package:app_cosmetic/screen/admin/brands/screen_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/brands/brand_view_model.dart';
@@ -47,7 +46,7 @@ class _ListBrandState extends State<ListBrand> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddBrandScreen(),
+              builder: (context) => BrandScreen(),
             ),
           );
         },
@@ -67,7 +66,7 @@ class _ListBrandState extends State<ListBrand> {
           Brand? brand = value.brands[index];
           // Check if brand or brand.image is null
           if (brand == null || brand.image == null) {
-            return SizedBox(); 
+            return SizedBox();
           }
 
           Widget brandImage;
@@ -123,8 +122,7 @@ class _ListBrandState extends State<ListBrand> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  BrandEditScreen(brand: brand!),
+                              builder: (context) => BrandScreen(brand: brand),
                             ),
                           );
                         },
@@ -132,7 +130,7 @@ class _ListBrandState extends State<ListBrand> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          _showDeleteDialog(context, brand!);
+                          _showDeleteDialog(context, brand);
                         },
                         child: Icon(Icons.delete),
                       ),
