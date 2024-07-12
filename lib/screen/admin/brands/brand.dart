@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:app_cosmetic/model/brand.model.dart';
+import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
 import 'package:app_cosmetic/screen/admin/brands/screen_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/brands/brand_view_model.dart';
+
 
 class ListBrand extends StatefulWidget {
   const ListBrand({super.key});

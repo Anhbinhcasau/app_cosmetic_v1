@@ -1,5 +1,5 @@
 import 'package:app_cosmetic/model/category.model.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/categories/category_view_model.dart';
+import 'package:app_cosmetic/screen/admin/categories/category_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -23,14 +23,19 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   void initState() {
     super.initState();
-    _categoryController = TextEditingController(text: widget.category?.nameCate ?? '');
+    _categoryController =
+        TextEditingController(text: widget.category?.nameCate ?? '');
     _currentName = widget.category?.nameCate ?? '';
     _currentImage = widget.category?.image ?? 'assets/basic.jpg';
-    _imageFile = widget.category?.image != null && !widget.category!.image.startsWith('http') ? File(widget.category!.image) : null;
+    _imageFile = widget.category?.image != null &&
+            !widget.category!.image.startsWith('http')
+        ? File(widget.category!.image)
+        : null;
   }
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
         _imageFile = File(pickedFile.path);
@@ -53,13 +58,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
     try {
       if (widget.category == null) {
         // Add category
-        await Provider.of<CategoryListViewModel>(context, listen: false).addCategories(categoryName, categoryImage);
+        await Provider.of<CategoryListViewModel>(context, listen: false)
+            .addCategories(categoryName, categoryImage);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Category created successfully')),
         );
       } else {
         // Edit category
-        await Provider.of<CategoryListViewModel>(context, listen: false).editCategories(widget.category!.id, categoryName, categoryImage);
+        await Provider.of<CategoryListViewModel>(context, listen: false)
+            .editCategories(widget.category!.id, categoryName, categoryImage);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Category updated successfully')),
         );
@@ -82,7 +89,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.category == null ? 'Thêm Danh Mục' : 'Chỉnh sửa Danh Mục'),
+        title: Text(
+            widget.category == null ? 'Thêm Danh Mục' : 'Chỉnh sửa Danh Mục'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -101,8 +109,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
               onTap: _pickImage,
               child: _currentImage.isNotEmpty
                   ? (_currentImage.startsWith('http')
-                      ? Image.network(_currentImage, height: 450, fit: BoxFit.cover)
-                      : Image.file(File(_currentImage), height: 450, fit: BoxFit.cover))
+                      ? Image.network(_currentImage,
+                          height: 450, fit: BoxFit.cover)
+                      : Image.file(File(_currentImage),
+                          height: 450, fit: BoxFit.cover))
                   : Image.asset('assets/basic.jpg', height: 450),
             ),
             SizedBox(height: 16),

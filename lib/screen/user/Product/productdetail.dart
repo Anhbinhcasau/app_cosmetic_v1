@@ -1,11 +1,10 @@
 import 'package:app_cosmetic/screen/user/comment/comment.dart';
 import 'package:app_cosmetic/screen/user/cart/cart.dart';
 import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/comment/rating_star.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/products/decription_text.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/products/product_card.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/products/showbottomsheet.dart';
 import 'package:app_cosmetic/widgets/appbar_home.dart';
+import 'package:app_cosmetic/widgets/products/decription_text.dart';
+import 'package:app_cosmetic/widgets/products/product_card.dart';
+import 'package:app_cosmetic/widgets/products/showbottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';

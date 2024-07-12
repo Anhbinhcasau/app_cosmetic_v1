@@ -1,5 +1,5 @@
 // list_product.dart
-import 'package:app_cosmetic/widgets/admin_widgets/products/product_view_model.dart';
+import 'package:app_cosmetic/widgets/products/product_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_cosmetic/model/product.model.dart';

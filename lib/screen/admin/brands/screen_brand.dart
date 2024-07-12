@@ -1,9 +1,9 @@
 import 'dart:io';
+import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:app_cosmetic/model/brand.model.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/brands/brand_view_model.dart';
 
 class BrandScreen extends StatefulWidget {
   final Brand? brand;
@@ -36,7 +36,8 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
         _imageFile = File(pickedFile.path);
@@ -46,10 +47,12 @@ class _BrandScreenState extends State<BrandScreen> {
 
   Future<void> _saveBrand() async {
     final String brandName = _brandController.text.trim();
-    final String imagePath = _imageFile != null ? _imageFile!.path : placeholderImage;
+    final String imagePath =
+        _imageFile != null ? _imageFile!.path : placeholderImage;
 
     if (brandName.isEmpty || _imageFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please provide brand name and image')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please provide brand name and image')));
       return;
     }
 
@@ -57,15 +60,18 @@ class _BrandScreenState extends State<BrandScreen> {
       if (widget.brand == null) {
         // Add brand
         await brandListViewModel.createBrands(brandName, imagePath);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Brand created successfully')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Brand created successfully')));
       } else {
         // Update brand
-        await Provider.of<BrandListViewModel>(context, listen: false).updateBrands(
+        await Provider.of<BrandListViewModel>(context, listen: false)
+            .updateBrands(
           widget.brand!.id,
           brandName,
           imagePath,
         );
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Brand updated successfully')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Brand updated successfully')));
       }
 
       _brandController.clear();
@@ -75,7 +81,8 @@ class _BrandScreenState extends State<BrandScreen> {
 
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save brand')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to save brand')));
     }
   }
 
@@ -89,7 +96,9 @@ class _BrandScreenState extends State<BrandScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.brand == null ? 'Thêm Thương Hiệu' : 'Chỉnh sửa thương hiệu'),
+        title: Text(widget.brand == null
+            ? 'Thêm Thương Hiệu'
+            : 'Chỉnh sửa thương hiệu'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

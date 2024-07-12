@@ -1,10 +1,9 @@
 // dashboard_order.dart
-import 'package:app_cosmetic/widgets/admin_widgets/brands/brand.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/categories/category.dart';
+
+import 'package:app_cosmetic/screen/admin/brands/brand.dart';
+import 'package:app_cosmetic/screen/admin/categories/category.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/navbar_characteristics.dart';
 import 'package:flutter/material.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/orders/navbar_order.dart';
-
 
 class Characteristics extends StatefulWidget {
   const Characteristics({super.key});
@@ -18,7 +17,7 @@ class CharacteristicsState extends State<Characteristics> {
 
   final List<Widget> _screens = [
     const ListBrand(),
-    const ListCategory(), 
+    const ListCategory(),
   ];
 
   void _onSelectedButtonChanged(int index) {
@@ -32,7 +31,8 @@ class CharacteristicsState extends State<Characteristics> {
     return Scaffold(
       body: Column(
         children: [
-          NavbarCharacteristics(onSelectedButtonChanged: _onSelectedButtonChanged),
+          NavbarCharacteristics(
+              onSelectedButtonChanged: _onSelectedButtonChanged),
           Expanded(
             child: _screens[_selectedIndex],
           ),
