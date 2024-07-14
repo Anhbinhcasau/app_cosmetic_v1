@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class CategoryService {
   static Future<List<Category>> fetchCategoryList() async {
-    CategoryListViewModel categoryListViewModel = CategoryListViewModel();
+
     try {
       final response = await http.get(Uri.parse('${Api.DB_URI}/category'));
 
@@ -15,10 +15,6 @@ class CategoryService {
         final List<dynamic> jsonResponse = jsonDecode(response.body);
         List<Category> category =
             jsonResponse.map((item) => Category.fromJson(item)).toList();
-
-        // Update the brand list in BrandListViewModel
-        categoryListViewModel.categories = category;
-        categoryListViewModel.notifyListeners();
 
         print('done $category');
         return category;

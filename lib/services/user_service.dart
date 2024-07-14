@@ -1,14 +1,23 @@
-// import '../../data/user_data.dart';
-// import 'package:app_cosmetic/model/user.model.dart';
-// import 'package:dio/dio.dart';
+import 'dart:convert';
+
+import 'package:app_cosmetic/data/config.app.dart';
+import 'package:app_cosmetic/model/user.model.dart';
+import 'package:http/http.dart' as http;
 
 
-// class UserServices {
-//   static Future<List<UserItem?>> fetchUserList() async {
-//     final Dio dio = Dio();
-//     Response response = await dio.get(ApiUrls.GET_RANDOM_USER);
-//     UserListResponse userListResponse =
-//         UserListResponse.fromJson(response.data);
-//     return userListResponse.userItems ?? [];
-//   }
-// }
+class UserServices {
+  static Future<User?> signUp(User data) async {
+    final response = await http.post(
+      Uri.parse('${Api.DB_URI}/signup'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 202) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      print('Failed to Sign Up: ${response.statusCode}');
+      return data;
+    }
+  }
+}

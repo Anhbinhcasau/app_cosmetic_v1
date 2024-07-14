@@ -4,11 +4,18 @@ import 'package:http/http.dart' as http;
 import 'package:app_cosmetic/model/user.model.dart';
 
 class AuthService {
-  // static Future<User?> signup(String mail, String password, String name) async {
-  //  final response = await http.post(
-  //     Uri.parse('${Api.DB_URI}/signup'),
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: jsonEncode({'email': mail, 'password': password, 'name': name}),
-  //   );
-  // }
+  static Future<User?> signup(User data) async {
+    final response = await http.post(
+      Uri.parse('${Api.DB_URI}/signup'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      print('Failed to Sign Up: ${response.statusCode}');
+      return null;
+    }
+  }
 }

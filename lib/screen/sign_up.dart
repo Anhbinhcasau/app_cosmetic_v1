@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
+import 'package:app_cosmetic/widgets/user/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/sign_in.dart';
 import 'package:flutter/widgets.dart';
@@ -24,12 +26,21 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+  User? user;
+  UserListViewModel userListViewModel = UserListViewModel();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
+      user = User(
+        userName: _nameController.text,
+        password: _passwordController.text,
+        email: _emailController.text,
+      );
+      await userListViewModel.signUpUser(user!);
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Đăng ký thành công @')),
       );
