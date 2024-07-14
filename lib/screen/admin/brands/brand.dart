@@ -5,7 +5,6 @@ import 'package:app_cosmetic/screen/admin/brands/screen_brand.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class ListBrand extends StatefulWidget {
   const ListBrand({super.key});
 
