@@ -5,22 +5,22 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'E-commerce App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: GoogleFonts.poppinsTextTheme(
-          Theme.of(context).textTheme,
-        ),
-      ),
-      home: HomePage(),
-    );
-  }
-}
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       title: 'E-commerce App',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//         textTheme: GoogleFonts.poppinsTextTheme(
+//           Theme.of(context).textTheme,
+//         ),
+//       ),
+//       home: HomePage(),
+//     );
+//   }
+// }
 
 class HomePage extends StatefulWidget {
   @override
@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: AppBarHome(),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Column(

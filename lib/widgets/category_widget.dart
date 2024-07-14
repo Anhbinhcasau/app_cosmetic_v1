@@ -35,7 +35,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Category',
+                    'Danh Mục',
                     style: GoogleFonts.poppins(
                       textStyle:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

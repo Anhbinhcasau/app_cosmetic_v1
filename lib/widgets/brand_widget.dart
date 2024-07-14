@@ -25,54 +25,56 @@ class _BrandWidgetState extends State<BrandWidget> {
       create: (context) => brandListViewModel,
       child: Consumer<BrandListViewModel>(
         builder: (context, viewModel, child) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'Brand',
-                  style: GoogleFonts.poppins(
-                    textStyle:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    'Thương hiệu',
+                    style: GoogleFonts.poppins(
+                      textStyle:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: viewModel.brands.isEmpty
-                        ? [CircularProgressIndicator()]
-                        : viewModel.brands
-                            .map((brand) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 5.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      // Handle image tap
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        child: Image.network(
-                                          brand!.image ?? '',
-                                          width: 150.0,
-                                          height: 150.0,
-                                          fit: BoxFit.cover,
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: viewModel.brands.isEmpty
+                          ? [CircularProgressIndicator()]
+                          : viewModel.brands
+                              .map((brand) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        // Handle image tap
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          child: Image.network(
+                                            brand!.image ?? '',
+                                            width: 150.0,
+                                            height: 150.0,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ))
-                            .toList(),
+                                  ))
+                              .toList(),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
