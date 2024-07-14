@@ -7,7 +7,6 @@ import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
 import 'package:app_cosmetic/screen/admin/users/dashboard_user.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/brands/brand.dart';
 import 'package:app_cosmetic/widgets/admin_widgets/categories/category.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/products/product.dart';
 import 'package:flutter/material.dart';
 
 class NavBarApp extends StatelessWidget {
@@ -37,7 +36,7 @@ class _NavBarState extends State<NavBar> {
     ListBrand(),
     ListCategory(),
     DashboardOrder(),
-    ListProduct(),
+    
     ForgotPassPage(),
     UserListDB(),
   ];

@@ -1,3 +1,4 @@
+import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
 import 'package:flutter/material.dart';
 
@@ -50,7 +51,7 @@ class _CommentThankState extends State<CommentThank> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProductDetail()),
+                  MaterialPageRoute(builder: (context) => HomePage()),
                 );
               },
               child: const Text(

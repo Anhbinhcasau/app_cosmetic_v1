@@ -28,10 +28,10 @@ class _ProductListState extends State<ProductList_User> {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProductDetail()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => ProductDetail()),
+              // );
             },
             child: Container(
               decoration: BoxDecoration(
