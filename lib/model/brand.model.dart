@@ -1,27 +1,27 @@
 class Brand {
   final String id;
-  final String brand;
-  final String image;
+  String name;
+  String image;
 
   Brand({
     required this.id,
-    required this.brand,
+    required this.name,
     required this.image,
   });
 
   factory Brand.fromJson(Map<String, dynamic> json) {
     return Brand(
-      id: json['id'],
-      brand: json['brand'],
-      image: json['img'],
+      id: json['_id'],
+      name: json['name'],
+      image: json['image'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'brand': brand,
-      'img': image,
+      '_id': id,
+      'name': name,
+      'image': image,
     };
   }
 }

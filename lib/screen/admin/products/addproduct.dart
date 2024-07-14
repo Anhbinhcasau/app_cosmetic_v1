@@ -1,159 +1,278 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class AddProductPage extends StatefulWidget {
+import 'package:app_cosmetic/model/brand.model.dart';
+import 'package:app_cosmetic/model/product/atribute.model.dart';
+import 'package:app_cosmetic/model/product/product.model.dart';
+import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
+import 'package:app_cosmetic/screen/admin/categories/category_view_model.dart';
+import 'package:app_cosmetic/screen/admin/products/add_image.dart';
+import 'package:app_cosmetic/screen/user/comment/picker_image.dart';
+import 'package:app_cosmetic/services/product_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+
+class CreateProductPage extends StatefulWidget {
   @override
-  _AddProductPageState createState() => _AddProductPageState();
+  _CreateProductPageState createState() => _CreateProductPageState();
 }
 
-class _AddProductPageState extends State<AddProductPage> {
+class _CreateProductPageState extends State<CreateProductPage> {
   final _formKey = GlobalKey<FormState>();
-  String idPro = '';
-  String name = '';
-  String brand = '';
-  double price = 0.0;
-  String description = '';
-  String category = '';
-  List<String> imageDetail = [];
-  int sold = 0;
-  int quantity = 0;
+
+  final _nameController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _materialController = TextEditingController();
+  final _evaluateController = TextEditingController();
+  final _reviewsController = TextEditingController();
+  final _soldController = TextEditingController();
+  final _quantityController = TextEditingController();
+
+  List<String> _imageBase = [];
+  List<Attribute> _attributes = [];
+  String? _selectedBrand;
+  String? _selectCate;
+
+  void _handleImagesSelected(List<String> images) {
+    setState(() {
+      _imageBase = images;
+    });
+  }
+
+  late Product product;
+  late Future<Product> products;
+  void _saveProduct() async {
+    if (_formKey.currentState!.validate()) {
+      product = Product(
+        name: _nameController.text,
+        brand: _selectedBrand ?? '',
+        price: double.parse(_priceController.text),
+        description: _descriptionController.text,
+        material: _materialController.text,
+        category: _selectCate ?? '',
+        imageBase: _imageBase,
+        attributes: _attributes,
+        reviews: 5,
+        sold: 5,
+        quantity: int.parse(_quantityController.text),
+      );
+      product = await ProductService.createProduct(product);
+
+      // Handle the created product (e.g., send it to a server or store locally)
+      print(product.productJson());
+    }
+  }
+
+  void _addAttribute() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final _nameController = TextEditingController();
+        final _quantityController = TextEditingController();
+        final _priceController = TextEditingController();
+        final _imageController = TextEditingController();
+
+        return AlertDialog(
+          title: Text('Add Attribute'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: _quantityController,
+                decoration: InputDecoration(labelText: 'Quantity'),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: _priceController,
+                decoration: InputDecoration(labelText: 'Price'),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: _imageController,
+                decoration: InputDecoration(labelText: 'Image URL'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _attributes.add(Attribute(
+                    name: _nameController.text,
+                    quantity: int.parse(_quantityController.text),
+                    price: double.parse(_priceController.text),
+                    image: _imageController.text,
+                  ));
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<BrandListViewModel>(context, listen: false).fetchBrandsList();
+    Provider.of<CategoryListViewModel>(context, listen: false)
+        .getCategoriesList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Thêm sản phẩm'),
+        title: Text('Add Product'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Tên sản phẩm'),
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập tên sản phẩm';
+                    return 'Please enter the product name';
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  name = value!;
+              ),
+              Consumer<BrandListViewModel>(
+                builder: (context, brandsProvider, child) {
+                  return DropdownButtonFormField<String>(
+                    value: _selectedBrand,
+                    menuMaxHeight: 300,
+                    borderRadius: BorderRadius.circular(30),
+                    decoration: InputDecoration(labelText: 'Brand'),
+                    items: brandsProvider.brands.map((brand) {
+                      return DropdownMenuItem<String>(
+                        value: brand!.name,
+                        child: Text(brand.name),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedBrand = newValue;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select a brand';
+                      }
+                      return null;
+                    },
+                  );
+                },
+              ),
+              Consumer<CategoryListViewModel>(
+                builder: (context, cateProvider, child) {
+                  return DropdownButtonFormField<String>(
+                    value: _selectCate,
+                    menuMaxHeight: 300,
+                    borderRadius: BorderRadius.circular(30),
+                    decoration: InputDecoration(labelText: 'Category'),
+                    items: cateProvider.categories.map((cate) {
+                      return DropdownMenuItem<String>(
+                        value: cate!.nameCate,
+                        child: Text(cate.nameCate),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectCate = newValue;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select a brand';
+                      }
+                      return null;
+                    },
+                  );
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'ID Sản Phẩm'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập ID sản phẩm';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  idPro = value!;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Thương hiệu'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập thương hiệu';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  brand = value!;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Giá'),
+                controller: _priceController,
+                decoration: InputDecoration(labelText: 'Price'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập giá';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Vui lòng nhập một số hợp lệ';
+                    return 'Please enter the price';
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  price = double.parse(value!);
-                },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Mô tả'),
+                controller: _descriptionController,
+                decoration: InputDecoration(labelText: 'Description'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập mô tả';
+                    return 'Please enter the description';
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  description = value!;
-                },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Danh mục'),
+                controller: _materialController,
+                decoration: InputDecoration(labelText: 'Material'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập danh mục';
+                    return 'Please enter the material';
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  category = value!;
-                },
               ),
               TextFormField(
-                decoration: InputDecoration(
-                    labelText: 'Ảnh chi tiết (dùng dấu phẩy để phân tách)'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập ảnh chi tiết';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  imageDetail = value!.split(',');
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Số lượng'),
+                controller: _quantityController,
+                decoration: InputDecoration(labelText: 'Quantity'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập số lượng';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Vui lòng nhập một số hợp lệ';
+                    return 'Please enter the quantity';
                   }
                   return null;
-                },
-                onSaved: (value) {
-                  quantity = int.parse(value!);
                 },
               ),
               SizedBox(height: 20),
+              Text(
+                'Attributes',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              ..._attributes.map((attribute) => ListTile(
+                    title: Text(attribute.name),
+                    subtitle: Text(
+                        'Quantity: ${attribute.quantity}, Price: ${attribute.price}'),
+                    trailing: Image.network(attribute.image, width: 50),
+                  )),
               ElevatedButton(
-                onPressed: () {
-                  // if (_formKey.currentState!.validate()) {
-                  //   _formKey.currentState!.save();
-                  //   Product newProduct = Product(
-                  //     idPro: idPro,
-                  //     name: name,
-                  //     brand: brand,
-                  //     price: price,
-                  //     description: description,
-                  //     category: category,
-                  //     imageDetail: imageDetail,
-                  //     sold: sold,
-                  //     quantity: quantity,
-                  //   );
-                  //   // Xử lý lưu sản phẩm mới
-                  // }
-                },
-                child: Text('Thêm sản phẩm'),
+                onPressed: _addAttribute,
+                child: Text('Add Attribute'),
+              ),
+              AddImage(
+                  onImagesSelected: (List<String> paths) =>
+                      _handleImagesSelected(paths)),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _saveProduct,
+                child: Text('Save Product'),
               ),
             ],
           ),

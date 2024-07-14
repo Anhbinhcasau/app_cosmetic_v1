@@ -7,6 +7,6 @@ class AppColors {
   static const Color text_notification = Colors.black;
 }
 
-class LocalHost {
-  static String DB_URI = 'http://172.0.1.74:8080/api/v1';
+class Api {
+  static String DB_URI = 'http:// 10.5.50.165:8080/api/v1';
 }

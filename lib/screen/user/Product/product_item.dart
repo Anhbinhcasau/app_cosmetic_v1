@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
@@ -42,7 +44,7 @@ class _ProductItemState extends State<ProductItem> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            ProductDetail(productId: product!.idPro)),
+                            ProductDetail(productId: product?.idPro ?? '')),
                   );
                 },
                 child: Container(
@@ -69,24 +71,21 @@ class _ProductItemState extends State<ProductItem> {
                           topLeft: Radius.circular(12),
                           topRight: Radius.circular(12),
                         ),
-                        child: product?.imageBase != null &&
-                                product!.imageBase.isNotEmpty
-                            ? Image.network(
-                                product.imageBase[0], // Lấy hình ảnh đầu tiên từ danh sách
-                                height: 150.0,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              )
-                            : Container(
-                                height: 150.0,
-                                width: double.infinity,
-                                color: Colors.grey,
-                                child: const Icon(
-                                  Icons.image,
-                                  size: 50,
-                                  color: Colors.white,
-                                ),
-                              ),
+                        child: product!.imageBase.isNotEmpty
+                            ? product.imageBase[0].startsWith('http')
+                                ? Image.network(
+                                    product.imageBase[0],
+                                    height: 150.0,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.file(
+                                    File(product.imageBase[0]),
+                                    height: 150.0,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  )
+                            : Placeholder(), // Display a placeholder if the list is empty
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),

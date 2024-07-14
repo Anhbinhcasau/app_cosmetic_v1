@@ -1,10 +1,11 @@
+import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
+import 'package:app_cosmetic/screen/admin/categories/category_view_model.dart';
 import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
 import 'package:app_cosmetic/screen/user/Product/product_item.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:app_cosmetic/screen/user/splashscreen/splashscreen1.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/comment/comment_view.dart';
-import 'package:app_cosmetic/widgets/admin_widgets/orders/order_view_model.dart';
-import 'package:app_cosmetic/widgets/navbar_user.dart';
+import 'package:app_cosmetic/widgets/comment/comment_view.dart';
+import 'package:app_cosmetic/widgets/orders/order_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,12 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => OrderListViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => BrandListViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CategoryListViewModel(),
         ),
         ChangeNotifierProvider(
           create: (_) => ProductListViewModel(),
