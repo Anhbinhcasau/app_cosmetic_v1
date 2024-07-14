@@ -6,9 +6,10 @@ import 'package:http/http.dart' as http;
 
 class CategoryService {
   static Future<List<Category>> fetchCategoryList() async {
-    CategoryListViewModel categoryListViewModel = CategoryListViewModel();
+    
     try {
-      final response = await http.get(Uri.parse('${Api.DB_URI}/category'));
+      final response =
+          await http.get(Uri.parse('${Api.DB_URI}/category'));
 
       if (response.statusCode == 200) {
         // Parse JSON response
@@ -16,9 +17,7 @@ class CategoryService {
         List<Category> category =
             jsonResponse.map((item) => Category.fromJson(item)).toList();
 
-        // Update the brand list in BrandListViewModel
-        categoryListViewModel.categories = category;
-        categoryListViewModel.notifyListeners();
+        
 
         print('done $category');
         return category;
@@ -48,7 +47,8 @@ class CategoryService {
   }
 
   static Future<Category?> fetchCategoryById(String id) async {
-    final response = await http.get(Uri.parse('${Api.DB_URI}/category/$id'));
+    final response =
+        await http.get(Uri.parse('${Api.DB_URI}/category/$id'));
 
     if (response.statusCode == 200) {
       return Category.fromJson(jsonDecode(response.body));
@@ -59,7 +59,8 @@ class CategoryService {
   }
 
   static Future<bool> deleteCategory(String id) async {
-    final response = await http.delete(Uri.parse('${Api.DB_URI}/category/$id'));
+    final response =
+        await http.delete(Uri.parse('${Api.DB_URI}/category/$id'));
 
     return response.statusCode == 200;
   }

@@ -6,7 +6,7 @@ class BrandListViewModel extends ChangeNotifier {
   List<Brand?> brands = [];
 
   // Fetch brands list asynchronously
-  Future<void> fetchBrandsList() async {
+   Future<void> fetchBrandsList() async {
     try {
       brands = await BrandService.fetchBrandList();
       notifyListeners(); 
