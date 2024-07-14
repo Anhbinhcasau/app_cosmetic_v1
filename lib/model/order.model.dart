@@ -1,4 +1,4 @@
-import 'package:app_cosmetic/model/product.model.dart';
+import 'package:app_cosmetic/model/product/product.model.dart';
 
 class Order {
   final String id;
@@ -57,7 +57,7 @@ class Order {
     return {
       'id': id,
       'userId': userId,
-      'products': products.map((product) => product.toJson()).toList(),
+      //'products': products.map((product) => product.toJson()).toList(),
       'total_price': totalPrice,
       'full_name': fullName,
       'email': email,
