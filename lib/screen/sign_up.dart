@@ -26,7 +26,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
-  User? user;
+  late User user;
   UserListViewModel userListViewModel = UserListViewModel();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -34,16 +34,31 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      user = User(
-        userName: _nameController.text,
-        password: _passwordController.text,
-        email: _emailController.text,
+      _formKey.currentState?.save();
+      final user = User(
+        userName: _nameController.text.trim(),
+        password: _passwordController.text.trim(),
+        email: _emailController.text.trim(),
+        active: true,
+        role: 'User',
       );
-      await userListViewModel.signUpUser(user!);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đăng ký thành công @')),
-      );
+      try {
+        await userListViewModel.signUpUser(user);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Đăng ký thành công!')),
+        );
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginPage(),
+            ),
+          );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đăng ký thất bại: $e')),
+        );
+      }
     }
   }
 

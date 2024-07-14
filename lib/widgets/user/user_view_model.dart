@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 
 class UserListViewModel extends ChangeNotifier {
   List<User?> users = [];
-  Future<void> signUpUser(User data) async {
+  
+  Future<void> signUpUser(User user) async {
     try {
-      final newUser = await UserServices.signUp(data);
+      final newUser = await UserServices.signUp(user);
 
       if (newUser != null) {
         users.add(newUser);
