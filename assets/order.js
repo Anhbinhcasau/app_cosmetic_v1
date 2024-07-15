@@ -32,7 +32,7 @@
     "updateAt": {
       "$date": "2024-03-19T08:44:51.853Z"
     },
-    "payment_method": "cash"
+    "payment_method": "cash"  
   },
   {
     "id": "#66058f57dd36ade584b5efa4",

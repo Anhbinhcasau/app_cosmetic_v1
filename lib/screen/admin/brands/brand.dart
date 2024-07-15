@@ -29,6 +29,7 @@ class _ListBrandState extends State<ListBrand> {
       key: _scaffoldMessengerKey,
       appBar: AppBar(
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF13131A),
         title: const Text(
           '# THƯƠNG HIỆU',

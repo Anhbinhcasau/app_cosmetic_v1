@@ -1,7 +1,6 @@
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/admin/brands/brand.dart';
 import 'package:app_cosmetic/screen/admin/categories/category.dart';
-import 'package:app_cosmetic/screen/admin/characteristics.dart';
 import 'package:app_cosmetic/screen/admin/dashboard.dart';
 import 'package:app_cosmetic/screen/admin/voucher/voucher.dart';
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
@@ -69,10 +68,11 @@ class _NavBarState extends State<NavBar> {
                 color: AppColors.primaryColor,
               ),
               child: Text(
-                'Chưa bít để gì hết trơn',
+                'ADMIN',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 24,
+                  fontSize: 80,
+                  fontWeight: FontWeight.bold
                 ),
               ),
             ),
@@ -89,19 +89,19 @@ class _NavBarState extends State<NavBar> {
               onTap: () => _onItemTapped(1),
             ),
             ListTile(
-              leading: const Icon(Icons.token),
+              leading: const Icon(Icons.view_in_ar_sharp),
               title: const Text('Danh mục'),
               selected: _selectedIndex == 2,
               onTap: () => _onItemTapped(2),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
+              leading: const Icon(Icons.bookmark),
               title: const Text('Đơn hàng'),
               selected: _selectedIndex == 3,
               onTap: () => _onItemTapped(3),
             ),
             ListTile(
-              leading: const Icon(Icons.feedback),
+              leading: const Icon(Icons.api_outlined),
               title: const Text('Sản phẩm'),
               selected: _selectedIndex == 4,
               onTap: () => _onItemTapped(4),

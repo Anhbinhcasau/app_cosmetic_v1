@@ -29,6 +29,7 @@ class _ListCategoryState extends State<ListCategory> {
       key: _scaffoldMessengerKey,
       appBar: AppBar(
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF13131A),
         title: const Text(
           '# DANH MỤC',

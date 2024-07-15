@@ -1,8 +1,9 @@
-import 'dart:io';
+import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
+import 'package:app_cosmetic/widgets/user/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/sign_in.dart';
-import 'package:flutter/widgets.dart';
+
 
 class SignUpPageApp extends StatelessWidget {
   const SignUpPageApp({super.key});
@@ -24,15 +25,39 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+  late User user;
+  UserListViewModel userListViewModel = UserListViewModel();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đăng ký thành công @')),
+      _formKey.currentState?.save();
+      final user = User(
+        userName: _nameController.text.trim(),
+        password: _passwordController.text.trim(),
+        email: _emailController.text.trim(),
+        active: true,
+        role: 'User',
       );
+
+      try {
+        await userListViewModel.signUpUser(user);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Đăng ký thành công!')),
+        );
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginPage(),
+            ),
+          );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đăng ký thất bại: $e')),
+        );
+      }
     }
   }
 
