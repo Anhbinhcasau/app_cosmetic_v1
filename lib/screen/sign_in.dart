@@ -1,5 +1,6 @@
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/sign_up.dart';
+import 'package:app_cosmetic/widgets/user/user_view_model.dart';
 import 'package:flutter/material.dart';
 
 class LoginPageApp extends StatelessWidget {
@@ -22,15 +23,28 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
+  UserListViewModel userListViewModel = UserListViewModel();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isChecked = false;
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Xin chào !!')),
-      );
+      _formKey.currentState?.save();
+      String userName = _nameController.text.trim();
+      String password = _passwordController.text.trim();
+
+      try {
+        await userListViewModel.signInUser(userName, password);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Xin chào')),
+        );
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đăng nhập thất bại: $e')),
+        );
+      }
     }
   }
 
@@ -63,9 +77,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 50),
                   TextFormField(
-                    controller: _emailController,
+                    controller: _nameController,
                     decoration: const InputDecoration(
-                      hintText: 'Email',
+                      hintText: 'Tên đăng nhập',
                       prefixIcon: Icon(Icons.people),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -77,10 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Hãy nhập email';
-                      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                          .hasMatch(value)) {
-                        return 'Email không hợp lệ';
+                        return 'Hãy nhập tên người dùng';
                       }
                       return null;
                     },

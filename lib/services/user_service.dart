@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 class UserServices {
 
   static Future<User?> signUp(User user) async {
-    print(user.userName);
     Map<String, dynamic> userJson = user.toJson();
     final response = await http.post(
       Uri.parse('${Api.DB_URI}/auth/signup'),

@@ -1,3 +1,4 @@
+import 'package:app_cosmetic/services/auth_service.dart';
 import 'package:app_cosmetic/services/user_service.dart';
 import 'package:app_cosmetic/model/user.model.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ class UserListViewModel extends ChangeNotifier {
   
   Future<void> signUpUser(User user) async {
     try {
-      final newUser = await UserServices.signUp(user);
+      final newUser = await AuthService.signUp(user);
 
       if (newUser != null) {
         users.add(newUser);
@@ -19,6 +20,22 @@ class UserListViewModel extends ChangeNotifier {
       }
     } catch (e) {
       print('Error Sign Up: $e');
+    }
+  }
+
+  Future<void> signInUser(String name, String pass) async {
+    try {
+      final signUser = await AuthService.signIn(name, pass);
+
+      if (signUser != null) {
+        users.add(signUser);
+        notifyListeners();
+        print('Sign In successfully');
+      } else {
+        print('Failed to Sign In');
+      }
+    } catch (e) {
+      print('Error Sign In: $e');
     }
   }
 }
