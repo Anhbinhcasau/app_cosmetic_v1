@@ -19,7 +19,7 @@ class _BrandScreenState extends State<BrandScreen> {
   File? _imageFile;
   late String _currentName;
   late String _currentImage;
-  final String placeholderImage = 'assets/basic.jpg';
+  final String placeholderImage = 'assets/basic1.jpg';
   BrandListViewModel brandListViewModel = BrandListViewModel();
 
   @override
