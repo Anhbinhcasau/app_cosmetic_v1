@@ -2,6 +2,7 @@ import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/admin/brands/brand.dart';
 import 'package:app_cosmetic/screen/admin/categories/category.dart';
 import 'package:app_cosmetic/screen/admin/dashboard.dart';
+import 'package:app_cosmetic/screen/admin/voucher/voucher.dart';
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
 import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
@@ -30,13 +31,14 @@ class _NavBarState extends State<NavBar> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
     DashboardMenu(),
     ListBrand(),
     ListCategory(),
     DashboardOrder(),
     ProductList(),
     ForgotPassPage(),
+    VoucherManagementScreen(),
     //UserListDB(),
   ];
 
