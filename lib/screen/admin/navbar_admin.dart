@@ -3,11 +3,11 @@ import 'package:app_cosmetic/screen/admin/brands/brand.dart';
 import 'package:app_cosmetic/screen/admin/categories/category.dart';
 import 'package:app_cosmetic/screen/admin/characteristics.dart';
 import 'package:app_cosmetic/screen/admin/dashboard.dart';
+import 'package:app_cosmetic/screen/admin/voucher/voucher.dart';
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
 import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
 import 'package:app_cosmetic/screen/admin/users/dashboard_user.dart';
-import 'package:app_cosmetic/widgets/products/product.dart';
 import 'package:flutter/material.dart';
 
 class NavBarApp extends StatelessWidget {
@@ -32,13 +32,14 @@ class _NavBarState extends State<NavBar> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
     DashboardMenu(),
     ListBrand(),
     ListCategory(),
     DashboardOrder(),
-    ListProduct(),
+    ProductList(),
     ForgotPassPage(),
+    VoucherManagementScreen(),
     //UserListDB(),
   ];
 

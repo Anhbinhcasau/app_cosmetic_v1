@@ -149,7 +149,7 @@ class OrderDetailPage extends StatelessWidget {
                     children: [
                       SizedBox(width: 12,),
                       Image.network(
-                        product.imageBase,
+                        "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml-1716439945_img_800x800_eb97c5_fit_center.jpg",
                         width: 80.0,
                         height: 90.0,
                       ),

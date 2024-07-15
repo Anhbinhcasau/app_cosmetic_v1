@@ -21,8 +21,8 @@ class _RatingStarState extends State<RatingStar> {
           direction: Axis.horizontal,
           allowHalfRating: true,
           itemCount: 5,
-          itemSize: 20,
-          itemPadding: EdgeInsets.symmetric(horizontal: 3.0),
+          itemSize: 18,
+          itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
           itemBuilder: (context, _) => const Icon(
             Icons.star,
             color: Colors.amber,

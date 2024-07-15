@@ -4,10 +4,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class VoucherService {
-  final String baseUrl;
-
-  VoucherService({required this.baseUrl});
-
   Future<VoucherDto?> newVoucher(VoucherDto voucher) async {
     final response = await http.post(
       Uri.parse('${Api.DB_URI}/voucher/create'),
@@ -51,31 +47,28 @@ class VoucherService {
     }
   }
 
-  Future<void> removeVoucherById(String voucherId) async {
-    final response = await http.post(
-      Uri.parse('${Api.DB_URI}/voucher/remove'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({'voucherId': voucherId}),
+  Future<void> removeVoucher(String id) async {
+    final response = await http.delete(
+      Uri.parse('${Api.DB_URI}/voucher/remove/$id'),
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to remove voucher');
+      throw Exception('Failed to delete voucher: ${response.body}');
     }
   }
 
-  Future<VoucherDto?> editVoucher(VoucherDto voucher) async {
-    final response = await http.post(
-      Uri.parse('${Api.DB_URI}/voucher/edit'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+  Future<VoucherDto> editVoucher(String id, VoucherDto voucher) async {
+    final response = await http.put(
+      Uri.parse('${Api.DB_URI}/voucher/edit/$id'),
+      headers: {
+        'Content-Type': 'application/json',
       },
       body: jsonEncode(voucher.toJson()),
     );
 
     if (response.statusCode == 200) {
-      return VoucherDto.fromJson(jsonDecode(response.body));
+      final responseData = jsonDecode(response.body);
+      return VoucherDto.fromJson(responseData['voucher']);
     } else {
       throw Exception('Failed to edit voucher');
     }

@@ -18,8 +18,10 @@ class _ProductListState extends State<ProductList> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddProductPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CreateProductPage()));
               },
               icon: Icon(
                 Icons.add_circle_outline,
@@ -44,7 +46,7 @@ class _ProductListState extends State<ProductList> {
                 Expanded(
                   child: Center(
                     child: Image.network(
-                      "https://media.hcdn.vn/catalog/product/p/r/promotions-auto-kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml_2mALK46d83RhR9S2.png",
+                      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml-1716439945_img_800x800_eb97c5_fit_center.jpg",
                       fit: BoxFit.cover,
                     ),
                   ),

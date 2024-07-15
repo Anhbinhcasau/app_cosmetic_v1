@@ -1,3 +1,5 @@
+import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
+import 'package:app_cosmetic/screen/user/Product/product_item.dart';
 import 'package:app_cosmetic/widgets/appbar_home.dart';
 import 'package:app_cosmetic/widgets/brand_widget.dart';
 import 'package:app_cosmetic/widgets/category_widget.dart';
@@ -28,7 +30,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final List<String> bannerImages = [
     'https://i.pinimg.com/564x/fd/eb/21/fdeb21f500f0305214d74f1dee813c7d.jpg',
     'https://i.pinimg.com/564x/01/cc/05/01cc0529b91c88759bcc9e98064458f8.jpg',
@@ -93,10 +94,13 @@ class _HomePageState extends State<HomePage> {
               }).toList(),
             ),
             const SizedBox(height: 10),
-            BrandWidget(),         
+            BrandWidget(),
             const SizedBox(height: 10),
             CategoryWidget(),
-            //// tiếp tục ở đây
+            SizedBox(
+              height: 20,
+            ),
+            ProductItem(),
           ],
         ),
       ),
