@@ -89,4 +89,8 @@ class VoucherService {
       throw Exception('Failed to apply voucher');
     }
   }
+
+  Future<List<VoucherDto>> fetchVoucherList() async {
+    return voucherList();
+  }
 }
