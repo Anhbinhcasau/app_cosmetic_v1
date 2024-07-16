@@ -5,6 +5,7 @@ import 'package:app_cosmetic/screen/user/Product/product_user.dart';
 import 'package:app_cosmetic/screen/user/coupon/coupon.dart';
 import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -12,18 +13,24 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  
   int _selectedIndex = 0;
-  final List<Widget> _pages = [
+  String? id;
+  late List<Widget> _pages = [
     HomePage(),
     CouponsScreen(),
     ProductList_User(),
-    ProfileScreen(),
+    ProfileScreen(id: id),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+  void getId() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+        id =prefs.getString('userId');
   }
 
   @override

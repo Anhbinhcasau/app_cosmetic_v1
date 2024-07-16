@@ -1,5 +1,9 @@
+import 'dart:typed_data';
+
+import 'package:mongo_dart/mongo_dart.dart';
+
 class User {
-  final String? id;
+  final String id;
   final String userName;
   final String password;
   final String email;
@@ -10,7 +14,7 @@ class User {
   final String role;
 
   User({
-    this.id,
+    required this.id,
     required this.userName,
     required this.password,
     required this.email,
@@ -24,7 +28,7 @@ class User {
   // Tạo một factory constructor để chuyển đổi từ JSON sang đối tượng User
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['_id'],
+      id: json['_id'] ?? '',
       userName: json['userName'],
       password: json['password'],
       email: json['email'],

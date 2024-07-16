@@ -1,7 +1,5 @@
 import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
 import 'package:app_cosmetic/screen/admin/categories/category_view_model.dart';
-import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
-import 'package:app_cosmetic/screen/user/Product/product_item.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:app_cosmetic/screen/user/splashscreen/splashscreen1.dart';
 import 'package:app_cosmetic/widgets/comment/comment_view.dart';

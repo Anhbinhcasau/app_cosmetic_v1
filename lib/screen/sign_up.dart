@@ -1,8 +1,11 @@
+import 'dart:js_interop';
+import 'dart:typed_data';
 import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
 import 'package:app_cosmetic/widgets/user/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/sign_in.dart';
+
 
 
 class SignUpPageApp extends StatelessWidget {
@@ -35,6 +38,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
       final user = User(
+        id: '',
         userName: _nameController.text.trim(),
         password: _passwordController.text.trim(),
         email: _emailController.text.trim(),
