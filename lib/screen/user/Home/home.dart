@@ -1,11 +1,9 @@
-import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
 import 'package:app_cosmetic/screen/user/Product/product_item.dart';
 import 'package:app_cosmetic/widgets/appbar_home.dart';
 import 'package:app_cosmetic/widgets/brand_widget.dart';
 import 'package:app_cosmetic/widgets/category_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   @override
