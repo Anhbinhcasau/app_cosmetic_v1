@@ -28,6 +28,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   fluttertoast: ^8.2.6
   mongo_dart: ^0.10.3
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

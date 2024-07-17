@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Api {
-
-  static const String DB_URI = 'http://10.5.50.163:8080/api/v1';
-
-
+  static const String DB_URI = 'http://172.16.12.135:8080/api/v1';
 }
 
 class AppColors {
@@ -12,4 +9,4 @@ class AppColors {
   static const Color textHint = Colors.grey;
   static const Color text = Colors.white;
   static const Color text_notification = Colors.black;
-
+}
