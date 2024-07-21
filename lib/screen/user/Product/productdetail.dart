@@ -19,7 +19,6 @@ import 'package:provider/provider.dart';
 
 class ProductDetail extends StatefulWidget {
   final String productId;
-  
 
   ProductDetail({super.key, required this.productId});
 
@@ -53,7 +52,7 @@ class _ProductDetailState extends State<ProductDetail> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (snapshot.hasData) {
-                 product = snapshot.data!;
+                product = snapshot.data!;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -86,7 +85,7 @@ class _ProductDetailState extends State<ProductDetail> {
                     ),
                     Text(
                       product.name,
-                      style: TextStyle(fontSize: 25),
+                      style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(height: 15),
                     const Row(
@@ -295,7 +294,9 @@ class _ProductDetailState extends State<ProductDetail> {
                   showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) {
-                      return AddToCartSheet(attributes: product.attributes,);
+                      return AddToCartSheet(
+                        attributes: product.attributes,
+                      );
                     },
                   );
                 },

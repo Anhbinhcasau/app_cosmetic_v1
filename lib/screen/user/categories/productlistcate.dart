@@ -1,36 +1,40 @@
 import 'dart:io';
-
-import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
-import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
-import 'package:app_cosmetic/screen/user/cart/cart.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:app_cosmetic/model/product/product.model.dart';
+import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
 
-class ProductItem extends StatefulWidget {
-  const ProductItem({super.key});
+class ProductItemCate extends StatelessWidget {
+  final String categoryName;
 
-  @override
-  State<ProductItem> createState() => _ProductItemState();
-}
+  const ProductItemCate({super.key, required this.categoryName});
 
-class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     final productListViewModel = Provider.of<ProductListViewModel>(context);
     productListViewModel.getProductList();
 
-    return SingleChildScrollView(
-      physics: NeverScrollableScrollPhysics(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 13.0),
-        child: SizedBox(
-          // height: 1000,
-          child: Consumer<ProductListViewModel>(
-            builder: (context, productProvider, child) => GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Products in $categoryName'),
+      ),
+      body: Consumer<ProductListViewModel>(
+        builder: (context, productProvider, child) {
+          // Filter products by category
+          final filteredProducts = productProvider.products
+              .where((product) => product!.category == categoryName)
+              .toList();
+
+          if (filteredProducts.isEmpty) {
+            return Center(
+              child: Text('No products found for this category.'),
+            );
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 0.6,
@@ -38,20 +42,20 @@ class _ProductItemState extends State<ProductItem> {
                 mainAxisSpacing: 16.0,
                 mainAxisExtent: 300,
               ),
-              itemCount: productProvider.products.length,
+              itemCount: filteredProducts.length,
               itemBuilder: (context, index) {
-                Product? product = productProvider.products[index];
+                Product? product = filteredProducts[index];
                 return InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetail(productId: product?.idPro ?? '')),
+                        builder: (context) =>
+                            ProductDetail(productId: product.idPro ?? ''),
+                      ),
                     );
                   },
                   child: Container(
-                    //height: 1000,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -79,7 +83,6 @@ class _ProductItemState extends State<ProductItem> {
                               ? product.imageBase[0].startsWith('http')
                                   ? Image.network(
                                       product.imageBase[0],
-                                      //height: 130.0,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                     )
@@ -89,7 +92,7 @@ class _ProductItemState extends State<ProductItem> {
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                     )
-                             : Placeholder(),  // Display a placeholder if the list is empty
+                              : Placeholder(),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -133,34 +136,6 @@ class _ProductItemState extends State<ProductItem> {
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Colors.grey.shade200.withOpacity(0.7),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    // child: IconButton(
-                                    //   icon: const Icon(
-                                    //     Icons.shopping_bag_outlined,
-                                    //     color: Colors.black,
-                                    //   ),
-                                    //   onPressed: () {
-                                    //     Navigator.push(
-                                    //       context,
-                                    //       MaterialPageRoute(
-                                    //         builder: (context) =>
-                                    //             ShoppingCartPage(),
-                                    //       ),
-                                    //     );
-                                    //   },
-                                    // ),
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
                         ),
@@ -170,8 +145,8 @@ class _ProductItemState extends State<ProductItem> {
                 );
               },
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -10,7 +10,7 @@ class ProductListViewModel extends ChangeNotifier {
 
   Product? get product => _product;
 
-  void getProductList() async {
+   void  getProductList() async {
     try {
       products = await ProductService.fetchProducts();
       notifyListeners();

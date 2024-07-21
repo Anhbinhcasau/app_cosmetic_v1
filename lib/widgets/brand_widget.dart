@@ -43,9 +43,11 @@ class _BrandWidgetState extends State<BrandWidget> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: viewModel.brands.isEmpty
-                        ? [CircularProgressIndicator()]
+                    children: 
+                    viewModel.brands.isEmpty
+                        ? [CircularProgressIndicator(),]
                         : viewModel.brands
+                            .take(5)
                             .map((brand) => Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 5.0),
@@ -69,7 +71,9 @@ class _BrandWidgetState extends State<BrandWidget> {
                                   ),
                                 ))
                             .toList(),
+                            
                   ),
+                  
                 ),
               ),
             ],

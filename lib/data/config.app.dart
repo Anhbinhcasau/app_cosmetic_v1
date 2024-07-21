@@ -8,5 +8,5 @@ class AppColors {
 }
 
 class Api {
-  static String DB_URI = 'http:// 10.5.50.165:8080/api/v1';
+  static String DB_URI = 'http://172.17.13.37:8080/api/v1';
 }

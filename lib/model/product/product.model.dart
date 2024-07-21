@@ -1,7 +1,7 @@
 import 'package:app_cosmetic/model/product/atribute.model.dart';
 
 class Product {
-  final String? idPro;
+  late String? idPro;
   final String name;
   final String brand;
   final double price;
@@ -9,15 +9,13 @@ class Product {
   final String material;
   final String category;
   final List<String> imageBase;
-
   final List<Attribute> attributes;
-
   final int reviews;
   final int sold;
   final int quantity;
 
   Product({
-     this.idPro,
+    this.idPro,
     required this.name,
     required this.brand,
     required this.price,
@@ -70,7 +68,7 @@ class Product {
 
       reviews: json['reviews'] ?? 0,
       sold: json['sold'] ?? 0,
-      quantity: json['quantity'] ?? 0,
+      quantity: json['quantity_sold'] ?? 0,
     );
   }
   
