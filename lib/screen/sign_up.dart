@@ -1,12 +1,8 @@
-import 'dart:js_interop';
-import 'dart:typed_data';
 import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
 import 'package:app_cosmetic/widgets/user/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/sign_in.dart';
-
-
 
 class SignUpPageApp extends StatelessWidget {
   const SignUpPageApp({super.key});
@@ -52,11 +48,11 @@ class _SignUpPageState extends State<SignUpPage> {
           const SnackBar(content: Text('Đăng ký thành công!')),
         );
         Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LoginPage(),
-            ),
-          );
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Đăng ký thất bại: $e')),

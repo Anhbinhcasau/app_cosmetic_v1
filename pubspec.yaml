@@ -26,12 +26,9 @@ dependencies:
   flutter_image_slideshow: ^0.1.6
   http: ^1.2.1
   dropdown_button2: ^2.3.9
-<<<<<<< HEAD
-  shared_preferences: ^2.2.3
-=======
   fluttertoast: ^8.2.6
->>>>>>> 5a75b9e5144ed2fcca0346c7cacd5db84642581e
   mongo_dart: ^0.10.3
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

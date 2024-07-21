@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
 import 'package:app_cosmetic/screen/user/Product/product_item.dart';
 import 'package:app_cosmetic/widgets/appbar_home.dart';
@@ -20,6 +21,21 @@ class _HomePageState extends State<HomePage> {
     'https://i.pinimg.com/564x/76/10/ab/7610ab20bec83a39dad2a27cc49cb73c.jpg',
   ];
 
+  String? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserId();
+  }
+
+  Future<void> _getUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('userId');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +47,17 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (userId != null)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'User ID: $userId',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
@@ -81,9 +108,6 @@ class _HomePageState extends State<HomePage> {
             BrandWidget(),
             const SizedBox(height: 10),
             CategoryWidget(),
-            SizedBox(
-              height: 20,
-            ),
             ProductItem(),
           ],
         ),

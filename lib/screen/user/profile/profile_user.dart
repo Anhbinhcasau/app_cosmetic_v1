@@ -2,6 +2,7 @@ import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/user/profile/process_oder.dart';
 import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/sign_up.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';

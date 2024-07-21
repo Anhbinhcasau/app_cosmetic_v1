@@ -17,7 +17,7 @@ class Product {
   final int quantity;
 
   Product({
-     this.idPro,
+    this.idPro,
     required this.name,
     required this.brand,
     required this.price,
@@ -25,7 +25,7 @@ class Product {
     required this.material,
     required this.category,
     required this.imageBase,
-    required this.attributes,  
+    required this.attributes,
     required this.reviews,
     required this.sold,
     required this.quantity,
@@ -67,11 +67,9 @@ class Product {
               ?.map((attribute) => Attribute.fromJson(attribute))
               .toList() ??
           [],
-
       reviews: json['reviews'] ?? 0,
       sold: json['sold'] ?? 0,
       quantity: json['quantity'] ?? 0,
     );
   }
-  
 }

@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:app_cosmetic/model/cart.model.dart';
+import 'package:app_cosmetic/model/product/atribute.model.dart';
 import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:app_cosmetic/screen/user/comment/comment.dart';
 import 'package:app_cosmetic/screen/user/cart/cart.dart';
 import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
+import 'package:app_cosmetic/services/cart_service.dart';
 import 'package:app_cosmetic/services/product_service.dart';
 import 'package:app_cosmetic/widgets/appbar_home.dart';
 import 'package:app_cosmetic/widgets/products/decription_text.dart';
@@ -16,12 +19,13 @@ import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductDetail extends StatefulWidget {
   final String productId;
-  
+  String? userId; // Thêm userId
 
-  ProductDetail({super.key, required this.productId});
+  ProductDetail({super.key, required this.productId, required this.userId});
 
   @override
   State<ProductDetail> createState() => _ProductDetailState();
@@ -30,10 +34,21 @@ class ProductDetail extends StatefulWidget {
 class _ProductDetailState extends State<ProductDetail> {
   late Future<Product> products;
   late Product product;
+  String? userId;
+  late Attribute attribute;
   @override
   void initState() {
     super.initState();
+    _getUserId();
     products = ProductService().getProductDetail(widget.productId);
+  }
+
+  Future<void> _getUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('userId');
+      print('User ID from SharedPreferences: $userId');
+    });
   }
 
   @override
@@ -53,7 +68,7 @@ class _ProductDetailState extends State<ProductDetail> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (snapshot.hasData) {
-                 product = snapshot.data!;
+                product = snapshot.data!;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -295,7 +310,11 @@ class _ProductDetailState extends State<ProductDetail> {
                   showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) {
-                      return AddToCartSheet(attributes: product.attributes,);
+                      return AddToCartSheet(
+                        attributes: product.attributes,
+                        product: product,
+                        userId: userId ?? '',
+                      );
                     },
                   );
                 },
@@ -313,10 +332,18 @@ class _ProductDetailState extends State<ProductDetail> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  String? userId = prefs.getString('userId');
+
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CheckoutPage()),
+                    MaterialPageRoute(
+                      builder: (context) => ShoppingCartPage(
+                        userId: userId ?? 'Null',
+                      ),
+                    ),
                   );
                 },
                 child: Text(

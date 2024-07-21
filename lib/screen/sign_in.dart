@@ -3,6 +3,7 @@ import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/sign_up.dart';
 import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
 import 'package:app_cosmetic/services/auth_service.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:app_cosmetic/widgets/user/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
       try {
         final signInResponse = await AuthService.signIn(userName, password);
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        String? id =prefs.getString('userId');
+        String? id = prefs.getString('userId');
         print(id);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Xin chào')),
@@ -48,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfileScreen(id: id ,),
+            builder: (context) => MainScreen(),
           ),
         );
       } catch (e) {
