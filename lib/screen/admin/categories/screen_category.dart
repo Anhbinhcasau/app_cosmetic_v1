@@ -16,9 +16,11 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen> {
   late TextEditingController _categoryController;
-  late File? _imageFile;
+  File? _imageFile;
   late String _currentName;
   late String _currentImage;
+  final String placeholderImage = 'assets/basic.jpg';
+  CategoryListViewModel categoryListViewModel = CategoryListViewModel();
 
   @override
   void initState() {
@@ -26,11 +28,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
     _categoryController =
         TextEditingController(text: widget.category?.nameCate ?? '');
     _currentName = widget.category?.nameCate ?? '';
-    _currentImage = widget.category?.image ?? 'assets/basic.jpg';
-    _imageFile = widget.category?.image != null &&
-            !widget.category!.image.startsWith('http')
-        ? File(widget.category!.image)
-        : null;
+    _currentImage = widget.category?.image ?? placeholderImage;
+    if (widget.category != null && widget.category!.image.startsWith('http')) {
+      _imageFile = null;
+    } else if (widget.category != null) {
+      _imageFile = File(widget.category!.image);
+    }
   }
 
   Future<void> _pickImage() async {
@@ -39,14 +42,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
     setState(() {
       if (pickedFile != null) {
         _imageFile = File(pickedFile.path);
-        _currentImage = _imageFile!.path;
       }
     });
   }
 
   Future<void> _saveCategory() async {
     final String categoryName = _categoryController.text.trim();
-    final String categoryImage = _imageFile?.path ?? _currentImage;
+    final String categoryImage =
+        _imageFile != null ? _imageFile!.path : placeholderImage;
 
     if (categoryName.isEmpty || categoryImage.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -58,24 +61,31 @@ class _CategoryScreenState extends State<CategoryScreen> {
     try {
       if (widget.category == null) {
         // Add category
-        await Provider.of<CategoryListViewModel>(context, listen: false)
-            .addCategories(categoryName, categoryImage);
+        await categoryListViewModel.addCategories(categoryName, categoryImage);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Category created successfully')),
-        );
+            SnackBar(content: Text('Category created successfully')));
       } else {
         // Edit category
         await Provider.of<CategoryListViewModel>(context, listen: false)
-            .editCategories(widget.category!.id, categoryName, categoryImage);
+            .editCategories(
+          widget.category!.id,
+          categoryName,
+          categoryImage,
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Category updated successfully')),
         );
       }
+
+      _categoryController.clear();
+      setState(() {
+        _imageFile = null;
+      });
+
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save category')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to save category')));
     }
   }
 
@@ -107,18 +117,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
             SizedBox(height: 16),
             GestureDetector(
               onTap: _pickImage,
-              child: _currentImage.isNotEmpty
-                  ? (_currentImage.startsWith('http')
-                      ? Image.network(_currentImage,
-                          height: 450, fit: BoxFit.cover)
-                      : Image.file(File(_currentImage),
-                          height: 450, fit: BoxFit.cover))
-                  : Image.asset('assets/basic.jpg', height: 450),
+              child: _imageFile != null
+                  ? Image.file(_imageFile!, height: 450, fit: BoxFit.cover)
+                  : _currentImage.startsWith('http')
+                      ? Image.network(
+                          _currentImage,
+                          height: 450,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset(
+                          placeholderImage,
+                          height: 450,
+                          fit: BoxFit.cover,
+                        ),
             ),
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: _saveCategory,
-              child: Text('Save', style: TextStyle(fontSize: 25)),
+              child: Text(
+                widget.category == null ? 'Lưu' : 'Xác nhận',
+                style: TextStyle(fontSize: 25),
+              ),
             ),
           ],
         ),

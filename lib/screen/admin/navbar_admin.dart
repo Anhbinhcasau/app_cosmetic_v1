@@ -1,8 +1,10 @@
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/admin/brands/brand.dart';
 import 'package:app_cosmetic/screen/admin/categories/category.dart';
-import 'package:app_cosmetic/screen/admin/characteristics.dart';
 import 'package:app_cosmetic/screen/admin/dashboard.dart';
+import 'package:app_cosmetic/screen/admin/voucher/voucher.dart';
+import 'package:app_cosmetic/screen/sign_in.dart';
+import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
 import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
@@ -31,14 +33,16 @@ class _NavBarState extends State<NavBar> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
     DashboardMenu(),
     ListBrand(),
     ListCategory(),
     DashboardOrder(),
     ProductList(),
     ForgotPassPage(),
-    UserListDB(),
+    VoucherManagementScreen(),
+    LoginPage(),
+    //UserListDB(),
   ];
 
   void _onItemTapped(int index) {
@@ -67,11 +71,11 @@ class _NavBarState extends State<NavBar> {
                 color: AppColors.primaryColor,
               ),
               child: Text(
-                'Chưa bít để gì hết trơn',
+                'ADMIN',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+                    color: Colors.white,
+                    fontSize: 80,
+                    fontWeight: FontWeight.bold),
               ),
             ),
             ListTile(
@@ -87,19 +91,19 @@ class _NavBarState extends State<NavBar> {
               onTap: () => _onItemTapped(1),
             ),
             ListTile(
-              leading: const Icon(Icons.token),
+              leading: const Icon(Icons.view_in_ar_sharp),
               title: const Text('Danh mục'),
               selected: _selectedIndex == 2,
               onTap: () => _onItemTapped(2),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
+              leading: const Icon(Icons.bookmark),
               title: const Text('Đơn hàng'),
               selected: _selectedIndex == 3,
               onTap: () => _onItemTapped(3),
             ),
             ListTile(
-              leading: const Icon(Icons.feedback),
+              leading: const Icon(Icons.api_outlined),
               title: const Text('Sản phẩm'),
               selected: _selectedIndex == 4,
               onTap: () => _onItemTapped(4),
@@ -112,9 +116,15 @@ class _NavBarState extends State<NavBar> {
             ),
             ListTile(
               leading: const Icon(Icons.people),
-              title: const Text('Người dùng'),
+              title: const Text('Quản lý giảm giá'),
               selected: _selectedIndex == 6,
               onTap: () => _onItemTapped(6),
+            ),
+            ListTile(
+              leading: const Icon(Icons.people),
+              title: const Text('Đăng xuất'),
+              selected: _selectedIndex == 7,
+              onTap: () => _onItemTapped(7),
             ),
           ],
         ),

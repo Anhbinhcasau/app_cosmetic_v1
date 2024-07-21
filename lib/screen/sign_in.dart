@@ -1,6 +1,12 @@
+import 'package:app_cosmetic/model/auth.model.dart';
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/sign_up.dart';
+import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
+import 'package:app_cosmetic/services/auth_service.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
+import 'package:app_cosmetic/widgets/user/user_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPageApp extends StatelessWidget {
   const LoginPageApp({super.key});
@@ -22,15 +28,35 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isChecked = false;
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Xin chào !!')),
-      );
+      _formKey.currentState?.save();
+      String userName = _nameController.text.trim();
+      String password = _passwordController.text.trim();
+
+      try {
+        final signInResponse = await AuthService.signIn(userName, password);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String? id = prefs.getString('userId');
+        print(id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Xin chào')),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainScreen(),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đăng nhập thất bại: $e')),
+        );
+      }
     }
   }
 
@@ -63,9 +89,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 50),
                   TextFormField(
-                    controller: _emailController,
+                    controller: _nameController,
                     decoration: const InputDecoration(
-                      hintText: 'Email',
+                      hintText: 'Tên đăng nhập',
                       prefixIcon: Icon(Icons.people),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -77,10 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Hãy nhập email';
-                      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                          .hasMatch(value)) {
-                        return 'Email không hợp lệ';
+                        return 'Hãy nhập tên người dùng';
                       }
                       return null;
                     },
@@ -115,17 +138,20 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         children: [
                           Checkbox(
-                              value: isChecked,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  isChecked = value!;
-                                });
-                              }),
-                          const Text('Nhớ mật khẩu',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w200,
-                              )),
+                            value: isChecked,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isChecked = value!;
+                              });
+                            },
+                          ),
+                          const Text(
+                            'Nhớ mật khẩu',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w200,
+                            ),
+                          ),
                         ],
                       ),
                       IconButton(
@@ -135,13 +161,13 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ForgotPassPage()),
+                              builder: (context) => const ForgotPassPage(),
+                            ),
                           );
                         },
                       )
                     ],
                   ),
-                  //const SizedBox(height: 10),
                   const SizedBox(height: 20),
                   Container(
                     width: double.infinity,
@@ -158,8 +184,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  // const SizedBox(height: 50),
-
                   const SizedBox(height: 35),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -174,7 +198,8 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const SignUpPage()),
+                              builder: (context) => const SignUpPage(),
+                            ),
                           );
                         },
                         child: const Text(
@@ -189,13 +214,14 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 20),
                   const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "OR",
-                          style: TextStyle(fontWeight: FontWeight.w400),
-                        )
-                      ]),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "OR",
+                        style: TextStyle(fontWeight: FontWeight.w400),
+                      )
+                    ],
+                  ),
                   const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -205,17 +231,13 @@ class _LoginPageState extends State<LoginPage> {
                         width: 40,
                         height: 40,
                       ),
-                      const SizedBox(
-                        width: 30,
-                      ),
+                      const SizedBox(width: 30),
                       Image.asset(
                         'assets/facebook.png',
                         width: 40,
                         height: 40,
                       ),
-                      const SizedBox(
-                        width: 30,
-                      ),
+                      const SizedBox(width: 30),
                       Image.asset(
                         'assets/twitter.png',
                         width: 40,

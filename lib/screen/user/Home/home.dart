@@ -113,11 +113,13 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: AppBarHome(),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: CompositedTransformTarget(

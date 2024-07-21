@@ -6,7 +6,6 @@ import 'package:app_cosmetic/model/brand.model.dart';
 
 class BrandService {
   static Future<List<Brand>> fetchBrandList() async {
-    BrandListViewModel brandListViewModel = BrandListViewModel();
     try {
       final response = await http.get(Uri.parse('${Api.DB_URI}/brand'));
 
@@ -15,10 +14,6 @@ class BrandService {
         final List<dynamic> jsonResponse = jsonDecode(response.body);
         List<Brand> brands =
             jsonResponse.map((item) => Brand.fromJson(item)).toList();
-
-        // Update the brand list in BrandListViewModel
-        brandListViewModel.brands = brands;
-        brandListViewModel.notifyListeners();
 
         print('done $brands');
         return brands;

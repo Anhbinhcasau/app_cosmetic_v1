@@ -36,7 +36,7 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) {
     List<Product> products = (json['products'] as List<dynamic>).map<Product>((productJson) => Product.fromJson(productJson)).toList();
     return Order(
-      id: json['id'] ?? '',
+      id: json['_id'] ?? '',
       userId: json['userId'] ?? '',
       products: products,
       totalPrice: json['total_price'].toDouble() ?? 0.0,

@@ -101,8 +101,10 @@ class _ProductListState extends State<ProductList_User> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            ShoppingCartPage()),
+                                      builder: (context) => ShoppingCartPage(
+                                        userId: '',
+                                      ), // Sửa chỗ này
+                                    ),
                                   );
                                 },
                               ),
