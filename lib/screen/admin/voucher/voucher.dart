@@ -33,52 +33,53 @@ class _VoucherManagementScreenState extends State<VoucherManagementScreen> {
         String code = '';
 
         return AlertDialog(
-          title: Text('Add New Voucher'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: Text(
+            'Thêm mới voucher',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
           content: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                TextField(
-                  onChanged: (value) => name = value,
-                  decoration: InputDecoration(hintText: "Name"),
-                ),
-                TextField(
-                  onChanged: (value) => description = value,
-                  decoration: InputDecoration(hintText: "Description"),
-                ),
-                TextField(
-                  onChanged: (value) =>
-                      priceSale = double.tryParse(value) ?? 0.0,
-                  decoration: InputDecoration(hintText: "Price Sale"),
-                  keyboardType: TextInputType.number,
-                ),
-                TextField(
-                  onChanged: (value) =>
-                      maxPriceSale = double.tryParse(value) ?? 0.0,
-                  decoration: InputDecoration(hintText: "Max Price Sale"),
-                  keyboardType: TextInputType.number,
-                ),
-                TextField(
-                  onChanged: (value) => quantity = int.tryParse(value) ?? 0,
-                  decoration: InputDecoration(hintText: "Quantity"),
-                  keyboardType: TextInputType.number,
-                ),
-                TextField(
-                  onChanged: (value) => code = value,
-                  decoration: InputDecoration(hintText: "Code"),
-                ),
+                _buildTextField(
+                    'Tên mã giảm giá', 'Tên Voucher', (value) => name = value),
+                _buildTextField(
+                    'Mô tả', 'Mô tả', (value) => description = value),
+                _buildTextField(
+                    'Giá giảm',
+                    'Giá giảm',
+                    (value) => priceSale = double.tryParse(value) ?? 0.0,
+                    TextInputType.number),
+                _buildTextField(
+                    'Giảm tối đa',
+                    'Giảm tối đa',
+                    (value) => maxPriceSale = double.tryParse(value) ?? 0.0,
+                    TextInputType.number),
+                _buildTextField(
+                    'Số lượng',
+                    'Số lượng',
+                    (value) => quantity = int.tryParse(value) ?? 0,
+                    TextInputType.number),
+                _buildTextField(
+                    'Code Voucher', 'Code Voucher', (value) => code = value),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Hủy', style: TextStyle(color: Colors.red)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Add'),
+              child: Text('Thêm', style: TextStyle(color: Colors.green)),
               onPressed: () {
                 final voucher = VoucherDto(
                   priceSale: priceSale,
@@ -104,109 +105,41 @@ class _VoucherManagementScreenState extends State<VoucherManagementScreen> {
         setState(() {
           vouchers = voucherService.voucherList();
         });
-        Fluttertoast.showToast(msg: 'Voucher added successfully');
+        Fluttertoast.showToast(msg: 'Đã thêm voucher thành công');
       } catch (e) {
-        Fluttertoast.showToast(msg: 'Voucher added successfully');
+        Fluttertoast.showToast(msg: 'Thêm voucher thất bại');
       }
     }
   }
 
-  // void _editVoucher(VoucherDto voucher) async {
-  //   final editedVoucher = await showDialog<VoucherDto>(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       String name = voucher.nameVoucher;
-  //       String description = voucher.description;
-  //       double priceSale = voucher.priceSale;
-  //       double maxPriceSale = voucher.maxPriceSale;
-  //       int quantity = voucher.quantity;
-  //       String code = voucher.codeVoucher;
-
-  //       return AlertDialog(
-  //         title: Text('Edit Voucher'),
-  //         content: SingleChildScrollView(
-  //           child: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: <Widget>[
-  //               TextField(
-  //                 onChanged: (value) => name = value,
-  //                 decoration: InputDecoration(hintText: "Name"),
-  //                 controller: TextEditingController(text: name),
-  //               ),
-  //               TextField(
-  //                 onChanged: (value) => description = value,
-  //                 decoration: InputDecoration(hintText: "Description"),
-  //                 controller: TextEditingController(text: description),
-  //               ),
-  //               TextField(
-  //                 onChanged: (value) =>
-  //                     priceSale = double.tryParse(value) ?? 0.0,
-  //                 decoration: InputDecoration(hintText: "Price Sale"),
-  //                 keyboardType: TextInputType.number,
-  //                 controller: TextEditingController(text: priceSale.toString()),
-  //               ),
-  //               TextField(
-  //                 onChanged: (value) =>
-  //                     maxPriceSale = double.tryParse(value) ?? 0.0,
-  //                 decoration: InputDecoration(hintText: "Max Price Sale"),
-  //                 keyboardType: TextInputType.number,
-  //                 controller:
-  //                     TextEditingController(text: maxPriceSale.toString()),
-  //               ),
-  //               TextField(
-  //                 onChanged: (value) => quantity = int.tryParse(value) ?? 0,
-  //                 decoration: InputDecoration(hintText: "Quantity"),
-  //                 keyboardType: TextInputType.number,
-  //                 controller: TextEditingController(text: quantity.toString()),
-  //               ),
-  //               TextField(
-  //                 onChanged: (value) => code = value,
-  //                 decoration: InputDecoration(hintText: "Code"),
-  //                 controller: TextEditingController(text: code),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             child: Text('Cancel'),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //           TextButton(
-  //             child: Text('Save'),
-  //             onPressed: () {
-  //               final updatedVoucher = VoucherDto(
-  //                 id: voucher.id,
-  //                 priceSale: priceSale,
-  //                 nameVoucher: name,
-  //                 description: description,
-  //                 maxPriceSale: maxPriceSale,
-  //                 quantity: quantity,
-  //                 codeVoucher: code,
-  //                 userUsed: voucher.userUsed,
-  //               );
-  //               Navigator.of(context).pop(updatedVoucher);
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-
-  //   if (editedVoucher != null) {
-  //     try {
-  //       await voucherService.editVoucher(voucher.id, editedVoucher);
-  //       setState(() {
-  //         vouchers = voucherService.voucherList();
-  //       });
-  //       Fluttertoast.showToast(msg: 'Voucher updated successfully');
-  //     } catch (e) {
-  //       Fluttertoast.showToast(msg: 'Failed to update voucher');
-  //     }
-  //   }
-  // }
+  Widget _buildTextField(String label, String hint, Function(String) onChanged,
+      [TextInputType keyboardType = TextInputType.text]) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0, // Tăng kích thước chữ cho nhãn
+              )),
+          TextField(
+            onChanged: onChanged,
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: TextStyle(
+                  fontSize: 14.0), // Kích thước chữ nhỏ hơn cho trường văn bản
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            keyboardType: keyboardType,
+          ),
+        ],
+      ),
+    );
+  }
 
   void _removeVoucher(String id) async {
     bool confirmDelete = await showDialog(
@@ -287,10 +220,6 @@ class _VoucherManagementScreenState extends State<VoucherManagementScreen> {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        // IconButton(
-                        //   icon: Icon(Icons.edit),
-                        //   onPressed: () => _editVoucher(voucher),
-                        // ),
                         IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () => _removeVoucher(voucher.id),

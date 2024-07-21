@@ -1,12 +1,12 @@
-import 'dart:io';
-
+// Import các thư viện cần thiết, ví dụ như:
 import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
 import 'package:app_cosmetic/screen/user/cart/cart.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductItem extends StatefulWidget {
   const ProductItem({super.key});
@@ -43,8 +43,10 @@ class _ProductItemState extends State<ProductItem> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            ProductDetail(productId: product?.idPro ?? '')),
+                        builder: (context) => ProductDetail(
+                              productId: product?.idPro ?? '',
+                              userId: '',
+                            )),
                   );
                 },
                 child: Container(
@@ -71,8 +73,8 @@ class _ProductItemState extends State<ProductItem> {
                           topLeft: Radius.circular(12),
                           topRight: Radius.circular(12),
                         ),
-                        child: product!.imageBase.isNotEmpty
-                            ? product.imageBase[0].startsWith('http')
+                        child: product?.imageBase.isNotEmpty ?? false
+                            ? product!.imageBase[0].startsWith('http')
                                 ? Image.network(
                                     product.imageBase[0],
                                     height: 150.0,
@@ -85,11 +87,12 @@ class _ProductItemState extends State<ProductItem> {
                                     width: double.infinity,
                                     fit: BoxFit.cover,
                                   )
-                            : Placeholder(), // Display a placeholder if the list is empty
+                            : Placeholder(), // Hiển thị placeholder nếu danh sách trống
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               product?.name ?? '',
@@ -120,12 +123,20 @@ class _ProductItemState extends State<ProductItem> {
                                       Icons.shopping_bag_outlined,
                                       color: Colors.black,
                                     ),
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      // Lấy userId từ SharedPreferences hoặc từ widget cha
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      String? userId =
+                                          prefs.getString('userId');
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              ShoppingCartPage(),
+                                              ShoppingCartPage(
+                                            userId: userId ?? 'Null',
+                                          ),
                                         ),
                                       );
                                     },

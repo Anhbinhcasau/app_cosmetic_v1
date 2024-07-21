@@ -3,6 +3,8 @@ import 'package:app_cosmetic/screen/admin/brands/brand.dart';
 import 'package:app_cosmetic/screen/admin/categories/category.dart';
 import 'package:app_cosmetic/screen/admin/dashboard.dart';
 import 'package:app_cosmetic/screen/admin/voucher/voucher.dart';
+import 'package:app_cosmetic/screen/sign_in.dart';
+import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
 import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
@@ -39,6 +41,7 @@ class _NavBarState extends State<NavBar> {
     ProductList(),
     ForgotPassPage(),
     VoucherManagementScreen(),
+    LoginPage(),
     //UserListDB(),
   ];
 
@@ -70,10 +73,9 @@ class _NavBarState extends State<NavBar> {
               child: Text(
                 'ADMIN',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 80,
-                  fontWeight: FontWeight.bold
-                ),
+                    color: Colors.white,
+                    fontSize: 80,
+                    fontWeight: FontWeight.bold),
               ),
             ),
             ListTile(
@@ -114,9 +116,15 @@ class _NavBarState extends State<NavBar> {
             ),
             ListTile(
               leading: const Icon(Icons.people),
-              title: const Text('Người dùng'),
+              title: const Text('Quản lý giảm giá'),
               selected: _selectedIndex == 6,
               onTap: () => _onItemTapped(6),
+            ),
+            ListTile(
+              leading: const Icon(Icons.people),
+              title: const Text('Đăng xuất'),
+              selected: _selectedIndex == 7,
+              onTap: () => _onItemTapped(7),
             ),
           ],
         ),
