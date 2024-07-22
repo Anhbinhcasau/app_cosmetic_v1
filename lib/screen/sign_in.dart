@@ -1,9 +1,9 @@
-import 'package:app_cosmetic/model/auth.model.dart';
+import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/sign_up.dart';
 import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
 import 'package:app_cosmetic/services/auth_service.dart';
-import 'package:app_cosmetic/widgets/user/user_view_model.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,18 +39,28 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         final signInResponse = await AuthService.signIn(userName, password);
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        String? id =prefs.getString('userId');
-        print(id);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Xin chào')),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfileScreen(id: id ,),
-          ),
-        );
+
+        if (signInResponse == 'Sign In Successful') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Xin chào')),
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScreen(),
+            ),
+          );
+        } else if (signInResponse == 'Incorrect username or password') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text('Tên tài khoản của bạn hoặc Mật khẩu không đúng')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(signInResponse)),
+          );
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Đăng nhập thất bại: $e')),
@@ -68,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
+          automaticallyImplyLeading: false,
         ),
         body: Center(
           child: SingleChildScrollView(
@@ -97,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                         borderSide: BorderSide.none, // Remove the border
                       ),
                       filled: true,
-                      fillColor: Color(0xFFE3E7D3),
+                      fillColor: AppColors.secondsColor,
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -118,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                         borderSide: BorderSide.none, // Remove the border
                       ),
                       filled: true,
-                      fillColor: Color(0xFFE3E7D3),
+                      fillColor: AppColors.secondsColor,
                     ),
                     obscureText: true,
                     validator: (value) {
@@ -171,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFA2AA7B),
+                      color: AppColors.primaryColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     height: 52,
@@ -205,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                           'Đăng ký',
                           style: TextStyle(
                             fontSize: 20,
-                            color: Color(0xFFA2AA7B),
+                            color: AppColors.primaryColor,
                           ),
                         ),
                       ),

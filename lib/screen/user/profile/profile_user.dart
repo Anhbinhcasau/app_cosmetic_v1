@@ -1,88 +1,140 @@
+import 'package:app_cosmetic/data/config.app.dart';
+import 'package:app_cosmetic/screen/sign_in.dart';
+import 'package:app_cosmetic/services/user_service.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/user/profile/process_oder.dart';
-import 'package:app_cosmetic/screen/user/Home/home.dart';
-import 'package:app_cosmetic/screen/sign_up.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final String? id;
-  ProfileScreen({super.key, required this.id});
-
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String userId = '';
+  String? userId;
+  String? userName;
+  String? email;
+  String? address;
+  String? avatar;
 
   @override
   void initState() {
     super.initState();
-    _loadUserId();
+    _loadUser();
   }
 
-  Future<void> _loadUserId() async {
+  Future<void> _loadUser() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userId = prefs.getString('_id') ?? 'Unknown User';
-    });
+    userId = prefs.getString('userId');
+
+    if (userId != null) {
+      final user = await UserServices.getDetail(userId!);
+      setState(() {
+        userName = user?.fullName ?? '';
+        email = user?.email ?? '';
+        address = user?.address ?? '';
+        avatar = user?.avatar;
+      });
+    }
+  }
+
+  Future<void> _logOutUser() async {
+    if (userId != null && userId!.isNotEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('userId');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        toolbarHeight: 5,
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(
-                    'https://i.pinimg.com/564x/b3/e5/db/b3e5db5a3bf1399f74500a6209462794.jpg'),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.brown,
-                      size: 16,
-                    ),
+              avatar != null
+                  ? CircleAvatar(
+                      backgroundColor: AppColors.primaryColor,
+                      radius: 55,
+                      child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(avatar!),
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: CircleAvatar(
+                              radius: 13,
+                              backgroundColor: Colors.green,
+                            ),
+                          )),
+                    )
+                  : CircleAvatar(
+                    radius: 55,
+                    backgroundColor: Colors.blueGrey,
+                    child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(
+                            'https://i.pinimg.com/236x/b1/df/5c/b1df5c0fd9ac7073b1710ece19b81407.jpg'),
+                      ),
                   ),
-                ),
-              ),
               SizedBox(height: 16),
-              Text(
-                userId,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 16),
+              userId != null && userId!.isNotEmpty
+                  ? Column(
+                      children: [
+                        Text(
+                          userName!,
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 16),
+                        Divider(),
+                        ListTile(
+                          leading: Icon(Icons.email, color: Colors.brown),
+                          title: Text(
+                            email!,
+                            style: TextStyle(fontSize: AppTexts.size_text),
+                          ),
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.home, color: Colors.brown),
+                          title: Text(
+                            address!,
+                            style: TextStyle(fontSize: AppTexts.size_text),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Text(
+                      'Chưa đăng nhập',
+                      style: TextStyle(fontSize: 20),
+                    ),
               Divider(),
               ListTile(
-                leading: Icon(Icons.person, color: Colors.brown),
-                title: Text('Your profile'),
-                trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
-                onTap: () {
-                  // Handle navigation to "Your profile"
-                },
-              ),
-              ListTile(
                 leading: Icon(Icons.payment, color: Colors.brown),
-                title: Text('Payment Methods'),
-                trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
+                title: Text(
+                  'Phương thức thanh toán',
+                  style: TextStyle(fontSize: AppTexts.size_text),
+                ),
                 onTap: () {
                   // Handle navigation to "Payment Methods"
                 },
               ),
               ListTile(
                 leading: Icon(Icons.shopping_bag, color: Colors.brown),
-                title: Text('My Orders'),
-                trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
+                title: Text(
+                  'Đơn hàng',
+                  style: TextStyle(fontSize: AppTexts.size_text),
+                ),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -92,8 +144,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               ListTile(
                 leading: Icon(Icons.settings, color: Colors.brown),
-                title: Text('Change Password'),
-                trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
+                title: Text(
+                  'Mật khẩu',
+                  style: TextStyle(fontSize: AppTexts.size_text),
+                ),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -101,17 +155,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 },
               ),
-              ListTile(
-                leading: Icon(Icons.logout, color: Colors.brown),
-                title: Text('Log out'),
-                trailing: Icon(Icons.arrow_forward_ios, color: Colors.brown),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()),
-                  );
-                },
-              ),
+              Divider(),
+              userId != null && userId!.isNotEmpty
+                  ? ListTile(
+                      leading: Icon(Icons.logout, color: Colors.brown),
+                      title: Text(
+                        'Đăng xuất',
+                        style: TextStyle(fontSize: AppTexts.size_text),
+                      ),
+                      onTap: _logOutUser,
+                    )
+                  : ListTile(
+                      leading: Icon(Icons.logout, color: Colors.brown),
+                      title: Text(
+                        'Đăng nhập',
+                        style: TextStyle(fontSize: AppTexts.size_text),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                      },
+                    )
             ],
           ),
         ),
