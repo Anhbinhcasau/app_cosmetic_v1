@@ -47,7 +47,6 @@ flutter:
     - assets/instagram.png
     - assets/twitter.png
     - assets/product.js
-    - assets/comment.js
     - assets/thank_you.png
     - assets/order.js
     - assets/brand.js

@@ -1,21 +1,18 @@
-import 'package:app_cosmetic/widgets/comment/comment_view.dart';
-import 'package:app_cosmetic/widgets/comment/rating_star.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:app_cosmetic/model/comment.model.dart';
+import 'package:app_cosmetic/model/product/comment.dart';
+import 'package:app_cosmetic/widgets/comment/rating_star.dart';
 import 'package:app_cosmetic/screen/user/comment/write_comment.dart';
 
-class CommentList extends StatefulWidget {
-  @override
-  State<CommentList> createState() => _CommentListState();
-}
+class CommentList extends StatelessWidget {
+  final List<Comment> comments;
+  final String? idProduct;
+  final String? idUser;
 
-class _CommentListState extends State<CommentList> {
+  CommentList(
+      {required this.comments, required this.idProduct, required this.idUser});
+
   @override
   Widget build(BuildContext context) {
-    final commentListViewModel = Provider.of<CommentListViewModel>(context);
-    commentListViewModel.fetchProductList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -52,7 +49,7 @@ class _CommentListState extends State<CommentList> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Tất cả(3)',
+                  'Tất cả(${comments.length})',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 Icon(Icons.filter_alt_outlined),
@@ -66,7 +63,9 @@ class _CommentListState extends State<CommentList> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => WriteComment()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          WriteComment(idProduct: idProduct!, idUser: idUser!)),
                 );
               },
               style: OutlinedButton.styleFrom(
@@ -82,72 +81,65 @@ class _CommentListState extends State<CommentList> {
           ),
           SizedBox(height: 20),
           Expanded(
-            child: Consumer<CommentListViewModel>(
-              builder: (context, value, child) => ListView.separated(
-                separatorBuilder: (context, index) => Divider(),
-                itemCount: value.comments.length,
-                itemBuilder: (context, index) {
-                  Comment? comment = value.comments[index];
-                  return Card(
-                    margin: EdgeInsets.all(10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // const CircleAvatar(
-                              //   radius: 25.0,
-                              //   backgroundColor: Colors.grey,
-                              //   child: const Text('AH'),
-                              // ),
-                              Text(
-                                "Pham Ha",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              Text(
-                                ' ${comment?.date}',
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ],
-                          ),
-                          RatingStar(initialRating: comment?.rating ?? 0),
-                          SizedBox(height: 10),
-                          Text(
-                            '${comment?.comment}',
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          SizedBox(height: 5),
-                          SizedBox(height: 10),
-                          SizedBox(
-                            height: 100, // Set a fixed height for the GridView
-                            child: GridView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: comment?.image.length ?? 0,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                mainAxisSpacing: 5,
-                              ),
-                              itemBuilder: (context, imageIndex) {
-                                return Container(
-                                  margin: const EdgeInsets.only(right: 10),
-                                  child: Image.network(
-                                    comment?.image[imageIndex] ?? '',
-                                    fit: BoxFit.cover,
-                                  ),
-                                );
-                              },
+            child: ListView.separated(
+              separatorBuilder: (context, index) => Divider(),
+              itemCount: comments.length,
+              itemBuilder: (context, index) {
+                Comment comment = comments[index];
+                return Card(
+                  margin: EdgeInsets.all(10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Pham Ha",
+                              style: TextStyle(fontSize: 20),
                             ),
+                            Text(
+                              ' ${comment.date}',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                        RatingStar(initialRating: comment.rating),
+                        SizedBox(height: 10),
+                        Text(
+                          '${comment.comment}',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                        SizedBox(height: 5),
+                        SizedBox(height: 10),
+                        SizedBox(
+                          height: 100, // Set a fixed height for the GridView
+                          child: GridView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: comment.images.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 1,
+                              mainAxisSpacing: 5,
+                            ),
+                            itemBuilder: (context, imageIndex) {
+                              return Container(
+                                margin: const EdgeInsets.only(right: 10),
+                                child: Image.network(
+                                  comment.images[imageIndex],
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                            },
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ],

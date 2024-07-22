@@ -1,29 +1,19 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:app_cosmetic/model/cart.model.dart';
-import 'package:app_cosmetic/model/product/atribute.model.dart';
-import 'package:app_cosmetic/model/product/product.model.dart';
-import 'package:app_cosmetic/screen/user/Product/product_view.dart';
-import 'package:app_cosmetic/screen/user/comment/comment.dart';
 import 'package:app_cosmetic/screen/user/cart/cart.dart';
-import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
-import 'package:app_cosmetic/services/cart_service.dart';
+import 'package:app_cosmetic/screen/user/comment/comment.dart';
+import 'package:app_cosmetic/widgets/products/showbottomsheet.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:expansion_tile_card/expansion_tile_card.dart';
+import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:app_cosmetic/services/product_service.dart';
 import 'package:app_cosmetic/widgets/appbar_home.dart';
 import 'package:app_cosmetic/widgets/products/decription_text.dart';
-import 'package:app_cosmetic/widgets/products/product_card.dart';
-import 'package:app_cosmetic/widgets/products/showbottomsheet.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:expansion_tile_card/expansion_tile_card.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductDetail extends StatefulWidget {
   final String productId;
-  String? userId; // Thêm userId
 
   ProductDetail({super.key, required this.productId});
 
@@ -34,8 +24,8 @@ class ProductDetail extends StatefulWidget {
 class _ProductDetailState extends State<ProductDetail> {
   late Future<Product> products;
   late Product product;
-  String? userId;
-  late Attribute attribute;
+  late  String? userId;
+
   @override
   void initState() {
     super.initState();
@@ -195,7 +185,9 @@ class _ProductDetailState extends State<ProductDetail> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CommentList()),
+                    MaterialPageRoute(
+                        builder: (context) => CommentList(
+                            comments: product.reviews ??[],idProduct:product.idPro,idUser: userId ,)), // Đường dẫn mới cho CommentList và truyền danh sách bình luận
                   );
                 },
                 child: Row(
@@ -213,82 +205,111 @@ class _ProductDetailState extends State<ProductDetail> {
               ),
             ],
           ),
-          Row(
-            children: [
-              const CircleAvatar(
-                radius: 30.0,
-                backgroundColor: Colors.grey,
-                child: Text('AH'),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Column(
+          FutureBuilder<Product>(
+            future: products,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (snapshot.hasData) {
+                product = snapshot.data!;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Phạm Hà ",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    AbsorbPointer(
-                      absorbing: true,
-                      child: RatingBar.builder(
-                        initialRating: 3.5,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        itemSize: 20,
-                        itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: Colors.amber,
+                    ...product.reviews!.take(2).map((comment) {
+                      // Hiển thị chỉ hai bình luận đầu tiên
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const CircleAvatar(
+                                  radius: 30.0,
+                                  backgroundColor: Colors.grey,
+                                  child: Text('AH'),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        comment
+                                            .userId, // Bạn có thể thay thế userId bằng tên người dùng sau khi thực hiện yêu cầu trên
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      AbsorbPointer(
+                                        absorbing: true,
+                                        child: RatingBar.builder(
+                                          initialRating:
+                                              comment.rating.toDouble(),
+                                          minRating: 1,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: true,
+                                          itemCount: 5,
+                                          itemSize: 20,
+                                          itemPadding: EdgeInsets.symmetric(
+                                              horizontal: 1.0),
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            print(rating);
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Text(
+                                comment.comment,
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            if (comment.images != null &&
+                                comment.images!.isNotEmpty)
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
+                                itemCount: comment.images!.length,
+                                itemBuilder: (context, index) {
+                                  final imagePath = comment.images![index];
+                                  return imagePath.startsWith('http')
+                                      ? Image.network(
+                                          imagePath,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.file(
+                                          File(imagePath),
+                                          fit: BoxFit.cover,
+                                        );
+                                },
+                              ),
+                          ],
                         ),
-                        onRatingUpdate: (rating) {
-                          print(rating);
-                        },
-                      ),
-                    ),
+                      );
+                    }).toList(),
                   ],
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text(
-              "Sản phẩm tốt",
-              style: TextStyle(fontSize: 15),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 20),
-            height: 100,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                Container(
-                  width: 100,
-                  height: 100,
-                  margin: const EdgeInsets.only(right: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Image.asset(
-                    'assets/instagram.png',
-                  ),
-                ),
-                Container(
-                  width: 100,
-                  height: 100,
-                  margin: const EdgeInsets.only(right: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Image.asset(
-                    'assets/instagram.png',
-                  ),
-                ),
-              ],
-            ),
+                );
+              } else {
+                return const Center(child: Text('No data found.'));
+              }
+            },
           ),
           Text(
             "Sản phẩm gợi ý ",

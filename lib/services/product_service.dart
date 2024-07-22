@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:app_cosmetic/data/config.app.dart';
+import 'package:app_cosmetic/model/product/comment.dart';
 import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
@@ -102,6 +103,28 @@ class ProductService {
     } catch (e) {
       print('Failed to delete product. Error: $e');
       throw Exception('Failed to delete product. Error: $e');
+    }
+  }
+  static Future<void> commentProduct(Comment comment) async {
+    try {
+      var url = Uri.parse("${Api.DB_URI}/product/comment");
+
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(comment.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        print('Comment posted successfully.');
+      } else {
+        throw Exception(
+            'Failed to comment product. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to post comment. Error: $e');
     }
   }
 }

@@ -1,7 +1,8 @@
+import 'package:app_cosmetic/screen/user/Product/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/user/Product/category.dart';
-import 'package:app_cosmetic/screen/user/Product/product_user.dart';
+
 import 'package:app_cosmetic/screen/user/voucher/voucher_user.dart';
 import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
@@ -39,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
     return <Widget>[
       HomePage(),
       CouponsScreen(),
-      ProductList_User(),
+      ProductItem(),
       ProfileScreen(id: id),
     ];
   }

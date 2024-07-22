@@ -1,21 +1,49 @@
+import 'dart:io';
+
+import 'package:app_cosmetic/model/product/comment.dart';
+import 'package:app_cosmetic/services/product_service.dart';
+import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/user/comment/comment_thank.dart';
 import 'package:app_cosmetic/screen/user/comment/picker_image.dart';
-import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+
 class WriteComment extends StatefulWidget {
-  const WriteComment({super.key});
+  final String idProduct;
+  final String idUser;
+  const WriteComment({super.key,required this.idProduct,required this.idUser});
 
   @override
   State<WriteComment> createState() => _WriteCommentState();
 }
 
 class _WriteCommentState extends State<WriteComment> {
+  double _rating = 3.5;
+  String _reviewContent = '';
+  List<String> _selectedImages = [];
+
+  void _submitReview() async {
+    try {
+      Comment newComment = Comment(
+        productId: widget.idProduct, // Thay bằng product ID thực tế
+        userId: widget.idUser, // Thay bằng user ID thực tế
+        comment: _reviewContent,
+        rating: _rating,
+        date:'',
+        images: _selectedImages,
+      );
+
+      await ProductService.commentProduct(newComment);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CommentThank()),
+      );
+    } catch (e) {
+      print('Failed to post comment: $e');
+      // Xử lý lỗi, ví dụ: hiện thông báo lỗi cho người dùng
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -36,7 +64,7 @@ class _WriteCommentState extends State<WriteComment> {
             Align(
               alignment: Alignment.center,
               child: RatingBar.builder(
-                initialRating: 3.5,
+                initialRating: _rating,
                 minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: true,
@@ -48,11 +76,17 @@ class _WriteCommentState extends State<WriteComment> {
                   color: Colors.amber,
                 ),
                 onRatingUpdate: (rating) {
-                  print(rating);
+                  setState(() {
+                    _rating = rating;
+                  });
                 },
               ),
             ),
-            PickerImage(),
+            PickerImage(onImagesSelected: (images) {
+              setState(() {
+                _selectedImages = images;
+              });
+            }),
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: TextField(
@@ -66,6 +100,11 @@ class _WriteCommentState extends State<WriteComment> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _reviewContent = value;
+                  });
+                },
               ),
             ),
             Spacer(),
@@ -78,12 +117,7 @@ class _WriteCommentState extends State<WriteComment> {
               ),
               height: 52,
               child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CommentThank()),
-                  );
-                },
+                onPressed: _submitReview,
                 child: const Text(
                   'Gửi đánh giá',
                   style: TextStyle(fontSize: 22, color: Colors.white),

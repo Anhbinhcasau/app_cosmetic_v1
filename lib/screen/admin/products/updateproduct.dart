@@ -84,8 +84,8 @@ class _UpdateProductState extends State<UpdateProduct> {
         category: _selectCate ?? '',
         imageBase: _imageBase,
         attributes: _attributes,
-        reviews: 5,
-        sold: 5,
+        reviews: [],
+        
         quantity: int.parse(_quantityController.text),
       );
 

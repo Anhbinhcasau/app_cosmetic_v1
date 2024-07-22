@@ -3,7 +3,6 @@ import 'package:app_cosmetic/screen/admin/categories/category_view_model.dart';
 import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:app_cosmetic/screen/user/splashscreen/splashscreen1.dart';
-import 'package:app_cosmetic/widgets/comment/comment_view.dart';
 import 'package:app_cosmetic/widgets/orders/order_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +11,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => CommentListViewModel(),
-        ),
+        
         ChangeNotifierProvider(
           create: (_) => OrderListViewModel(),
         ),
