@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/data/config.app.dart';
-import 'package:app_cosmetic/screen/user/Product/category.dart';
-import 'package:app_cosmetic/screen/user/Product/product_user.dart';
 import 'package:app_cosmetic/screen/user/voucher/voucher_user.dart';
+import 'package:flutter/material.dart';
+import 'package:app_cosmetic/screen/user/Product/product_user.dart';
 import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,19 +15,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   String? id;
-
-  @override
-  void initState() {
-    super.initState();
-    getId();
-  }
-
-  void getId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      id = prefs.getString('userId');
-    });
-  }
+  late List<Widget> _pages = [
+    HomePage(),
+    CouponsScreen(),
+    ProductList_User(),
+    ProfileScreen(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {

@@ -26,6 +26,7 @@ dependencies:
   flutter_image_slideshow: ^0.1.6
   http: ^1.2.2
   dropdown_button2: ^2.3.9
+  shared_preferences: ^2.2.3
   fluttertoast: ^8.2.6
   mongo_dart: ^0.10.3
   shared_preferences: ^2.2.3

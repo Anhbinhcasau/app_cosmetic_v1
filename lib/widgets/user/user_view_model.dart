@@ -5,35 +5,19 @@ import 'package:flutter/material.dart';
 class UserListViewModel extends ChangeNotifier {
   List<User?> users = [];
 
-  Future<void> signUpUser(User user) async {
+  Future<String> signUpUser(User user) async {
     try {
-      final newUser = await AuthService.signUp(user);
+      final result = await AuthService.signUp(user);
 
-      if (newUser != null) {
-        users.add(newUser);
+      if (result == 'Sign Up Successful') {
+        users.add(user); // Assuming the user is added locally for now
         notifyListeners();
-        print('Sign Up successfully');
+        return result;
       } else {
-        print('Failed to Sign Up');
+        return result;
       }
     } catch (e) {
-      print('Error Sign Up: $e');
+      return 'Error Sign Up: $e';
     }
   }
-
-  // Future<void> signInUser(String name, String pass) async {
-  //   try {
-  //     final signUser = await AuthService.signIn(name, pass);
-
-  //     if (signUser != null) {
-  //       users.add(signUser);
-  //       print('Sign In successfully');
-  //       notifyListeners();
-  //     } else {
-  //       print('Failed to Sign In');
-  //     }
-  //   } catch (e) {
-  //     print('Error Sign In: $e');
-  //   }
-  // }
 }
