@@ -1,6 +1,12 @@
+import 'dart:io';
+
+import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:app_cosmetic/screen/admin/products/addproduct.dart';
+import 'package:app_cosmetic/screen/admin/products/updateproduct.dart';
+import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({super.key});
@@ -12,6 +18,8 @@ class ProductList extends StatefulWidget {
 class _ProductListState extends State<ProductList> {
   @override
   Widget build(BuildContext context) {
+    final productListViewModel = Provider.of<ProductListViewModel>(context);
+    productListViewModel.getProductList();
     return Scaffold(
       appBar: AppBar(
         title: Text("Product"),
@@ -29,76 +37,140 @@ class _ProductListState extends State<ProductList> {
               ))
         ],
       ),
-      body: GridView.builder(
-        padding: EdgeInsets.only(left: 20, right: 20),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.6,
-          crossAxisSpacing: 16.0,
-          mainAxisSpacing: 16.0,
-        ),
-        itemCount: 4,
-        itemBuilder: (context, index) {
-          return Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Image.network(
-                      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml-1716439945_img_800x800_eb97c5_fit_center.jpg",
-                      fit: BoxFit.cover,
+      body: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: SingleChildScrollView(
+          child: Consumer<ProductListViewModel>(
+            builder: (context, productProvider, child) => GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.6,
+                crossAxisSpacing: 16.0,
+                mainAxisSpacing: 16.0,
+              ),
+              itemCount: productProvider.products.length,
+              itemBuilder: (context, index) {
+                Product? product = productProvider.products[index];
+                return InkWell(
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           Pro(productId: product?.idPro ?? '')),
+                    // );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12),
+                          ),
+                          child: product!.imageBase.isNotEmpty
+                              ? product.imageBase[0].startsWith('http')
+                                  ? Image.network(
+                                      product.imageBase[0],
+                                      //height: 150.0,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.file(
+                                      File(product.imageBase[0]),
+                                      height: 150.0,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    )
+                              : Placeholder(), // Display a placeholder if the list is empty
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product?.name ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    product?.price != null
+                                        ? '${product!.price.toStringAsFixed(3)}'
+                                        : '',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Colors.grey.shade200.withOpacity(0.7),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              12.0), // Bo góc nút
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "Cập nhật",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => UpdateProduct(
+                                              productToEdit: product,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Kem chống nắng Anessa",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "333.000",
-                            style: TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 5.0),
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                            child: TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Chỉnh sữa",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12.0,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                );
+              },
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

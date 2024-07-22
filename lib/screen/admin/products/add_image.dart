@@ -56,7 +56,7 @@ class _AddImageState extends State<AddImage> {
             child: selectedImages.isEmpty
                 ? const Center()
                 : Container(
-                    height: 100,
+                    height: 300,
                     child: GridView.builder(
                       itemCount: selectedImages.length,
                       gridDelegate:
@@ -98,13 +98,12 @@ class _AddImageState extends State<AddImage> {
       maxHeight: 1000,
       maxWidth: 1000,
     );
-
     if (pickedFiles != null) {
       setState(() {
-        selectedImages = pickedFiles.map((xfile) => File(xfile.path)).toList();
+        selectedImages
+            .addAll(pickedFiles.map((xfile) => File(xfile.path)).toList());
         final imagePaths = selectedImages.map((file) => file.path).toList();
-        widget.onImagesSelected(
-            imagePaths); // Gọi callback với đường dẫn hình ảnh đã chọn
+        widget.onImagesSelected(imagePaths);
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

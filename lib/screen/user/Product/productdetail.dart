@@ -25,7 +25,7 @@ class ProductDetail extends StatefulWidget {
   final String productId;
   String? userId; // Thêm userId
 
-  ProductDetail({super.key, required this.productId, required this.userId});
+  ProductDetail({super.key, required this.productId});
 
   @override
   State<ProductDetail> createState() => _ProductDetailState();
@@ -101,7 +101,7 @@ class _ProductDetailState extends State<ProductDetail> {
                     ),
                     Text(
                       product.name,
-                      style: TextStyle(fontSize: 25),
+                      style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(height: 15),
                     const Row(
