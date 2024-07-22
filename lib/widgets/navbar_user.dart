@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/user/voucher/voucher_user.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  
   int _selectedIndex = 0;
   String? id;
   late List<Widget> _pages = [
@@ -27,21 +27,26 @@ class _MainScreenState extends State<MainScreen> {
       _selectedIndex = index;
     });
   }
-  void getId() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-        id =prefs.getString('userId');
+
+  List<Widget> _widgetOptions() {
+    return <Widget>[
+      HomePage(),
+      CouponsScreen(),
+      ProductList_User(),
+      ProfileScreen(id: id),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: _widgetOptions().elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         selectedItemColor: AppColors.primaryColor,
         unselectedItemColor: Colors.grey[600],
-        selectedIconTheme: const IconThemeData(size: 32),
-        unselectedIconTheme: const IconThemeData(size: 25),
+        selectedIconTheme: IconThemeData(size: 32),
+        unselectedIconTheme: IconThemeData(size: 25),
         onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(

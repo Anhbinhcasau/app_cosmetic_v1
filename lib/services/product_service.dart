@@ -33,14 +33,16 @@ class ProductService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return Product.fromJson(data);
+      final product = Product.fromJson(data);
+      print(product.material);
+      return product;
     } else {
       throw Exception('Failed to load product');
     }
   }
 
   static Future<Product> createProduct(Product product) async {
-    print(product.name);
+    print(product.material);
     try {
       var url = Uri.parse("${Api.DB_URI}/product");
       Map<String, dynamic> productJson = product.productJson();
@@ -60,4 +62,46 @@ class ProductService {
     }
   }
 
+  static Future<Product> updateProduct(Product product) async {
+    print(product.material);
+    try {
+      var url = Uri.parse("${Api.DB_URI}/product/updateProduct");
+      Map<String, dynamic> productJson = product.productJson();
+      final response = await http.put(url,
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(productJson));
+      if (response.statusCode == 200) {
+        // If the server returns a created response, parse the JSON
+        return Product.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server does not return a created response, throw an exception
+        throw Exception(
+            'Failed to update product. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Failed to update product. Error: $e');
+      throw Exception('Failed to update product. Error: $e');
+    }
+  }
+
+  static Future<void> deleteProduct(String productId) async {
+    try {
+      var url = Uri.parse("${Api.DB_URI}/product/$productId");
+
+      final response =
+          await http.delete(url, headers: {"Content-Type": "application/json"});
+
+      if (response.statusCode == 200) {
+        // Nếu máy chủ trả về mã trạng thái 200 (OK), không cần phân tích JSON
+        print('Product deleted successfully.');
+      } else {
+        // Nếu máy chủ không trả về mã trạng thái 200, ném ngoại lệ
+        throw Exception(
+            'Failed to delete product. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Failed to delete product. Error: $e');
+      throw Exception('Failed to delete product. Error: $e');
+    }
+  }
 }

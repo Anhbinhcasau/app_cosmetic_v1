@@ -1,11 +1,21 @@
+import 'package:app_cosmetic/model/cart.model.dart';
+import 'package:app_cosmetic/screen/user/cart/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/model/product/atribute.model.dart';
 import 'package:app_cosmetic/model/product/product.model.dart';
+import 'package:app_cosmetic/services/cart_service.dart';
 
 class AddToCartSheet extends StatefulWidget {
   final List<Attribute> attributes;
+  final Product product;
+  final String userId;
 
-  const AddToCartSheet({super.key, required this.attributes});
+  const AddToCartSheet({
+    Key? key,
+    required this.attributes,
+    required this.product,
+    required this.userId,
+  }) : super(key: key);
 
   @override
   State<AddToCartSheet> createState() => _AddToCartSheetState();
@@ -14,13 +24,81 @@ class AddToCartSheet extends StatefulWidget {
 class _AddToCartSheetState extends State<AddToCartSheet> {
   int _quantity = 1;
   late Attribute _selectedType;
+  late int _selectedIndex;
 
   @override
   void initState() {
     super.initState();
-    _selectedType = widget.attributes.isNotEmpty
-        ? widget.attributes[0]
-        : Attribute(name: 'Unknown', image: '', price: 0.0, quantity: 0);
+    if (widget.attributes.isNotEmpty) {
+      _selectedType = widget.attributes[0];
+      _selectedIndex = 0;
+    } else {
+      _selectedType =
+          Attribute(name: 'Unknown', image: '', price: 0.0, quantity: 0);
+      _selectedIndex = -1;
+    }
+  }
+
+  Future<void> _addToCart() async {
+    try {
+      // Kiểm tra giá trị userId
+      if (widget.userId.isEmpty) {
+        throw Exception('User ID is null or empty');
+      }
+      print('User ID: ${widget.userId}');
+
+      // Kiểm tra thông tin sản phẩm
+      if (widget.product.idPro == null || widget.product.idPro!.isEmpty) {
+        throw Exception('Product ID is null or empty');
+      }
+      if (_selectedType.price <= 0) {
+        throw Exception('Product price is invalid');
+      }
+      if (_selectedType.image.isEmpty) {
+        throw Exception('Product image is missing');
+      }
+
+      // Tạo đối tượng ItemCart
+      final item = ItemCart(
+        productId: widget.product.idPro!,
+        quantity: _quantity,
+        id: widget.product.attributes
+            .indexOf(_selectedType), // Lấy id từ thuộc tính đã chọn
+        image: _selectedType.image,
+        price: _selectedType.price,
+        userId: widget.userId,
+        typeProduct: _selectedType.name,
+      );
+
+      print('Adding item to cart: $item');
+
+      // Gọi service để thêm sản phẩm vào giỏ hàng
+      final cartService = CartService();
+      final cart = await cartService.addToCart(item);
+
+      if (cart != null) {
+        // Nếu thành công, điều hướng đến màn hình giỏ hàng
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ShoppingCartPage(
+                    userId: widget.userId,
+                  )),
+        );
+      } else {
+        // Xử lý khi không thể thêm sản phẩm vào giỏ hàng
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add product to cart')),
+        );
+        print('Failed to add product to cart: cart is null');
+      }
+    } catch (e) {
+      print('Error adding product to cart: $e');
+      // Xử lý lỗi khi thêm sản phẩm vào giỏ hàng
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error adding product to cart: $e')),
+      );
+    }
   }
 
   @override
@@ -35,14 +113,13 @@ class _AddToCartSheetState extends State<AddToCartSheet> {
             Image.network(_selectedType.image, height: 100, fit: BoxFit.cover),
             Padding(
               padding: const EdgeInsets.only(left: 50),
-              child: Text(' ${_selectedType.price.toStringAsFixed(3)}    VNĐ',
+              child: Text(' ${_selectedType.price.toStringAsFixed(3)} VNĐ',
                   style: TextStyle(fontSize: 18, color: Colors.red)),
             ),
           ]),
           SizedBox(
             height: 20,
           ),
-          SizedBox(height: 10),
           Text('Kho: ${_selectedType.quantity}',
               style: TextStyle(fontSize: 18)),
           SizedBox(height: 20),
@@ -55,21 +132,19 @@ class _AddToCartSheetState extends State<AddToCartSheet> {
                   IconButton(
                     icon: Icon(Icons.remove),
                     onPressed: () {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (_quantity > 1) {
                         setState(() {
-                          if (_quantity > 1) _quantity--;
+                          _quantity--;
                         });
-                      });
+                      }
                     },
                   ),
                   Text(_quantity.toString(), style: TextStyle(fontSize: 18)),
                   IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        setState(() {
-                          _quantity++;
-                        });
+                      setState(() {
+                        _quantity++;
                       });
                     },
                   ),
@@ -93,11 +168,12 @@ class _AddToCartSheetState extends State<AddToCartSheet> {
                   );
                 }).toList(),
                 onChanged: (Attribute? newValue) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (newValue != null) {
                     setState(() {
-                      _selectedType = newValue!;
+                      _selectedType = newValue;
+                      _selectedIndex = widget.attributes.indexOf(newValue);
                     });
-                  });
+                  }
                 },
               ),
             ],
@@ -107,10 +183,7 @@ class _AddToCartSheetState extends State<AddToCartSheet> {
             color: Colors.red[300],
             width: double.infinity,
             child: TextButton(
-              onPressed: () {
-                // Handle add to cart here
-                Navigator.pop(context);
-              },
+              onPressed: _addToCart,
               child: Text(
                 'Thêm vào giỏ hàng',
                 style: TextStyle(fontSize: 20, color: Colors.white),
