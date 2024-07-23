@@ -3,6 +3,7 @@ import 'package:app_cosmetic/model/voucher.model.dart';
 import 'package:app_cosmetic/screen/user/Payment/payment_successful.dart';
 import 'package:app_cosmetic/services/cart_service.dart';
 import 'package:app_cosmetic/services/voucher_service.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/model/cart.model.dart';
 import 'package:app_cosmetic/model/checkout.model.dart';
@@ -10,7 +11,7 @@ import 'package:app_cosmetic/services/checkout_service.dart';
 import 'package:intl/intl.dart';
 
 class CheckoutPage extends StatefulWidget {
-  final Cart cart;
+  Cart cart;
   final String userId;
   final int? priceSale;
   final int? percentSale;
@@ -97,11 +98,21 @@ class _CheckoutPageState extends State<CheckoutPage> {
     }
 
     final discount =
-        widget.cart!.totalPriceCart * _appliedVoucher!.percent_sale / 100;
+        widget.cart.totalPriceCart * _appliedVoucher!.percent_sale / 100;
     final maxDiscount = _appliedVoucher!.maxPriceSale.toInt();
     final actualDiscount =
         discount.toInt() > maxDiscount ? maxDiscount : discount.toInt();
-    return widget.cart!.totalPriceCart.toInt() - actualDiscount;
+    return widget.cart.totalPriceCart.toInt() - actualDiscount;
+  }
+
+  Future<void> _refreshCart() async {
+    final cart = await CartService().getCartByUserId(widget.userId);
+    if (cart != null) {
+      setState(() {
+        widget.cart = cart;
+        _discountedPrice = _calculateDiscountedPrice();
+      });
+    }
   }
 
   void _confirmPayment() async {
@@ -149,6 +160,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
         );
         return;
       }
+
+      // Gọi _refreshCart để cập nhật giỏ hàng và giá trị đơn hàng mới nhất
+      await _refreshCart();
 
       double finalPrice = widget.cart.totalPriceCart;
       if (widget.percentSale != null && widget.percentSale! > 0) {
@@ -341,12 +355,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               ),
                               SizedBox(height: 20),
                               Text(
-                                'Tổng đơn hàng: ${_formatMoney(widget.cart!.totalPriceCart.toInt())} đ',
+                                'Tổng đơn hàng: ${_formatMoney(widget.cart.totalPriceCart.toInt())} đ',
                                 style: TextStyle(fontSize: 18),
                               ),
                               if (_appliedVoucher != null) ...[
                                 Text(
-                                  'Giảm giá: ${_formatMoney((widget.cart!.totalPriceCart - _discountedPrice).toInt())} đ',
+                                  'Giảm giá: ${_formatMoney((widget.cart.totalPriceCart - _discountedPrice).toInt())} đ',
                                   style: TextStyle(fontSize: 18),
                                 ),
                                 Text(

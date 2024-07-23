@@ -3,6 +3,7 @@ import 'package:app_cosmetic/model/cart.model.dart';
 import 'package:app_cosmetic/model/voucher.model.dart';
 import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
 import 'package:app_cosmetic/services/cart_service.dart';
+import 'package:app_cosmetic/services/product_service.dart';
 import 'package:app_cosmetic/services/voucher_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -23,6 +24,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Cart? _cart;
   String idCart = '';
   bool _loading = true;
+  late ProductService product;
   @override
   void initState() {
     super.initState();
@@ -85,11 +87,33 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   }
 
   Future<void> _deleteItem(Map<String, dynamic> product) async {
+    final productId = product['productId'];
+    final id = product['id'];
+
+    if (productId == null ||
+        productId.isEmpty ||
+        !RegExp(r'^[0-9a-fA-F]{24}$').hasMatch(productId)) {
+      print('Invalid productId');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Invalid productId')),
+      );
+      return;
+    }
+
+    // Ensure id is an integer or set a default value if needed
+    final validId = id != null && id is int && id >= 0 ? id : -1;
+
     try {
-      await _cartService.deleteItemCart(widget.userId, idCart, product);
+      print(
+          'Attempting to delete item with productId: $productId and id: $validId');
+      await _cartService.deleteItemCart(widget.userId, idCart, {
+        'productId': productId,
+        'id': validId,
+      });
       setState(() {
-        _cart!.itemsCart.removeWhere((item) =>
-            item.productId == product['productId'] && item.id == product['id']);
+        _cart!.itemsCart.removeWhere(
+          (item) => item.productId == productId && item.id == validId,
+        );
       });
     } catch (e) {
       print('Failed to delete item: $e');
@@ -153,10 +177,22 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                                   IconButton(
                                     icon: Icon(Icons.delete),
                                     onPressed: () {
-                                      _deleteItem({
-                                        'productId': item.productId,
-                                        'id': item.id,
-                                      });
+                                      final item = _cart!.itemsCart[index];
+                                      if (item.productId.isNotEmpty) {
+                                        _deleteItem({
+                                          'productId': item.productId,
+                                          'id': item.id,
+                                        });
+                                      } else {
+                                        print(
+                                            'Invalid productId for item ${item.id}');
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                              content: Text(
+                                                  'Invalid productId for item')),
+                                        );
+                                      }
                                     },
                                   ),
                                 ],
