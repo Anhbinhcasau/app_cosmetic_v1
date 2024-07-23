@@ -1,4 +1,5 @@
 import 'package:app_cosmetic/data/config.app.dart';
+import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
 import 'package:app_cosmetic/screen/user/profile/forgot_pass.dart';
 import 'package:app_cosmetic/screen/sign_up.dart';
 import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
@@ -40,7 +41,17 @@ class _LoginPageState extends State<LoginPage> {
       try {
         final signInResponse = await AuthService.signIn(userName, password);
 
-        if (signInResponse == 'Sign In Successful') {
+        if (signInResponse == 'Sign In Successful' && userName == 'admin') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Xin chào Admin')),
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NavBar(),
+            ),
+          );
+        } else if (signInResponse == 'Sign In Successful') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Xin chào')),
           );

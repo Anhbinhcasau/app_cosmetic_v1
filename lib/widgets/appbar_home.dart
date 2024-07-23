@@ -57,9 +57,10 @@ class _AppBarHomeState extends State<AppBarHome> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ShoppingCartPage(
-                            userId: userId ?? '',
-                          )),
+                    builder: (context) => ShoppingCartPage(
+                      userId: userId ?? '',
+                    ),
+                  ),
                 );
               },
             ),
