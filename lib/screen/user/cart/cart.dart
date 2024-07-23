@@ -5,14 +5,13 @@ import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
 import 'package:app_cosmetic/services/cart_service.dart';
 import 'package:app_cosmetic/services/product_service.dart';
 import 'package:app_cosmetic/services/voucher_service.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShoppingCartPage extends StatefulWidget {
-  final String userId;
-
-  ShoppingCartPage({super.key, required this.userId});
+  const ShoppingCartPage({super.key});
 
   @override
   _ShoppingCartPageState createState() => _ShoppingCartPageState();
@@ -24,6 +23,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Cart? _cart;
   String idCart = '';
   bool _loading = true;
+  String? userId;
   late ProductService product;
   @override
   void initState() {
@@ -40,7 +40,9 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 
   Future<void> _loadCart() async {
     try {
-      final cart = await _cartService.getCartByUserId(widget.userId);
+      SharedPreferences prefss = await SharedPreferences.getInstance();
+      userId = prefss.getString('userId');
+      final cart = await _cartService.getCartByUserId(userId!);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? idCart = prefs.getString('_id');
       if (cart != null) {
@@ -50,7 +52,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           this.idCart = idCart ?? '';
         });
       } else {
-        print('Cart not found for user ${widget.userId}');
+        print('Cart not found for user $userId');
         setState(() {
           _loading = false;
         });
@@ -93,30 +95,31 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     if (productId == null ||
         productId.isEmpty ||
         !RegExp(r'^[0-9a-fA-F]{24}$').hasMatch(productId)) {
-      print('Invalid productId');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Invalid productId')),
       );
       return;
     }
 
-    // Ensure id is an integer or set a default value if needed
     final validId = id != null && id is int && id >= 0 ? id : -1;
 
     try {
-      print(
-          'Attempting to delete item with productId: $productId and id: $validId');
-      await _cartService.deleteItemCart(widget.userId, idCart, {
+      await _cartService.deleteItemCart(userId!, idCart, {
         'productId': productId,
         'id': validId,
       });
+
       setState(() {
         _cart!.itemsCart.removeWhere(
           (item) => item.productId == productId && item.id == validId,
         );
       });
+
+      // Update the cart item count in SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int currentCount = prefs.getInt('cartItemCount') ?? 0;
+      prefs.setInt('cartItemCount', currentCount - 1);
     } catch (e) {
-      print('Failed to delete item: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to delete item')),
       );
@@ -126,13 +129,36 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Giỏ hàng'),
+        centerTitle: true,
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator())
           : _cart == null || _cart!.itemsCart.isEmpty
-              ? Center(child: Text('Giỏ hàng trống'))
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Hãy thêm sản phẩm nhé!!!',
+                      style: TextStyle(fontSize: 25, color: Colors.amber),
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                        child: InkWell(
+                      child: Image.asset('assets/mt.jpg'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MainScreen(),
+                          ),
+                        );
+                      },
+                    )),
+                  ],
+                )
               : Column(
                   children: [
                     Expanded(
@@ -154,7 +180,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                               ),
                               title: Text(item.typeProduct),
                               subtitle: Text(
-                                  'Giá: ${_formatMoney(item.price.toInt())} đ'),
+                                  'Giá: ${_formatMoney(item.price.toInt() * item.quantity)}đ'),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -203,25 +229,32 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CheckoutPage(
-                              userId: widget.userId,
-                              cart: _cart!,
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CheckoutPage(
+                                userId: userId!,
+                                cart: _cart!,
+                              ),
                             ),
+                          );
+                        },
+                        child: Text(
+                          'Đặt hàng',
+                          style: TextStyle(fontSize: 20, color: AppColors.text),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                        );
-                      },
-                      child: Text(
-                        'Đặt hàng',
-                        style: TextStyle(fontSize: 16, color: AppColors.text),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          minimumSize: Size(double.infinity, 30),
+                        ),
                       ),
                     )
                   ],

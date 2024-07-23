@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app_cosmetic/screen/user/cart/cart.dart';
+import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
 import 'package:app_cosmetic/screen/user/comment/comment.dart';
 import 'package:app_cosmetic/widgets/products/showbottomsheet.dart';
 import 'package:flutter/material.dart';
@@ -361,14 +362,14 @@ class _ProductDetailState extends State<ProductDetail> {
                       await SharedPreferences.getInstance();
                   String? userId = prefs.getString('userId');
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ShoppingCartPage(
-                        userId: userId ?? 'Null',
-                      ),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => CheckoutPage(
+                  //       userId: userId ?? 'Null',
+                  //     ),
+                  //   ),
+                  // );
                 },
                 child: Text(
                   'Mua ngay',

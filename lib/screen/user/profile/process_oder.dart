@@ -1,3 +1,4 @@
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/model/order.model.dart';
 import 'package:app_cosmetic/services/order_service.dart';
@@ -25,6 +26,18 @@ class _ProcessOrderState extends State<ProcessOrder> {
             title: Text(
               "ĐƠN HÀNG",
               style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_sharp),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainScreen(),
+                  ),
+                );
+              },
             ),
             centerTitle: true,
             bottom: TabBar(
