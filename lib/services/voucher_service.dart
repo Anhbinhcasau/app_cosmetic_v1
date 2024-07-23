@@ -13,7 +13,7 @@ class VoucherService {
       body: jsonEncode(voucher.toJson()),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return VoucherDto.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to create voucher');
@@ -75,6 +75,8 @@ class VoucherService {
   }
 
   Future<VoucherDto?> findVoucherByVoucherName(String voucherName) async {
+    print(voucherName);
+
     final response = await http.post(
       Uri.parse('${Api.DB_URI}/voucher/applyVoucher'),
       headers: <String, String>{
@@ -83,8 +85,10 @@ class VoucherService {
       body: jsonEncode({'voucherName': voucherName}),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return VoucherDto.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      return null;
     } else {
       throw Exception('Failed to apply voucher');
     }

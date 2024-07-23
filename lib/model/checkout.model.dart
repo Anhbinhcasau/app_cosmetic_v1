@@ -1,13 +1,13 @@
 class Checkout {
   String cartId;
   String userId;
-  double totalPrice;
+  int totalPrice;
   String fullName;
   String email;
   String address;
   String phoneNumber;
-  double? priceSale;
-  double? percentSale;
+  int? priceSale;
+  int? percentSale;
 
   Checkout({
     required this.cartId,
@@ -23,15 +23,15 @@ class Checkout {
 
   factory Checkout.fromJson(Map<String, dynamic> json) {
     return Checkout(
-      cartId: json['cartId'],
-      userId: json['userId'],
-      totalPrice: json['total_price'],
-      fullName: json['full_name'],
-      email: json['email'],
-      address: json['address'],
-      phoneNumber: json['phone_number'],
-      priceSale: json['price_sale'],
-      percentSale: json['percent_sale'],
+      cartId: json['cartId'] as String,
+      userId: json['userId'] as String,
+      totalPrice: json['total_price'] as int,
+      fullName: json['full_name'] as String,
+      email: json['email'] as String,
+      address: json['address'] as String,
+      phoneNumber: json['phone_number'] as String,
+      priceSale: json['price_sale'] ?? 0,
+      percentSale: json['percent_sale'] ?? 0,
     );
   }
 

@@ -1,5 +1,8 @@
+import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
+import 'package:app_cosmetic/services/auth_service.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:app_cosmetic/widgets/user/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/sign_in.dart';
@@ -33,29 +36,36 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
-      final user = User(
-        id: '',
-        userName: _nameController.text.trim(),
-        password: _passwordController.text.trim(),
-        email: _emailController.text.trim(),
-        active: true,
-        role: 'User',
-      );
+      String userName = _nameController.text.trim();
+      String password = _passwordController.text.trim();
 
       try {
-        await userListViewModel.signUpUser(user);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Đăng ký thành công!')),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LoginPage(),
-          ),
-        );
+        final signInResponse = await AuthService.signIn(userName, password);
+
+        if (signInResponse == 'Sign In Successful') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Xin chào')),
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScreen(),
+            ),
+          );
+        } else if (signInResponse == 'Incorrect username or password') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text('Tên tài khoản của bạn hoặc Mật khẩu không đúng')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(signInResponse)),
+          );
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Đăng ký thất bại: $e')),
+          SnackBar(content: Text('Đăng nhập thất bại: $e')),
         );
       }
     }
@@ -70,6 +80,7 @@ class _SignUpPageState extends State<SignUpPage> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
+          automaticallyImplyLeading: false,
         ),
         body: Center(
           child: SingleChildScrollView(
@@ -102,7 +113,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Color(0xFFE3E7D3),
+                      fillColor: AppColors.secondsColor,
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -124,7 +135,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderSide: BorderSide.none, // Remove the border
                       ),
                       filled: true,
-                      fillColor: Color(0xFFE3E7D3),
+                      fillColor: AppColors.secondsColor,
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -149,7 +160,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderSide: BorderSide.none, // Remove the border
                       ),
                       filled: true,
-                      fillColor: Color(0xFFE3E7D3),
+                      fillColor: AppColors.secondsColor,
                     ),
                     obscureText: true,
                     validator: (value) {
@@ -165,7 +176,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFA2AA7B),
+                      color: AppColors.primaryColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     height: 52,
@@ -197,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           'Đăng Nhập',
                           style: TextStyle(
                             fontSize: 20,
-                            color: Color(0xFFA2AA7B),
+                            color: AppColors.primaryColor,
                           ),
                         ),
                       ),

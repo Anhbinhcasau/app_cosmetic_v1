@@ -1,16 +1,16 @@
 class VoucherDto {
   final String id;
-  final double priceSale;
+  final int percent_sale;
   final List<String> userUsed;
   final String nameVoucher;
   final String description;
-  final double maxPriceSale;
+  final int maxPriceSale;
   final int quantity;
   final String codeVoucher;
 
   VoucherDto({
     required this.id,
-    required this.priceSale,
+    required this.percent_sale,
     required this.userUsed,
     required this.nameVoucher,
     required this.description,
@@ -22,11 +22,15 @@ class VoucherDto {
   factory VoucherDto.fromJson(Map<String, dynamic> json) {
     return VoucherDto(
       id: json['_id'],
-      priceSale: json['priceSale'].toDouble(),
+      percent_sale: json['priceSale'] is double
+          ? (json['priceSale'] as double).toInt()
+          : json['priceSale'],
       userUsed: List<String>.from(json['userUsed']),
       nameVoucher: json['nameVoucher'],
       description: json['description'],
-      maxPriceSale: json['maxPriceSale'].toDouble(),
+      maxPriceSale: json['maxPriceSale'] is double
+          ? (json['maxPriceSale'] as double).toInt()
+          : json['maxPriceSale'],
       quantity: json['quantity'],
       codeVoucher: json['codeVoucher'],
     );
@@ -35,7 +39,7 @@ class VoucherDto {
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
-      'priceSale': priceSale,
+      'priceSale': percent_sale,
       'userUsed': userUsed,
       'nameVoucher': nameVoucher,
       'description': description,
