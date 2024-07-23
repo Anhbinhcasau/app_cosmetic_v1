@@ -64,7 +64,6 @@ class ProductService {
   }
 
   static Future<Product> updateProduct(Product product) async {
-   
     try {
       var url = Uri.parse("${Api.DB_URI}/product/updateProduct");
       Map<String, dynamic> productJson = product.productJson();
@@ -105,8 +104,9 @@ class ProductService {
       throw Exception('Failed to delete product. Error: $e');
     }
   }
+
   static Future<Comment> commentProduct(Comment comment) async {
-     try {
+    try {
       var url = Uri.parse("${Api.DB_URI}/product/comment");
       Map<String, dynamic> commentjs = comment.toJson();
       print(commentjs);
@@ -119,14 +119,14 @@ class ProductService {
       } else if (response.statusCode == 403) {
         // Assuming 400 Bad Request if comment already exists
         final responseBody = jsonDecode(response.body);
-       throw Exception(responseBody['message'] ?? 'Comment alread y exists.');
+        throw Exception(responseBody['message'] ?? 'Comment alread y exists.');
       } else {
         // If the server does not return a created response, throw an exception
         throw Exception(
             'Failed to create comment. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Failed to post comment. Error: $e');
+      throw Exception(e);
     }
   }
 }

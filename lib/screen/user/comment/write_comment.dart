@@ -33,7 +33,7 @@ class _WriteCommentState extends State<WriteComment> {
   void _submitReview() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('userId');
-      String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
+    String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
 
     try {
       Comment newComment = Comment(
@@ -41,18 +41,25 @@ class _WriteCommentState extends State<WriteComment> {
         userId: userId!,
         comment: _reviewController.text,
         rating: _rating,
-        date: currentDate, 
+        date: currentDate,
         images: _selectedImages,
       );
-      
+
       await ProductService.commentProduct(newComment);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => CommentThank()),
       );
-    } catch (e) {
-       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Bạn đã bình luận sản phẩm này rồi.')),
+    } on Exception catch (e) {
+      String errorMessage = e.toString();
+      if (errorMessage.startsWith('Exception: ')) {
+        errorMessage =
+            errorMessage.substring(11); // Remove 'Exception: ' from the message
+      }
+
+      // Hiển thị thông báo lỗi
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
       );
     }
   }
