@@ -1,13 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PickerImage extends StatefulWidget {
-  const PickerImage({super.key});
+  final Function(List<String>) onImagesSelected;
+
+  const PickerImage({super.key, required this.onImagesSelected});
 
   @override
   State<PickerImage> createState() => _PickerImageState();
@@ -16,6 +15,7 @@ class PickerImage extends StatefulWidget {
 class _PickerImageState extends State<PickerImage> {
   List<File> selectedImages = [];
   final picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -67,21 +67,22 @@ class _PickerImageState extends State<PickerImage> {
                       ),
                       itemBuilder: (BuildContext context, int index) {
                         return Center(
-                            child: kIsWeb
-                                ? Image.network(
-                                    selectedImages[index].path,
-                                    height: 50,
-                                    width: 50,
-                                    fit: BoxFit.fill,
-                                    alignment: Alignment.center,
-                                  )
-                                : Image.file(
-                                    selectedImages[index],
-                                    height: 100,
-                                    width: 100,
-                                    fit: BoxFit.fill,
-                                    alignment: Alignment.center,
-                                  ));
+                          child: kIsWeb
+                              ? Image.network(
+                                  selectedImages[index].path,
+                                  height: 50,
+                                  width: 50,
+                                  fit: BoxFit.fill,
+                                  alignment: Alignment.center,
+                                )
+                              : Image.file(
+                                  selectedImages[index],
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit.fill,
+                                  alignment: Alignment.center,
+                                ),
+                        );
                       },
                     ),
                   ),
@@ -92,25 +93,27 @@ class _PickerImageState extends State<PickerImage> {
   }
 
   //////////////////////
-  Future getImages() async {
+  Future<void> getImages() async {
     final pickedFile = await picker.pickMultiImage(
-        requestFullMetadata: true,
-        imageQuality: 100,
-        maxHeight: 1000,
-        maxWidth: 1000);
-    List<XFile> xfilePick = pickedFile;
-
-    setState(
-      () {
-        if (xfilePick.isNotEmpty) {
-          for (var i = 0; i < xfilePick.length; i++) {
-            selectedImages.add(File(xfilePick[i].path));
-          }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(// is this context <<<
-              const SnackBar(content: Text('Nothing is selected')));
-        }
-      },
+      requestFullMetadata: true,
+      imageQuality: 100,
+      maxHeight: 1000,
+      maxWidth: 1000,
     );
+
+    if (pickedFile.isNotEmpty) {
+      List<File> images = pickedFile.map((xfile) => File(xfile.path)).toList();
+
+      setState(() {
+        selectedImages.addAll(images);
+      });
+
+      // Call the callback with the selected images' paths
+      widget.onImagesSelected(selectedImages.map((file) => file.path).toList());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nothing is selected')),
+      );
+    }
   }
 }
