@@ -1,5 +1,6 @@
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/screen/sign_in.dart';
+import 'package:app_cosmetic/screen/user/profile/change_profile.dart';
 import 'package:app_cosmetic/services/user_service.dart';
 import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
@@ -64,10 +65,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             children: [
               avatar != null
-                  ? CircleAvatar(
-                      backgroundColor: AppColors.primaryColor,
-                      radius: 55,
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserProfileScreen()),
+                        );
+                      },
                       child: CircleAvatar(
+                        backgroundColor: AppColors.primaryColor,
+                        radius: 55,
+                        child: CircleAvatar(
                           radius: 50,
                           backgroundImage: NetworkImage(avatar!),
                           child: Align(
@@ -76,17 +85,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               radius: 13,
                               backgroundColor: Colors.green,
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                     )
                   : CircleAvatar(
-                    radius: 55,
-                    backgroundColor: Colors.blueGrey,
-                    child: CircleAvatar(
+                      radius: 55,
+                      backgroundColor: Colors.blueGrey,
+                      child: CircleAvatar(
                         radius: 50,
                         backgroundImage: NetworkImage(
                             'https://i.pinimg.com/236x/b1/df/5c/b1df5c0fd9ac7073b1710ece19b81407.jpg'),
                       ),
-                  ),
+                    ),
               SizedBox(height: 16),
               userId != null && userId!.isNotEmpty
                   ? Column(
@@ -112,6 +123,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             style: TextStyle(fontSize: AppTexts.size_text),
                           ),
                         ),
+                        ListTile(
+                          leading:
+                              Icon(Icons.shopping_bag, color: Colors.brown),
+                          title: Text(
+                            'Đơn hàng',
+                            style: TextStyle(fontSize: AppTexts.size_text),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProcessOrder(userId: userId!)),
+                            );
+                          },
+                        ),
                       ],
                     )
                   : Text(
@@ -127,19 +153,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 onTap: () {
                   // Handle navigation to "Payment Methods"
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.shopping_bag, color: Colors.brown),
-                title: Text(
-                  'Đơn hàng',
-                  style: TextStyle(fontSize: AppTexts.size_text),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProcessOder()),
-                  );
                 },
               ),
               ListTile(
@@ -185,4 +198,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-

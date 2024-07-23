@@ -1,9 +1,9 @@
-import 'package:app_cosmetic/model/product/product.model.dart';
+import 'package:app_cosmetic/model/cart.model.dart';
 
 class Order {
   final String id;
   final String userId;
-  final List<Product> products;
+  final List<ItemCart> products;
   final double totalPrice;
   final String fullName;
   final String email;
@@ -14,7 +14,6 @@ class Order {
   final double percentSale;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String paymentMethod;
 
   Order({
     required this.id,
@@ -30,26 +29,26 @@ class Order {
     required this.percentSale,
     required this.createdAt,
     required this.updatedAt,
-    required this.paymentMethod,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
-    List<Product> products = (json['products'] as List<dynamic>).map<Product>((productJson) => Product.fromJson(productJson)).toList();
     return Order(
       id: json['_id'] ?? '',
       userId: json['userId'] ?? '',
-      products: products,
-      totalPrice: json['total_price'].toDouble() ?? 0.0,
+      products: (json['products'] as List<dynamic>?)
+              ?.map((productJson) => ItemCart.fromJson(productJson))
+              .toList() ??
+          [],
+      totalPrice: (json['total_price'] as num?)?.toDouble() ?? 0.0,
       fullName: json['full_name'] ?? '',
       email: json['email'] ?? '',
       address: json['address'] ?? '',
-      phoneNumber: json['phone_number'] ?? 0,
-      status: json['status'] ?? 1,
-      priceSale: json['price_sale'] ?? 0.0,
-      percentSale: json['percent_sale'] ?? 0.0,
-      createdAt: DateTime.parse(json['createAt']['\$date']),
-      updatedAt: DateTime.parse(json['updateAt']['\$date']),
-      paymentMethod: json['payment_method'],
+      phoneNumber: (json['phone_number'] as int?) ?? 0,
+      status: (json['status'] as int?) ?? 1,
+      priceSale: (json['price_sale'] as num?)?.toDouble() ?? 0.0,
+      percentSale: (json['percent_sale'] as num?)?.toDouble() ?? 0.0,
+      createdAt: DateTime.parse(json['createAt']),
+      updatedAt: DateTime.parse(json['updateAt']),
     );
   }
 
@@ -57,7 +56,17 @@ class Order {
     return {
       'id': id,
       'userId': userId,
-      'products': products.map((product) => product.toString()).toList(),
+      'products': products
+          .map((products) => {
+                'productId': products.productId,
+                'id': products.id,
+                'userId': products.userId,
+                'type_product': products.typeProduct,
+                'quantity': products.quantity,
+                'price': products.price,
+                'image': products.image,
+              })
+          .toList(),
       'total_price': totalPrice,
       'full_name': fullName,
       'email': email,
@@ -68,7 +77,6 @@ class Order {
       'percent_sale': percentSale,
       'createAt': {'\$date': createdAt.toIso8601String()},
       'updateAt': {'\$date': updatedAt.toIso8601String()},
-      'payment_method': paymentMethod,
     };
   }
 }

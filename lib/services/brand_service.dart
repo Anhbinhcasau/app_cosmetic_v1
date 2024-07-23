@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/model/brand.model.dart';
@@ -14,7 +13,6 @@ class BrandService {
         final List<dynamic> jsonResponse = jsonDecode(response.body);
         List<Brand> brands =
             jsonResponse.map((item) => Brand.fromJson(item)).toList();
-
         print('done $brands');
         return brands;
       } else {
