@@ -1,8 +1,11 @@
-import 'dart:convert';
+import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/model/cart.model.dart';
+import 'package:app_cosmetic/model/voucher.model.dart';
 import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
 import 'package:app_cosmetic/services/cart_service.dart';
+import 'package:app_cosmetic/services/voucher_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShoppingCartPage extends StatefulWidget {
@@ -16,15 +19,21 @@ class ShoppingCartPage extends StatefulWidget {
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
   late CartService _cartService;
+  late VoucherService _voucherService;
   Cart? _cart;
   String idCart = '';
   bool _loading = true;
-
   @override
   void initState() {
     super.initState();
     _cartService = CartService();
+    _voucherService = VoucherService();
     _loadCart();
+  }
+
+  String _formatMoney(int amount) {
+    final formatter = NumberFormat.decimalPattern('vi_VN');
+    return formatter.format(amount);
   }
 
   Future<void> _loadCart() async {
@@ -78,13 +87,11 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Future<void> _deleteItem(Map<String, dynamic> product) async {
     try {
       await _cartService.deleteItemCart(widget.userId, idCart, product);
-      // Refresh cart items or update UI as needed
       setState(() {
         _cart!.itemsCart.removeWhere((item) =>
             item.productId == product['productId'] && item.id == product['id']);
       });
     } catch (e) {
-      // Handle error
       print('Failed to delete item: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to delete item')),
@@ -96,7 +103,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Cart : ${widget.userId}'),
+        title: Text('Giỏ hàng'),
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator())
@@ -122,7 +129,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                                 ),
                               ),
                               title: Text(item.typeProduct),
-                              subtitle: Text('Price: \$${item.price}'),
+                              subtitle: Text(
+                                  'Giá: ${_formatMoney(item.price.toInt())} đ'),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -135,7 +143,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                                       }
                                     },
                                   ),
-                                  Text('${item.quantity}'),
+                                  Text(item.quantity.toString()),
                                   IconButton(
                                     icon: Icon(Icons.add),
                                     onPressed: () {
@@ -158,45 +166,28 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                         },
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextField(
-                            decoration: InputDecoration(
-                              labelText: 'Promo Code',
-                              suffixIcon: ElevatedButton(
-                                onPressed: () {},
-                                child: Text('Apply'),
-                              ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CheckoutPage(
+                              userId: widget.userId,
+                              cart: _cart!,
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Text(
-                              'Sub-Total: \$${_cart!.totalPriceCart.toStringAsFixed(2)}'),
-                          SizedBox(height: 10),
-                          Text(
-                            'Total Cost: \$${_cart!.totalPriceCart.toStringAsFixed(2)}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CheckoutPage(
-                                          userId: widget.userId,
-                                          cart: _cart!,
-                                        )),
-                              );
-                            },
-                            child: Text('Proceed to Checkout'),
-                          ),
-                        ],
+                        );
+                      },
+                      child: Text(
+                        'Đặt hàng',
+                        style: TextStyle(fontSize: 16, color: AppColors.text),
                       ),
-                    ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    )
                   ],
                 ),
     );

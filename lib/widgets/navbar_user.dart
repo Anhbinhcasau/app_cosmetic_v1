@@ -33,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
       HomePage(),
       CouponsScreen(),
       ProductList_User(),
-      ProfileScreen(id: id),
+      ProfileScreen(),
     ];
   }
 

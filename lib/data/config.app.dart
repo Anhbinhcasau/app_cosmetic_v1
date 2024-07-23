@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Api {
-
-  static const String DB_URI = 'http://192.168.1.136:8080/api/v1';
-
-
+  static const String DB_URI = 'http://192.168.1.6:8080/api/v1';
 }
 
 class AppColors {
