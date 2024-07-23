@@ -27,8 +27,8 @@ class _VoucherManagementScreenState extends State<VoucherManagementScreen> {
       builder: (BuildContext context) {
         String name = '';
         String description = '';
-        double priceSale = 0.0;
-        double maxPriceSale = 0.0;
+        int priceSale = 0;
+        int maxPriceSale = 0;
         int quantity = 0;
         String code = '';
 
@@ -54,12 +54,12 @@ class _VoucherManagementScreenState extends State<VoucherManagementScreen> {
                 _buildTextField(
                     'Giá giảm',
                     'Giá giảm',
-                    (value) => priceSale = double.tryParse(value) ?? 0.0,
+                    (value) => priceSale = int.tryParse(value) ?? 0,
                     TextInputType.number),
                 _buildTextField(
                     'Giảm tối đa',
                     'Giảm tối đa',
-                    (value) => maxPriceSale = double.tryParse(value) ?? 0.0,
+                    (value) => maxPriceSale = int.tryParse(value) ?? 0,
                     TextInputType.number),
                 _buildTextField(
                     'Số lượng',
@@ -82,7 +82,7 @@ class _VoucherManagementScreenState extends State<VoucherManagementScreen> {
               child: Text('Thêm', style: TextStyle(color: Colors.green)),
               onPressed: () {
                 final voucher = VoucherDto(
-                  priceSale: priceSale,
+                  percent_sale: priceSale,
                   userUsed: [],
                   nameVoucher: name,
                   description: description,
@@ -212,7 +212,7 @@ class _VoucherManagementScreenState extends State<VoucherManagementScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Giảm giá: ${voucher.priceSale}%'),
+                        Text('Giảm giá: ${voucher.percent_sale}%'),
                         Text('Số lượng: ${voucher.quantity}'),
                         Text('Code: ${voucher.codeVoucher}'),
                       ],

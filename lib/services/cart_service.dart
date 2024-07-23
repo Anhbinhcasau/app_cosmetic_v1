@@ -46,7 +46,7 @@ class CartService {
     print('Request body: ${jsonEncode(item.toJson())}');
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return Cart.fromJson(jsonDecode(response.body));
     } else {
       print('Failed to add item to cart');
