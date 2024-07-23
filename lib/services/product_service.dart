@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:app_cosmetic/data/config.app.dart';
+import 'package:app_cosmetic/model/product/comment.dart';
 import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
@@ -63,7 +64,6 @@ class ProductService {
   }
 
   static Future<Product> updateProduct(Product product) async {
-    print(product.material);
     try {
       var url = Uri.parse("${Api.DB_URI}/product/updateProduct");
       Map<String, dynamic> productJson = product.productJson();
@@ -102,6 +102,31 @@ class ProductService {
     } catch (e) {
       print('Failed to delete product. Error: $e');
       throw Exception('Failed to delete product. Error: $e');
+    }
+  }
+
+  static Future<Comment> commentProduct(Comment comment) async {
+    try {
+      var url = Uri.parse("${Api.DB_URI}/product/comment");
+      Map<String, dynamic> commentjs = comment.toJson();
+      print(commentjs);
+      final response = await http.post(url,
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(commentjs));
+      if (response.statusCode == 201) {
+        // If the server returns a created response, parse the JSON
+        return Comment.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 403) {
+        // Assuming 400 Bad Request if comment already exists
+        final responseBody = jsonDecode(response.body);
+        throw Exception(responseBody['message'] ?? 'Comment alread y exists.');
+      } else {
+        // If the server does not return a created response, throw an exception
+        throw Exception(
+            'Failed to create comment. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

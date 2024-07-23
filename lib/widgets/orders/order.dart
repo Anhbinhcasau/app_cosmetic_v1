@@ -41,7 +41,11 @@ class OrderListScreen extends StatelessWidget {
       body: Consumer<OrderListViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.orders.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child: Text(
+              'Không có đơn hàng nào ở đây',
+              style: TextStyle(fontSize: 20),
+            ));
           }
 
           return ListView.builder(
@@ -49,12 +53,10 @@ class OrderListScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final order = viewModel.orders[index];
               int orderStatus = order?.status ?? 0;
-              orderStatus = (orderStatus >= 1 && orderStatus <= 4)
-                  ? orderStatus - 1
-                  : 0; // Ensure index is within range
+              orderStatus =
+                  (orderStatus >= 1 && orderStatus <= 5) ? orderStatus - 1 : 0;
               return GestureDetector(
                 onTap: () {
-                  // Navigate to OrderDetailPage with order details
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -79,9 +81,8 @@ class OrderListScreen extends StatelessWidget {
                                   horizontal: 8, vertical: 4),
                               child: Text(
                                 '${order?.totalPrice ?? 0}',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
+                                style:
+                                    TextStyle(fontSize: 18, color: Colors.red),
                               ),
                             )
                           ],
@@ -92,7 +93,7 @@ class OrderListScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Mã đơn: ${order?.id ?? ''}',
+                                '${order?.id ?? ''}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
@@ -101,23 +102,50 @@ class OrderListScreen extends StatelessWidget {
                                 children: [
                                   Icon(Icons.calendar_month_outlined, size: 20),
                                   SizedBox(width: 4),
-                                  Text(
-                                    '${order?.createdAt.hour}:${order?.createdAt.minute} - ${order?.createdAt.day}/${order?.createdAt.month}/${order?.createdAt.year}',
-                                    style: TextStyle(fontSize: 18),
+                                  Flexible(
+                                    child: Text(
+                                      '${order?.createdAt.hour}:${order?.createdAt.minute} - ${order?.createdAt.day}/${order?.createdAt.month}/${order?.createdAt.year}',
+                                      style: TextStyle(fontSize: 18),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ],
-                              ),
+                              )
                             ],
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Icon(
-                            Icons.skip_next_outlined,
-                            size: 50,
-                            color: Colors.green,
-                          ),
-                        )
+                        order.status != 3
+                            ? TextButton(
+                                onPressed: () async {
+                                  final userId = order.userId;
+                                  final orderId = order.id;
+                                  if (order != null) {
+                                    try {
+                                      if (order.status == 1) {
+                                        await orderListViewModel
+                                            .updateOrderStatusToDelivering(
+                                                orderId, userId);
+                                      } else if (order.status == 2) {
+                                        await orderListViewModel
+                                            .updateOrderStatusToCompleted(
+                                                orderId, userId);
+                                      }
+                                      // Refresh the list or navigate away
+                                      orderListViewModel
+                                          .fetchOrdersByStatus(status);
+                                    } catch (e) {
+                                      // Handle exception
+                                      print('Error updating order status: $e');
+                                    }
+                                  }
+                                },
+                                child: Icon(
+                                  Icons.skip_next_outlined,
+                                  size: 50,
+                                  color: Colors.green,
+                                ),
+                              )
+                            : SizedBox.shrink(),
                       ],
                     ),
                   ),

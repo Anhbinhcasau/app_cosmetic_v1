@@ -19,6 +19,7 @@ class _NavbarOrderState extends State<NavbarOrder> {
       children: [
         AppBar(
           centerTitle: true,
+          automaticallyImplyLeading: false,
           backgroundColor: const Color(0xFF13131A),
           title: const Text(
             '# ĐƠN HÀNG',

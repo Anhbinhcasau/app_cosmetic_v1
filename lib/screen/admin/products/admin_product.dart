@@ -22,7 +22,13 @@ class _ProductListState extends State<ProductList> {
     productListViewModel.getProductList();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Product"),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF13131A),
+        title: const Text(
+          '# DANH MỤC',
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+        ),
         actions: [
           IconButton(
               onPressed: () {
@@ -34,6 +40,7 @@ class _ProductListState extends State<ProductList> {
               icon: Icon(
                 Icons.add_circle_outline,
                 size: 40,
+                color: Colors.white,
               ))
         ],
       ),

@@ -36,36 +36,44 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
-      String userName = _nameController.text.trim();
-      String password = _passwordController.text.trim();
+      final user = User(
+        id: '',
+        userName: _nameController.text.trim(),
+        password: _passwordController.text.trim(),
+        email: _emailController.text.trim(),
+        active: true,
+        role: 'User',
+      );
 
       try {
-        final signInResponse = await AuthService.signIn(userName, password);
+        final signUpResult = await userListViewModel.signUpUser(user);
 
-        if (signInResponse == 'Sign In Successful') {
+        if (signUpResult == 'Sign Up Successful') {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Xin chào')),
+            const SnackBar(content: Text('Đăng ký thành công!')),
           );
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MainScreen(),
+              builder: (context) => LoginPage(),
             ),
           );
-        } else if (signInResponse == 'Incorrect username or password') {
+        } else if (signUpResult == 'Account already exists') {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content:
-                    Text('Tên tài khoản của bạn hoặc Mật khẩu không đúng')),
+            SnackBar(content: Text('Tài khoản này đã tồn tại')),
+          );
+        } else if (signUpResult == 'Internal server error') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Đăng ký thất bại')),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(signInResponse)),
+            SnackBar(content: Text(signUpResult)),
           );
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Đăng nhập thất bại: $e')),
+          SnackBar(content: Text('Đăng ký thất bại: $e')),
         );
       }
     }
@@ -243,18 +251,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       const SizedBox(
                         width: 30,
                       ),
-                      ElevatedButton(
-                        child: Image.asset(
-                          'assets/twitter.png',
-                          width: 40,
-                          height: 40,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => NavBar()),
-                          );
-                        },
+                      Image.asset(
+                        'assets/twitter.png',
+                        width: 40,
+                        height: 40,
                       ),
                     ],
                   )

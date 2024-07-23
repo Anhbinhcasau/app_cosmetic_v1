@@ -2,6 +2,7 @@ import 'package:app_cosmetic/screen/user/cart/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 class AppBarHome extends StatefulWidget {
   const AppBarHome({Key? key}) : super(key: key);
 
@@ -57,9 +58,10 @@ class _AppBarHomeState extends State<AppBarHome> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ShoppingCartPage(
-                            userId: userId ?? '',
-                          )),
+                    builder: (context) => ShoppingCartPage(
+                      userId: userId ?? '',
+                    ),
+                  ),
                 );
               },
             ),

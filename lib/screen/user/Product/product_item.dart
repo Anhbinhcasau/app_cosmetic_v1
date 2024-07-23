@@ -2,11 +2,10 @@
 import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
-import 'package:app_cosmetic/screen/user/cart/cart.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductItem extends StatefulWidget {
   const ProductItem({super.key});

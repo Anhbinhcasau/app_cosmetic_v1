@@ -1,21 +1,83 @@
+import 'dart:io';
+
+import 'package:app_cosmetic/model/product/comment.dart';
+import 'package:app_cosmetic/services/product_service.dart';
+import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/user/comment/comment_thank.dart';
 import 'package:app_cosmetic/screen/user/comment/picker_image.dart';
-import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WriteComment extends StatefulWidget {
-  const WriteComment({super.key});
+  final String idProduct;
+
+  const WriteComment({super.key, required this.idProduct});
 
   @override
   State<WriteComment> createState() => _WriteCommentState();
 }
 
 class _WriteCommentState extends State<WriteComment> {
+  double _rating = 0;
+  final TextEditingController _reviewController = TextEditingController();
+  List<String> _selectedImages = [];
+
+  String? userId;
+
+  @override
+  void dispose() {
+    _reviewController.dispose();
+    super.dispose();
+  }
+
+  void _submitReview() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId');
+    String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
+
+    try {
+      Comment newComment = Comment(
+        productId: widget.idProduct,
+        userId: userId!,
+        comment: _reviewController.text,
+        rating: _rating,
+        date: currentDate,
+        images: _selectedImages,
+      );
+
+      await ProductService.commentProduct(newComment);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CommentThank()),
+      );
+    } on Exception catch (e) {
+      String errorMessage = e.toString();
+      if (errorMessage.startsWith('Exception: ')) {
+        errorMessage =
+            errorMessage.substring(11); // Remove 'Exception: ' from the message
+      }
+
+      // Hiển thị thông báo lỗi
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Lỗi'),
+            content: Text(errorMessage),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -29,14 +91,17 @@ class _WriteCommentState extends State<WriteComment> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              "Chất lượng sản phẩm ",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                "Chất lượng sản phẩm",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
             Align(
               alignment: Alignment.center,
               child: RatingBar.builder(
-                initialRating: 3.5,
+                initialRating: 0,
                 minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: true,
@@ -48,14 +113,21 @@ class _WriteCommentState extends State<WriteComment> {
                   color: Colors.amber,
                 ),
                 onRatingUpdate: (rating) {
-                  print(rating);
+                  setState(() {
+                    _rating = rating;
+                  });
                 },
               ),
             ),
-            PickerImage(),
+            PickerImage(onImagesSelected: (images) {
+              setState(() {
+                _selectedImages = images;
+              });
+            }),
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.all(20.0),
               child: TextField(
+                controller: _reviewController,
                 maxLines: 5,
                 decoration: InputDecoration(
                   filled: true,
@@ -78,12 +150,7 @@ class _WriteCommentState extends State<WriteComment> {
               ),
               height: 52,
               child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CommentThank()),
-                  );
-                },
+                onPressed: _submitReview,
                 child: const Text(
                   'Gửi đánh giá',
                   style: TextStyle(fontSize: 22, color: Colors.white),

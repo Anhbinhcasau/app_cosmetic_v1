@@ -26,9 +26,10 @@ dependencies:
   flutter_image_slideshow: ^0.1.6
   http: ^1.2.2
   dropdown_button2: ^2.3.9
-  shared_preferences: ^2.2.3
   fluttertoast: ^8.2.6
   mongo_dart: ^0.10.3
+  shared_preferences: ^2.2.3
+ 
 
 dev_dependencies:
   flutter_test:
@@ -47,7 +48,6 @@ flutter:
     - assets/instagram.png
     - assets/twitter.png
     - assets/product.js
-    - assets/comment.js
     - assets/thank_you.png
     - assets/order.js
     - assets/brand.js
