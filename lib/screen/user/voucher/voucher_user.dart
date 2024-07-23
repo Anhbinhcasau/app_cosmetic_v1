@@ -1,8 +1,10 @@
+import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/model/voucher.model.dart';
 import 'package:app_cosmetic/services/voucher_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class CouponsScreen extends StatefulWidget {
   @override
@@ -18,11 +20,17 @@ class _CouponsScreenState extends State<CouponsScreen> {
     vouchers = VoucherService().fetchVoucherList();
   }
 
+  String _formatMoney(int amount) {
+    final formatter = NumberFormat.decimalPattern('vi_VN');
+    return formatter.format(amount);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Coupons'),
+        title: Text('Danh sách mã giảm giá'),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -30,7 +38,7 @@ class _CouponsScreenState extends State<CouponsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Best offers for you',
+              'Các ưu đãi cho bạn ',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
@@ -50,6 +58,7 @@ class _CouponsScreenState extends State<CouponsScreen> {
                       itemBuilder: (context, index) {
                         final voucher = snapshot.data![index];
                         return Card(
+                          color: Color.fromARGB(255, 231, 232, 233),
                           margin: EdgeInsets.symmetric(vertical: 8),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -60,7 +69,7 @@ class _CouponsScreenState extends State<CouponsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  voucher.codeVoucher,
+                                  'Mã giảm giá : ${voucher.codeVoucher}',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -68,13 +77,12 @@ class _CouponsScreenState extends State<CouponsScreen> {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Giảm giá ${voucher.priceSale}% ',
+                                  'Giảm giá ${voucher.percent_sale}% ',
                                   style: TextStyle(fontSize: 16),
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Giảm tối đa ${voucher.maxPriceSale.toInt()} VND',
-                                  style: TextStyle(color: Colors.grey),
+                                  'Giảm tối đa ${_formatMoney(voucher.maxPriceSale)} đ',
                                 ),
                                 SizedBox(height: 8),
                                 Text(
@@ -88,7 +96,7 @@ class _CouponsScreenState extends State<CouponsScreen> {
                                         text: voucher.codeVoucher));
                                     Fluttertoast.showToast(
                                       msg:
-                                          'Copied ${voucher.codeVoucher} to clipboard',
+                                          'Sao chép mã ${voucher.codeVoucher} thành công ',
                                       toastLength: Toast.LENGTH_SHORT,
                                       gravity: ToastGravity.BOTTOM,
                                       timeInSecForIosWeb: 1,
@@ -98,14 +106,14 @@ class _CouponsScreenState extends State<CouponsScreen> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.brown,
-                                    backgroundColor: Colors.grey.shade200,
+                                    foregroundColor: AppColors.text,
+                                    backgroundColor: AppColors.primaryColor,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(24),
                                     ),
                                     minimumSize: Size(double.infinity, 40),
                                   ),
-                                  child: Text('COPY CODE'),
+                                  child: Text('SAO CHÉP MÃ'),
                                 ),
                               ],
                             ),

@@ -1,4 +1,7 @@
+
 import 'package:app_cosmetic/model/product/atribute.model.dart';
+import 'package:app_cosmetic/model/product/comment.dart';
+import 'package:http/http.dart';
 
 class Product {
   late String? idPro;
@@ -10,8 +13,7 @@ class Product {
   final String category;
   final List<String> imageBase;
   final List<Attribute> attributes;
-  final int reviews;
-  final int sold;
+  final List<Comment> reviews;
   final int quantity;
 
   Product({
@@ -25,9 +27,9 @@ class Product {
     required this.imageBase,
     required this.attributes,
     required this.reviews,
-    required this.sold,
     required this.quantity,
   });
+
   Map<String, dynamic> productJson() {
     return {
       '_id': idPro,
@@ -46,7 +48,16 @@ class Product {
                 'image': attribute.image,
               })
           .toList(),
-      'comments': reviews,
+      'comments': reviews
+          .map((review) => {
+                'userId': review.userId,
+                'productId': review.productId,
+                'date': review.date,
+                'rating': review.rating,
+                'comment': review.comment,
+                'image': review.images,
+              })
+          .toList(),
       'quantity_sold': quantity,
     };
   }
@@ -65,8 +76,10 @@ class Product {
               ?.map((attribute) => Attribute.fromJson(attribute))
               .toList() ??
           [],
-      reviews: json['reviews'] ?? 0,
-      sold: json['sold'] ?? 0,
+      reviews: (json['comments'] as List<dynamic>?)
+              ?.map((review) => Comment.fromJson(review))
+              .toList() ??
+          [],
       quantity: json['quantity_sold'] ?? 0,
     );
   }
