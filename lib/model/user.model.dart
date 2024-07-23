@@ -33,7 +33,7 @@ class User {
       fullName: json['fullName'] ?? 'Chưa đặt tên',
       avatar: json['avatar'] ??
           'https://simpleicon.com/wp-content/uploads/user1.png',
-      address: json['address'],
+      address: json['address'] ?? 'Vô gia cư',
       active: json['active'] ?? true,
       role: json['role'] ?? 'user',
     );

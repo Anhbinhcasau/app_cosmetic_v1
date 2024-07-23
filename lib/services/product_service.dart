@@ -64,7 +64,7 @@ class ProductService {
   }
 
   static Future<Product> updateProduct(Product product) async {
-    print(product.material);
+   
     try {
       var url = Uri.parse("${Api.DB_URI}/product/updateProduct");
       Map<String, dynamic> productJson = product.productJson();
@@ -105,23 +105,25 @@ class ProductService {
       throw Exception('Failed to delete product. Error: $e');
     }
   }
-  static Future<void> commentProduct(Comment comment) async {
-    try {
+  static Future<Comment> commentProduct(Comment comment) async {
+     try {
       var url = Uri.parse("${Api.DB_URI}/product/comment");
-
-      final response = await http.post(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode(comment.toJson()),
-      );
-
-      if (response.statusCode == 200) {
-        print('Comment posted successfully.');
+      Map<String, dynamic> commentjs = comment.toJson();
+      print(commentjs);
+      final response = await http.post(url,
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(commentjs));
+      if (response.statusCode == 201) {
+        // If the server returns a created response, parse the JSON
+        return Comment.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 403) {
+        // Assuming 400 Bad Request if comment already exists
+        final responseBody = jsonDecode(response.body);
+       throw Exception(responseBody['message'] ?? 'Comment alread y exists.');
       } else {
+        // If the server does not return a created response, throw an exception
         throw Exception(
-            'Failed to comment product. Status code: ${response.statusCode}');
+            'Failed to create comment. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to post comment. Error: $e');

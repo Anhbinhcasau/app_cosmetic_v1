@@ -24,7 +24,7 @@ class ProductDetail extends StatefulWidget {
 class _ProductDetailState extends State<ProductDetail> {
   late Future<Product> products;
   late Product product;
-  late  String? userId;
+  late String? userId;
 
   @override
   void initState() {
@@ -187,7 +187,10 @@ class _ProductDetailState extends State<ProductDetail> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => CommentList(
-                            comments: product.reviews ??[],idProduct:product.idPro,idUser: userId ,)), // Đường dẫn mới cho CommentList và truyền danh sách bình luận
+                              comments: product.reviews ?? [],
+                              idProduct: product.idPro,
+                              idUser: userId,
+                            )), // Đường dẫn mới cho CommentList và truyền danh sách bình luận
                   );
                 },
                 child: Row(
@@ -217,7 +220,7 @@ class _ProductDetailState extends State<ProductDetail> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ...product.reviews!.take(2).map((comment) {
+                    ...product.reviews!.take(1).map((comment) {
                       // Hiển thị chỉ hai bình luận đầu tiên
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),

@@ -6,41 +6,54 @@ import 'package:flutter/material.dart';
 import 'package:app_cosmetic/screen/user/comment/comment_thank.dart';
 import 'package:app_cosmetic/screen/user/comment/picker_image.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WriteComment extends StatefulWidget {
   final String idProduct;
-  final String idUser;
-  const WriteComment({super.key,required this.idProduct,required this.idUser});
+
+  const WriteComment({super.key, required this.idProduct});
 
   @override
   State<WriteComment> createState() => _WriteCommentState();
 }
 
 class _WriteCommentState extends State<WriteComment> {
-  double _rating = 3.5;
-  String _reviewContent = '';
+  double _rating = 0;
+  final TextEditingController _reviewController = TextEditingController();
   List<String> _selectedImages = [];
 
+  String? userId;
+
+  @override
+  void dispose() {
+    _reviewController.dispose();
+    super.dispose();
+  }
+
   void _submitReview() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId');
+      String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
+
     try {
       Comment newComment = Comment(
-        productId: widget.idProduct, // Thay bằng product ID thực tế
-        userId: widget.idUser, // Thay bằng user ID thực tế
-        comment: _reviewContent,
+        productId: widget.idProduct,
+        userId: userId!,
+        comment: _reviewController.text,
         rating: _rating,
-        date:'',
+        date: currentDate, 
         images: _selectedImages,
       );
-
+      
       await ProductService.commentProduct(newComment);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => CommentThank()),
       );
     } catch (e) {
-      print('Failed to post comment: $e');
-      // Xử lý lỗi, ví dụ: hiện thông báo lỗi cho người dùng
+       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Bạn đã bình luận sản phẩm này rồi.')),
+      );
     }
   }
 
@@ -57,14 +70,17 @@ class _WriteCommentState extends State<WriteComment> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              "Chất lượng sản phẩm ",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                "Chất lượng sản phẩm",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
             Align(
               alignment: Alignment.center,
               child: RatingBar.builder(
-                initialRating: _rating,
+                initialRating: 0,
                 minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: true,
@@ -88,8 +104,9 @@ class _WriteCommentState extends State<WriteComment> {
               });
             }),
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.all(20.0),
               child: TextField(
+                controller: _reviewController,
                 maxLines: 5,
                 decoration: InputDecoration(
                   filled: true,
@@ -100,11 +117,6 @@ class _WriteCommentState extends State<WriteComment> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _reviewContent = value;
-                  });
-                },
               ),
             ),
             Spacer(),

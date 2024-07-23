@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/model/product/comment.dart';
 import 'package:app_cosmetic/widgets/comment/rating_star.dart';
@@ -11,8 +13,17 @@ class CommentList extends StatelessWidget {
   CommentList(
       {required this.comments, required this.idProduct, required this.idUser});
 
+    double _calculateAverageRating(List<Comment> comments) {
+    if (comments.isEmpty) return 0.0;
+    double totalRating =
+        comments.fold(0, (sum, comment) => sum + comment.rating);
+    return totalRating / comments.length;
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    double averageRating = _calculateAverageRating(comments);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -28,7 +39,7 @@ class CommentList extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  '4.0/5',
+                  '${averageRating.toStringAsFixed(1)}/5',
                   style: TextStyle(
                     fontSize: 35.0,
                     fontWeight: FontWeight.bold,
@@ -37,7 +48,7 @@ class CommentList extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 30),
-                  child: RatingStar(initialRating: 4),
+                  child: RatingStar(initialRating: averageRating),
                 ),
               ],
             ),
@@ -65,7 +76,7 @@ class CommentList extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          WriteComment(idProduct: idProduct!, idUser: idUser!)),
+                          WriteComment(idProduct: idProduct!)),
                 );
               },
               style: OutlinedButton.styleFrom(
@@ -125,13 +136,16 @@ class CommentList extends StatelessWidget {
                               mainAxisSpacing: 5,
                             ),
                             itemBuilder: (context, imageIndex) {
-                              return Container(
-                                margin: const EdgeInsets.only(right: 10),
-                                child: Image.network(
-                                  comment.images[imageIndex],
-                                  fit: BoxFit.cover,
-                                ),
-                              );
+                              final imagePath = comment.images![imageIndex];
+                              return imagePath.startsWith('http')
+                                  ? Image.network(
+                                      imagePath,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.file(
+                                      File(imagePath),
+                                      fit: BoxFit.cover,
+                                    );
                             },
                           ),
                         ),
