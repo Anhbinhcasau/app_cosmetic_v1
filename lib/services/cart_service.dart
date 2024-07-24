@@ -90,20 +90,23 @@ class CartService {
 
   Future<void> deleteItemCart(
       String userId, String cartId, Map<String, dynamic> product) async {
-    final url = Uri.parse('${Api.DB_URI}/cart/deleteItemCart');
+    final url = Uri.parse('${Api.DB_URI}/cart/delete');
     final body = jsonEncode({
       'userId': userId,
       'cartId': cartId,
-      'product': product,
+      'productId': product['productId'],
+      'id': product['id'],
     });
 
     final headers = {
       'Content-Type': 'application/json',
     };
 
+    print('Sending delete request with body: $body');
+
     final response = await http.post(url, headers: headers, body: body);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       // Handle success response
       print('Item deleted successfully');
     } else {
