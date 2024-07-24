@@ -105,17 +105,17 @@ class ProductService {
     }
   }
 
-  static Future<Comment> commentProduct(Comment comment) async {
+  static Future<String> commentProduct(Comment comment) async {
     try {
       var url = Uri.parse("${Api.DB_URI}/product/comment");
       Map<String, dynamic> commentjs = comment.toJson();
-      print(commentjs);
+
       final response = await http.post(url,
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(commentjs));
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         // If the server returns a created response, parse the JSON
-        return Comment.fromJson(jsonDecode(response.body));
+        return 'done';
       } else if (response.statusCode == 403) {
         // Assuming 400 Bad Request if comment already exists
         final responseBody = jsonDecode(response.body);

@@ -1,5 +1,6 @@
 import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 
 class CommentThank extends StatefulWidget {
@@ -51,7 +52,7 @@ class _CommentThankState extends State<CommentThank> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => MainScreen()),
                 );
               },
               child: const Text(
