@@ -119,7 +119,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: CompositedTransformTarget(
@@ -173,13 +172,16 @@ class _HomePageState extends State<HomePage> {
             BrandWidget(),
             const SizedBox(height: 10),
             CategoryWidget(),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Product Collection',
-              style: GoogleFonts.poppins(
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: Text(
+                  'Các sản phẩm nổi bật',
+                  style: GoogleFonts.poppins(
+                    textStyle:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
             ),
             // Column(

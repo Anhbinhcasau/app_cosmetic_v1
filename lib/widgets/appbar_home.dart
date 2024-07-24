@@ -1,7 +1,8 @@
+import 'package:app_cosmetic/model/cart.model.dart';
 import 'package:app_cosmetic/screen/user/cart/cart.dart';
+import 'package:app_cosmetic/services/cart_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class AppBarHome extends StatefulWidget {
   const AppBarHome({Key? key}) : super(key: key);
@@ -13,26 +14,41 @@ class AppBarHome extends StatefulWidget {
 class _AppBarHomeState extends State<AppBarHome> {
   String? userId;
   int cartItemCount = 0;
+  CartService cartService = CartService();
 
   @override
   void initState() {
     super.initState();
-    _getUserId();
-    _getCartItemCount();
+    _loadUserIdAndCart();
   }
 
-  Future<void> _getUserId() async {
+  Future<void> _loadUserIdAndCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userId = prefs.getString('userId');
-    });
+    final newUserId = prefs.getString('userId');
+
+    if (newUserId != userId) {
+      setState(() {
+        userId = newUserId;
+      });
+
+      if (userId != null) {
+        await _updateCartItemCount();
+      }
+    }
   }
 
-  Future<void> _getCartItemCount() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      cartItemCount = prefs.getInt('cartItemCount') ?? 0;
-    });
+  Future<void> _updateCartItemCount() async {
+    if (userId == null) return;
+
+    try {
+      Cart? cart = await cartService.getCartByUserId(userId!);
+      setState(() {
+        cartItemCount =
+            cart?.itemsCart.length ?? 0; // Đếm số lượng sản phẩm trong giỏ hàng
+      });
+    } catch (e) {
+      print('Error fetching cart: $e');
+    }
   }
 
   @override
@@ -54,15 +70,15 @@ class _AppBarHomeState extends State<AppBarHome> {
           children: [
             IconButton(
               icon: Icon(Icons.shopping_bag_outlined, color: Colors.black),
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ShoppingCartPage(
-                      userId: userId ?? '',
-                    ),
+                    builder: (context) => ShoppingCartPage(),
                   ),
                 );
+                // Refresh the cart item count when returning from the ShoppingCartPage
+                await _updateCartItemCount();
               },
             ),
             if (cartItemCount > 0)

@@ -30,7 +30,7 @@ class _BrandWidgetState extends State<BrandWidget> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  'Brand',
+                  'Thương Hiệu',
                   style: GoogleFonts.poppins(
                     textStyle:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -43,9 +43,10 @@ class _BrandWidgetState extends State<BrandWidget> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: 
-                    viewModel.brands.isEmpty
-                        ? [CircularProgressIndicator(),]
+                    children: viewModel.brands.isEmpty
+                        ? [
+                            CircularProgressIndicator(),
+                          ]
                         : viewModel.brands
                             .take(5)
                             .map((brand) => Padding(
@@ -71,9 +72,7 @@ class _BrandWidgetState extends State<BrandWidget> {
                                   ),
                                 ))
                             .toList(),
-                            
                   ),
-                  
                 ),
               ),
             ],
