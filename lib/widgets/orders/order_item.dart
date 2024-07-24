@@ -1,22 +1,45 @@
 import 'package:app_cosmetic/services/order_service.dart';
+import 'package:app_cosmetic/widgets/orders/order_detail.dart';
 import 'package:app_cosmetic/widgets/orders/order_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/model/order.model.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class OrderItem extends StatelessWidget {
+class OrderItem extends StatefulWidget {
   final Order order;
+
   const OrderItem({Key? key, required this.order}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final orderListViewModel = Provider.of<OrderListViewModel>(context);
-    OrderService orderService = OrderService();
-    String statusText;
-    Color statusColor;
-    Widget? actionButton;
+  _OrderItemState createState() => _OrderItemState();
+}
 
-    switch (order.status) {
+class _OrderItemState extends State<OrderItem> {
+  late OrderListViewModel orderListViewModel;
+  late OrderService orderService;
+  late String statusText;
+  late Color statusColor;
+  Widget? actionButton;
+  String? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    orderListViewModel =
+        Provider.of<OrderListViewModel>(context, listen: false);
+    orderService = OrderService();
+    _initializeOrderStatus();
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId');
+  }
+
+  void _initializeOrderStatus() {
+    switch (widget.order.status) {
       case 1:
         statusText = 'Đang chờ xác nhận';
         statusColor = Colors.orange;
@@ -24,8 +47,9 @@ class OrderItem extends StatelessWidget {
           onPressed: () async {
             try {
               await orderListViewModel.cancelOrderDetail(
-                  order.id, order.userId);
-              orderService.fetchOrdersUserByStatus(order.userId, order.status);
+                  widget.order.id, widget.order.userId);
+              orderService.fetchOrdersUserByStatus(
+                  widget.order.userId, widget.order.status);
             } catch (e) {
               // Handle exception
               print('Error updating order status: $e');
@@ -54,75 +78,83 @@ class OrderItem extends StatelessWidget {
         statusText = 'Không xác định';
         statusColor = Colors.grey;
     }
+  }
 
-    return Card(
-      margin: EdgeInsets.all(10.0),
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '#${order.id}',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                OrderDetailPage(order: widget.order, userId: userId),
+          ),
+        );
+      },
+      child: Card(
+        margin: EdgeInsets.all(10.0),
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '#${widget.order.id}',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('${order.products.length} sản phẩm',
-                    style: TextStyle(fontSize: 18)),
-                Text('${order.totalPrice}đ'),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Giảm giá:'),
-                Text('${order.priceSale}đ'),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Tổng tiền:',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+              SizedBox(height: 10.0),
+              Text('${widget.order.products.length} sản phẩm',
+                  style: TextStyle(fontSize: 18)),
+              SizedBox(height: 10.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Giảm giá:'),
+                  Text('${widget.order.priceSale}đ'),
+                ],
+              ),
+              SizedBox(height: 10.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Tổng tiền:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  '${order.totalPrice}đ',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    '${widget.order.totalPrice}đ',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  statusText,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: statusColor,
-                    fontStyle: FontStyle.italic,
+                ],
+              ),
+              SizedBox(height: 10.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    statusText,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: statusColor,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
-                ),
-                if (actionButton != null) actionButton,
-              ],
-            ),
-          ],
+                  if (actionButton != null) actionButton!,
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

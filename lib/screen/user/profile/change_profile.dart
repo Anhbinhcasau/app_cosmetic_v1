@@ -108,9 +108,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     padding: EdgeInsets.all(16.0),
                     child: CircleAvatar(
                       radius: 40,
-                      backgroundImage: avatar == null
-                          ? FileImage(avatar!)
-                          : NetworkImage(user?.avatar ?? '') as ImageProvider,
+                      backgroundImage: avatar != null
+                          ? (user?.avatar != null
+                              ? NetworkImage(user!.avatar)
+                              : FileImage(avatar!)) as ImageProvider
+                          : null,
                     ),
                   ),
                 ),
