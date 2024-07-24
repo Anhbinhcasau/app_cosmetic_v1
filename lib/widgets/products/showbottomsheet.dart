@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:app_cosmetic/model/product/atribute.model.dart';
 import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:app_cosmetic/services/cart_service.dart';
+import 'package:intl/intl.dart';
 
 class AddToCartSheet extends StatefulWidget {
   final List<Attribute> attributes;
@@ -100,6 +101,10 @@ class _AddToCartSheetState extends State<AddToCartSheet> {
       );
     }
   }
+String _formatMoney(double amount) {
+    final formatter = NumberFormat.decimalPattern('vi_VN');
+    return formatter.format(amount);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +118,7 @@ class _AddToCartSheetState extends State<AddToCartSheet> {
             Image.network(_selectedType.image, height: 100, fit: BoxFit.cover),
             Padding(
               padding: const EdgeInsets.only(left: 50),
-              child: Text(' ${_selectedType.price.toStringAsFixed(3)} VNĐ',
+              child: Text('${_formatMoney(_selectedType.price)} đ',
                   style: TextStyle(fontSize: 18, color: Colors.red)),
             ),
           ]),

@@ -1,3 +1,4 @@
+import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class User {
@@ -10,6 +11,7 @@ class User {
   final String address;
   final bool active;
   final String role;
+  final List<Product> favorite;
 
   User({
     required this.id,
@@ -21,21 +23,26 @@ class User {
     this.address = 'Vô gia cư',
     required this.active,
     required this.role,
+    this.favorite = const [],
   });
 
   // Tạo một factory constructor để chuyển đổi từ JSON sang đối tượng User
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['_id'] ?? '',
-      userName: json['userName'],
-      password: json['password'],
-      email: json['email'],
+      id: json['_id']?.toString() ??
+          '', // Chuyển đổi ObjectId thành String nếu cần
+      userName: json['userName'] ?? '',
+      password: json['password'] ?? '',
+      email: json['email'] ?? '',
       fullName: json['fullName'] ?? 'Chưa đặt tên',
       avatar: json['avatar'] ??
           'https://simpleicon.com/wp-content/uploads/user1.png',
       address: json['address'] ?? 'Vô gia cư',
       active: json['active'] ?? true,
       role: json['role'] ?? 'user',
+       favorite: (json['favorite'] as List<dynamic>?)
+          ?.map((item) => Product.fromJson(item as Map<String, dynamic>))
+          .toList() ?? [],
     );
   }
 
@@ -51,6 +58,9 @@ class User {
       'address': address,
       'active': active,
       'role': role,
+     'favorite': favorite
+          .map((product) => product.productJson())
+          .toList(), // Đảm bảo rằng danh sách yêu thích được đưa vào JSON
     };
   }
 }

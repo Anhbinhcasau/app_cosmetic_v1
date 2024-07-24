@@ -1,29 +1,60 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:app_cosmetic/model/product/comment.dart';
-import 'package:app_cosmetic/widgets/comment/rating_star.dart';
+import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/user/comment/write_comment.dart';
+import 'package:app_cosmetic/services/user_service.dart';
+import 'package:app_cosmetic/widgets/comment/rating_star.dart';
+import 'package:flutter/material.dart';
 
-class CommentList extends StatelessWidget {
+class CommentList extends StatefulWidget {
   final List<Comment> comments;
   final String? idProduct;
   final String? idUser;
 
-  CommentList(
-      {required this.comments, required this.idProduct, required this.idUser});
+  const CommentList(
+      {super.key,
+      required this.comments,
+      required this.idProduct,
+      required this.idUser});
 
-    double _calculateAverageRating(List<Comment> comments) {
-    if (comments.isEmpty) return 0.0;
-    double totalRating =
-        comments.fold(0, (sum, comment) => sum + comment.rating);
-    return totalRating / comments.length;
+  @override
+  State<CommentList> createState() => _CommentListState();
+}
+
+double _calculateAverageRating(List<Comment> comments) {
+  if (comments.isEmpty) return 0.0;
+  double totalRating = comments.fold(0, (sum, comment) => sum + comment.rating);
+  return totalRating / comments.length;
+}
+
+class _CommentListState extends State<CommentList> {
+  Map<String, String> userNames = {};
+
+  Future<void> _fetchUserNames() async {
+    for (var comment in widget.comments) {
+      if (!userNames.containsKey(comment.userId)) {
+        User? user = await UserServices.getDetail(comment.userId);
+        if (user != null) {
+          setState(() {
+            userNames[comment.userId] = user.userName;
+          });
+        }
+      }
+    }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserNames();
+
+    ;
+  }
 
   @override
   Widget build(BuildContext context) {
-    double averageRating = _calculateAverageRating(comments);
+    double averageRating = _calculateAverageRating(widget.comments);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -60,7 +91,7 @@ class CommentList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Tất cả(${comments.length})',
+                  'Tất cả(${widget.comments.length})',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 Icon(Icons.filter_alt_outlined),
@@ -76,7 +107,7 @@ class CommentList extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          WriteComment(idProduct: idProduct!)),
+                          WriteComment(idProduct: widget.idProduct!)),
                 );
               },
               style: OutlinedButton.styleFrom(
@@ -94,9 +125,9 @@ class CommentList extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               separatorBuilder: (context, index) => Divider(),
-              itemCount: comments.length,
+              itemCount: widget.comments.length,
               itemBuilder: (context, index) {
-                Comment comment = comments[index];
+                Comment comment = widget.comments[index];
                 return Card(
                   margin: EdgeInsets.all(10),
                   child: Padding(
@@ -108,7 +139,7 @@ class CommentList extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Pham Ha",
+                              userNames[widget.idUser].toString(),
                               style: TextStyle(fontSize: 20),
                             ),
                             Text(

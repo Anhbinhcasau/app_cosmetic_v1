@@ -1,11 +1,17 @@
-// Import các thư viện cần thiết, ví dụ như:
+import 'dart:io';
+
 import 'package:app_cosmetic/model/product/product.model.dart';
+import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
-
+import 'package:app_cosmetic/services/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductItem extends StatefulWidget {
   const ProductItem({super.key});
@@ -15,6 +21,63 @@ class ProductItem extends StatefulWidget {
 }
 
 class _ProductItemState extends State<ProductItem> {
+  late String? userId;
+  late Product product;
+  bool isFavorite = false; // Thêm trạng thái yêu thích
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserId();
+  }
+
+  String _formatMoney(double amount) {
+    final formatter = NumberFormat.decimalPattern('vi_VN');
+    return formatter.format(amount);
+  }
+
+  Future<void> _getUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('userId');
+      print('User ID from SharedPreferences: $userId');
+    });
+  }
+
+  Future<void> _addToFavorites(String userId, String productId) async {
+    try {
+      // Lấy đối tượng Product từ danh sách sản phẩm
+      final product = context.read<ProductListViewModel>().products.firstWhere(
+            (product) => product!.idPro == productId,
+            orElse: () => throw Exception('Product not found'),
+          );
+
+      // Gọi dịch vụ để cập nhật danh sách yêu thích
+      await UserServices.updateFavorite(userId, product!);
+
+      setState(() {
+        isFavorite = !isFavorite; // Cập nhật trạng thái yêu thích
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.white,
+          content: Text(
+            'Sản phẩm  đã được thêm vào danh sách yêu thích!',
+            style: TextStyle(color: Colors.red, fontSize: 15),
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Error adding to favorites: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Không thể thêm sản phẩm vào danh sách yêu thích.'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final productListViewModel = Provider.of<ProductListViewModel>(context);
@@ -25,7 +88,6 @@ class _ProductItemState extends State<ProductItem> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 13.0),
         child: SizedBox(
-          // height: 1000,
           child: Consumer<ProductListViewModel>(
             builder: (context, productProvider, child) => GridView.builder(
               shrinkWrap: true,
@@ -35,7 +97,7 @@ class _ProductItemState extends State<ProductItem> {
                 childAspectRatio: 0.6,
                 crossAxisSpacing: 16.0,
                 mainAxisSpacing: 16.0,
-                mainAxisExtent: 300,
+                mainAxisExtent: 320,
               ),
               itemCount: productProvider.products.length,
               itemBuilder: (context, index) {
@@ -45,12 +107,12 @@ class _ProductItemState extends State<ProductItem> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetail(productId: product?.idPro ?? '')),
+                        builder: (context) =>
+                            ProductDetail(productId: product?.idPro ?? ''),
+                      ),
                     );
                   },
                   child: Container(
-                    //height: 1000,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -75,20 +137,19 @@ class _ProductItemState extends State<ProductItem> {
                             topRight: Radius.circular(12),
                           ),
                           child: product!.imageBase.isNotEmpty
-                              ? product.imageBase[0].startsWith('http')
+                              ? product!.imageBase[0].startsWith('http')
                                   ? Image.network(
-                                      product.imageBase[0],
-                                      //height: 130.0,
+                                      product!.imageBase[0],
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                     )
                                   : Image.file(
-                                      File(product.imageBase[0]),
+                                      File(product!.imageBase[0]),
                                       height: 150.0,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                     )
-                             : Placeholder(),  // Display a placeholder if the list is empty
+                              : Placeholder(),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -101,28 +162,35 @@ class _ProductItemState extends State<ProductItem> {
                                 children: [
                                   Text(
                                     product?.price != null
-                                        ? '${product!.price.toStringAsFixed(3)} đ'
+                                        ? '${_formatMoney(product!.price)} đ'
                                         : '',
                                     style: const TextStyle(
                                       color: Colors.red,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text(
-                                    "Đã bán ${product.quantity.toString()}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Colors.grey),
+                                  IconButton(
+                                    icon: Icon(
+                                      //Icons.favorite,
+                                      Icons.favorite_border,
+                                      color: Colors.red.shade400,
+                                    ),
+                                    onPressed: () {
+                                      if (userId != null) {
+                                        _addToFavorites(
+                                            userId!, product!.idPro!);
+                                      }
+                                    },
                                   ),
                                 ],
                               ),
                               Text(
                                 product?.brand ?? '',
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: Color(0xFF66BB6A)),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Color(0xFF66BB6A),
+                                ),
                               ),
                               Text(
                                 product?.name ?? '',
@@ -142,21 +210,6 @@ class _ProductItemState extends State<ProductItem> {
                                           Colors.grey.shade200.withOpacity(0.7),
                                       shape: BoxShape.circle,
                                     ),
-                                    // child: IconButton(
-                                    //   icon: const Icon(
-                                    //     Icons.shopping_bag_outlined,
-                                    //     color: Colors.black,
-                                    //   ),
-                                    //   onPressed: () {
-                                    //     Navigator.push(
-                                    //       context,
-                                    //       MaterialPageRoute(
-                                    //         builder: (context) =>
-                                    //             ShoppingCartPage(),
-                                    //       ),
-                                    //     );
-                                    //   },
-                                    // ),
                                   ),
                                 ],
                               ),
