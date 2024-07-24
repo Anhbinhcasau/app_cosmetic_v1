@@ -7,7 +7,6 @@ class OrderService {
   Future<List<Order>> fetchOrders() async {
     final response =
         await http.get(Uri.parse('${Api.DB_URI}/orderDetail/getAll'));
-
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
       List<Order> orders =
@@ -25,7 +24,7 @@ class OrderService {
 
   Future<List<Order>> fetchOrderHistory(String userId) async {
     final response =
-        await http.get(Uri.parse('${Api.DB_URI}/orderDetail/$userId'));
+        await http.get(Uri.parse('${Api.DB_URI}/orderDetail/getAll/$userId'));
     if (response.statusCode == 200) {
       List<dynamic> body = json.decode(response.body);
       List<Order> orders =

@@ -60,7 +60,7 @@ class OrderListScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OrderDetailPage(order: order),
+                      builder: (context) => OrderDetailPage(order: order, userId: order.userId,),
                     ),
                   );
                 },

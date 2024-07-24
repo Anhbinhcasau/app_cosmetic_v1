@@ -1,4 +1,5 @@
 import 'package:app_cosmetic/data/config.app.dart';
+import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/admin/brands/brand.dart';
 import 'package:app_cosmetic/screen/admin/categories/category.dart';
 import 'package:app_cosmetic/screen/admin/dashboard.dart';
@@ -6,20 +7,10 @@ import 'package:app_cosmetic/screen/admin/users/user.dart';
 import 'package:app_cosmetic/screen/admin/voucher/voucher.dart';
 import 'package:app_cosmetic/screen/admin/products/admin_product.dart';
 import 'package:app_cosmetic/screen/admin/orders/dashboard_order.dart';
+import 'package:app_cosmetic/services/user_service.dart';
 import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class NavBarApp extends StatelessWidget {
-  const NavBarApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: NavBar(),
-    );
-  }
-}
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -49,7 +40,8 @@ class _NavBarState extends State<NavBar> {
     setState(() {
       _selectedIndex = index;
     });
-    Navigator.pop(context); // Close the drawer
+    Navigator.pop(context); 
+    _loadUser();
   }
 
   Future<void> _logOutUser() async {
@@ -63,6 +55,11 @@ class _NavBarState extends State<NavBar> {
         MaterialPageRoute(builder: (context) => MainScreen()),
       );
     }
+  }
+
+  Future<void> _loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId');
   }
 
   @override
@@ -86,7 +83,7 @@ class _NavBarState extends State<NavBar> {
                 color: AppColors.primaryColor,
               ),
               child: Text(
-                'ADMIN',
+                "ADMIN",
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 80,
