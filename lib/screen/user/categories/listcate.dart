@@ -22,7 +22,7 @@ class _ListcateState extends State<Listcate> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Categories'),
+        title: Text('Danh mục sản phẩm'),
       ),
       body: Consumer<CategoryListViewModel>(
         builder: (context, model, child) {
