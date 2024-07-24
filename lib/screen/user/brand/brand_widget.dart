@@ -1,6 +1,6 @@
 import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
-import 'package:app_cosmetic/screen/brand/brandlist.dart';
-import 'package:app_cosmetic/screen/brand/productlistbrand.dart';
+import 'package:app_cosmetic/screen/user/brand/brandlist.dart';
+import 'package:app_cosmetic/screen/user/brand/productlistbrand.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
