@@ -6,6 +6,7 @@ import 'package:app_cosmetic/screen/admin/products/updateproduct.dart';
 import 'package:app_cosmetic/screen/user/Product/product_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ProductList extends StatefulWidget {
@@ -26,7 +27,7 @@ class _ProductListState extends State<ProductList> {
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF13131A),
         title: const Text(
-          '# DANH MỤC',
+          'SẢN PHẨM',
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
         actions: [
@@ -45,7 +46,7 @@ class _ProductListState extends State<ProductList> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
         child: SingleChildScrollView(
           child: Consumer<ProductListViewModel>(
             builder: (context, productProvider, child) => GridView.builder(
@@ -128,7 +129,7 @@ class _ProductListState extends State<ProductList> {
                                 children: [
                                   Text(
                                     product?.price != null
-                                        ? '${product!.price.toStringAsFixed(3)}'
+                                        ? '${_formatMoney(product!.price.toInt())}'
                                         : '',
                                     style: const TextStyle(
                                       color: Colors.black,
@@ -180,5 +181,9 @@ class _ProductListState extends State<ProductList> {
         ),
       ),
     );
+  }
+   String _formatMoney(int amount) {
+    final formatter = NumberFormat.decimalPattern('vi_VN');
+    return formatter.format(amount);
   }
 }

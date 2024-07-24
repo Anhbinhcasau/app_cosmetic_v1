@@ -1,7 +1,7 @@
 // dashboard_order.dart
 import 'package:app_cosmetic/screen/admin/navbar_admin.dart';
 import 'package:app_cosmetic/widgets/orders/navbar_order.dart';
-import 'package:app_cosmetic/widgets/orders/order.dart';
+import 'package:app_cosmetic/screen/admin/orders/order.dart';
 import 'package:flutter/material.dart';
 
 class DashboardOrder extends StatefulWidget {

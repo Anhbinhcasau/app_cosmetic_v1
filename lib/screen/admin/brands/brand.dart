@@ -32,7 +32,7 @@ class _ListBrandState extends State<ListBrand> {
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF13131A),
         title: const Text(
-          '# THƯƠNG HIỆU',
+          'THƯƠNG HIỆU',
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
       ),

@@ -22,7 +22,7 @@ class _NavbarOrderState extends State<NavbarOrder> {
           automaticallyImplyLeading: false,
           backgroundColor: const Color(0xFF13131A),
           title: const Text(
-            '# ĐƠN HÀNG',
+            'ĐƠN HÀNG',
             style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
           ),
         ),
