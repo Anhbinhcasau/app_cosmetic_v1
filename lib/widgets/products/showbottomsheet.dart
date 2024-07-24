@@ -47,6 +47,7 @@ class _AddToCartSheetState extends State<AddToCartSheet> {
         throw Exception('User ID is null or empty');
       }
 
+
       final item = ItemCart(
         productId: widget.product.idPro!,
         quantity: _quantity,
@@ -61,6 +62,7 @@ class _AddToCartSheetState extends State<AddToCartSheet> {
       final cart = await cartService.addToCart(item);
 
       if (cart != null) {
+        
         SharedPreferences prefs = await SharedPreferences.getInstance();
         int currentCount = prefs.getInt('cartItemCount') ?? 0;
         prefs.setInt('cartItemCount', currentCount + _quantity);
