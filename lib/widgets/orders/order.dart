@@ -1,6 +1,7 @@
 import 'package:app_cosmetic/widgets/orders/order_detail.dart';
 import 'package:app_cosmetic/widgets/orders/order_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class OrderListScreen extends StatelessWidget {
@@ -8,8 +9,10 @@ class OrderListScreen extends StatelessWidget {
 
   const OrderListScreen({required this.status, super.key});
 
+  
   @override
   Widget build(BuildContext context) {
+    
     final orderListViewModel = Provider.of<OrderListViewModel>(context);
     final List<Icon> _iconStatus = [
       const Icon(
@@ -80,7 +83,7 @@ class OrderListScreen extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 4),
                               child: Text(
-                                '${order?.totalPrice ?? 0}',
+                                '${_formatMoney(order.totalPrice.toInt())?? 0}',
                                 style:
                                     TextStyle(fontSize: 18, color: Colors.red),
                               ),
@@ -156,5 +159,9 @@ class OrderListScreen extends StatelessWidget {
         },
       ),
     );
+  }
+  String _formatMoney(int amount) {
+    final formatter = NumberFormat.decimalPattern('vi_VN');
+    return formatter.format(amount);
   }
 }

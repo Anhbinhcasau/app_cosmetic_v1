@@ -3,6 +3,7 @@ import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
 import 'package:app_cosmetic/services/user_service.dart';
+import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,7 +65,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           print('Cập nhật thông tin thành công');
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ProfileScreen()),
+            MaterialPageRoute(builder: (context) => MainScreen()),
           );
         }
       } catch (e) {
