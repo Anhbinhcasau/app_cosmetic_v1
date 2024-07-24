@@ -1,11 +1,16 @@
 import 'dart:io';
+import 'package:app_cosmetic/model/product/comment.dart';
+import 'package:app_cosmetic/model/user.model.dart';
 import 'package:app_cosmetic/screen/user/cart/cart.dart';
 import 'package:app_cosmetic/screen/user/checkout/checkout.dart';
 import 'package:app_cosmetic/screen/user/comment/comment.dart';
+import 'package:app_cosmetic/services/user_service.dart';
+import 'package:app_cosmetic/widgets/products/product_card.dart';
 import 'package:app_cosmetic/widgets/products/showbottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:app_cosmetic/model/product/product.model.dart';
@@ -26,12 +31,26 @@ class _ProductDetailState extends State<ProductDetail> {
   late Future<Product> products;
   late Product product;
   late String? userId;
+  late List<Comment> comments;
+  late Future<User?> user;
+  Map<String, String> userNames = {};
 
   @override
   void initState() {
     super.initState();
     _getUserId();
     products = ProductService().getProductDetail(widget.productId);
+    products.then((product) {
+      comments = product.reviews ?? [];
+      _getUserNames(comments); // Lấy tên người dùng cho các bình luận
+    });
+  }
+
+  double _calculateAverageRating(List<Comment> comments) {
+    if (comments.isEmpty) return 0.0;
+    double totalRating =
+        comments.fold(0, (sum, comment) => sum + comment.rating);
+    return totalRating / comments.length;
   }
 
   Future<void> _getUserId() async {
@@ -40,6 +59,25 @@ class _ProductDetailState extends State<ProductDetail> {
       userId = prefs.getString('userId');
       print('User ID from SharedPreferences: $userId');
     });
+  }
+
+  Future<void> _getUserNames(List<Comment> comments) async {
+    for (Comment comment in comments) {
+      if (!userNames.containsKey(comment.userId)) {
+        final User? user = await UserServices.getDetail(comment.userId);
+        if (user != null) {
+          setState(() {
+            userNames[comment.userId] =
+                user.userName; // Giả sử User model có thuộc tính name
+          });
+        }
+      }
+    }
+  }
+
+  String _formatMoney(double amount) {
+    final formatter = NumberFormat.decimalPattern('vi_VN');
+    return formatter.format(amount);
   }
 
   @override
@@ -60,6 +98,8 @@ class _ProductDetailState extends State<ProductDetail> {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (snapshot.hasData) {
                 product = snapshot.data!;
+                double averageRating = _calculateAverageRating(product.reviews);
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -84,7 +124,7 @@ class _ProductDetailState extends State<ProductDetail> {
                       }).toList(),
                     ),
                     Text(
-                      product.price.toStringAsFixed(3),
+                      '${_formatMoney(product!.price)} đ',
                       style: const TextStyle(
                           color: Colors.red,
                           fontSize: 25,
@@ -95,11 +135,11 @@ class _ProductDetailState extends State<ProductDetail> {
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(height: 15),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "4.9/5.0",
+                          '${averageRating.toStringAsFixed(1)}/5',
                           style: TextStyle(fontSize: 20, color: Colors.red),
                         ),
                         Text(
@@ -242,8 +282,9 @@ class _ProductDetailState extends State<ProductDetail> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        comment
-                                            .userId, // Bạn có thể thay thế userId bằng tên người dùng sau khi thực hiện yêu cầu trên
+                                        userNames[comment.userId] ??
+                                            comment
+                                                .userId, // Hiển thị tên người dùng nếu có
                                         style: TextStyle(fontSize: 20),
                                       ),
                                       AbsorbPointer(
@@ -320,6 +361,7 @@ class _ProductDetailState extends State<ProductDetail> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),
+          ProductCard()
         ],
       ),
       bottomNavigationBar: BottomAppBar(

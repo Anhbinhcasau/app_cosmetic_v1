@@ -88,9 +88,27 @@ class _HomePageState extends State<HomePage> {
               shrinkWrap: true,
               children: filteredProducts.map((product) {
                 return ListTile(
-                  title: Text(product!.name),
+                  leading: product!.imageBase.isNotEmpty
+                      ? Image.network(
+                          product.imageBase[0],
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        )
+                      : Icon(Icons.image, size: 50),
+                  title: Text(
+                    product.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   onTap: () {
-                    ProductDetail(productId: product?.idPro ?? '');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetail(productId: product.idPro ?? ''),
+                      ),
+                    );
                     // Handle product selection
                     print('Selected: ${product.name}');
                     _focusNode.unfocus();
@@ -110,89 +128,88 @@ class _HomePageState extends State<HomePage> {
     final productListViewModel = Provider.of<ProductListViewModel>(context);
     allProducts = productListViewModel.products.cast<Product>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: AppBarHome(),
-        automaticallyImplyLeading: false,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: CompositedTransformTarget(
-                link: _layerLink,
-                child: TextField(
-                  focusNode: _focusNode,
-                  onChanged: _filterProducts,
-                  decoration: InputDecoration(
-                    hintText: 'Tìm kiếm sản phẩm',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        if (_overlayEntry != null && _focusNode.hasFocus) {
+          _focusNode.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: AppBarHome(),
+          automaticallyImplyLeading: false,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CompositedTransformTarget(
+                  link: _layerLink,
+                  child: TextField(
+                    focusNode: _focusNode,
+                    onChanged: _filterProducts,
+                    decoration: InputDecoration(
+                      hintText: 'Tìm kiếm sản phẩm',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
                     ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
                   ),
                 ),
               ),
-            ),
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 200.0,
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 3),
-                enlargeCenterPage: true,
-              ),
-              items: bannerImages.map((imagePath) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.network(
-                          imagePath,
-                          fit: BoxFit.cover,
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 200.0,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 3),
+                  enlargeCenterPage: true,
+                ),
+                items: bannerImages.map((imagePath) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.symmetric(horizontal: 5.0),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 10),
-            BrandWidget(),
-            const SizedBox(height: 10),
-            CategoryWidget(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Center(
-                child: Text(
-                  'Các sản phẩm nổi bật',
-                  style: GoogleFonts.poppins(
-                    textStyle:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Image.network(
+                            imagePath,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 10),
+              BrandWidget(),
+              const SizedBox(height: 10),
+              CategoryWidget(),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                'Product Collection',
+                style: GoogleFonts.poppins(
+                  textStyle:
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
-            // Column(
-            //   children: allProducts.map((product) {
-            //     return ListTile(
-            //       title: Text(product!.name),
-            //     );
-            //   }).toList(),
-            // ),
-            ProductItem(),
-          ],
+              ProductItem(),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_cosmetic/model/brand.model.dart';
-import 'package:app_cosmetic/services/brand_service.dart';
+import 'package:app_cosmetic/screen/brand/brand_service.dart';
 
 class BrandListViewModel extends ChangeNotifier {
   List<Brand?> brands = [];

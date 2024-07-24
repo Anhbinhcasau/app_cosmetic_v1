@@ -21,7 +21,7 @@ class Comment {
       userId: json['userId'] ?? "null",
       productId: json['productId'] ?? 'null',
       date: json['date'] ?? 'null',
-      rating: json['rating'].toDouble() ?? 1,
+      rating: json['rating'].toDouble() ?? 0.0,
       comment: json['comment'] ?? 'null',
       images: List<String>.from(json['image']),
     );
