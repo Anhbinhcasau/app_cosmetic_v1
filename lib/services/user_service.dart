@@ -20,7 +20,7 @@ class UserServices {
 
   static Future<List<User?>> fetchUserList() async {
     try {
-      final response = await http.get(Uri.parse('${Api.DB_URI}/user'));
+      final response = await http.get(Uri.parse('${Api.DB_URI}/user/list'));
 
       if (response.statusCode == 200) {
         // Parse JSON response

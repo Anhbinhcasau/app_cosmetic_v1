@@ -32,7 +32,7 @@ class _ListCategoryState extends State<ListCategory> {
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF13131A),
         title: const Text(
-          '# DANH MỤC',
+          'DANH MỤC',
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
       ),

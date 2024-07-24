@@ -25,7 +25,7 @@ class _ListUserState extends State<ListUser> {
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF13131A),
         title: const Text(
-          '# NGƯỜI DÙNG',
+          'NGƯỜI DÙNG',
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
       ),

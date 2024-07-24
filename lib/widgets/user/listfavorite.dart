@@ -82,6 +82,8 @@ class _FavoriteProductsScreenState extends State<FavoriteProductsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Sản phẩm yêu thích'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
       body: futureUser == null
           ? Center(child: CircularProgressIndicator())
