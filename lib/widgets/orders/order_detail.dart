@@ -1,13 +1,13 @@
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/model/order.model.dart';
 import 'package:app_cosmetic/model/product/product.model.dart';
+import 'package:app_cosmetic/screen/user/Product/productdetail.dart';
 import 'package:app_cosmetic/services/product_service.dart';
 import 'package:app_cosmetic/services/user_service.dart';
 import 'package:app_cosmetic/widgets/orders/order_view_model.dart';
-import 'package:app_cosmetic/widgets/products/product_order_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class OrderDetailPage extends StatefulWidget {
   final Order? order;
@@ -56,6 +56,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   @override
   Widget build(BuildContext context) {
     final order = widget.order;
+    final totalProductPrice = order?.products.fold(0, (sum, item) => sum + item.quantity.toInt() * item.price.toInt()) ?? 0;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -266,12 +268,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             fontSize: 20, color: AppColors.textHint),
                       ),
                       subtitle: Text(
-                        '${product.quantity} x ${product.price}đ',
+                        '${product.quantity} x ${_formatMoney(product.price.toInt())}đ',
                         style: const TextStyle(
                             fontSize: 17, color: AppColors.textHint),
                       ),
                       trailing: Text(
-                        '${product.quantity * product.price}đ',
+                        '${_formatMoney(product.quantity.toInt() * product.price.toInt())}đ',
                         style: const TextStyle(
                             fontSize: 17, color: AppColors.textHint),
                       ),
@@ -280,8 +282,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ProductDetailPage(
-                                      product: productDetail),
+                                  builder: (context) => ProductDetail(
+                                      productId: product.productId),
                                 ),
                               );
                             }
@@ -315,7 +317,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       style: TextStyle(fontSize: 17, color: AppColors.textHint),
                     ),
                     Text(
-                      '${order.totalPrice}đ',
+                      '${_formatMoney(totalProductPrice)}đ',
                       style: const TextStyle(
                           fontSize: 17, color: AppColors.textHint),
                     ),
@@ -333,7 +335,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       style: TextStyle(fontSize: 17, color: AppColors.textHint),
                     ),
                     Text(
-                      '${order.priceSale}đ',
+                      '- ${_formatMoney(order.priceSale.toInt())}đ',
                       style: const TextStyle(
                           fontSize: 17, color: AppColors.textHint),
                     ),
@@ -348,12 +350,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   children: [
                     const Text(
                       'Tổng tiền thanh toán:',
-                      style: TextStyle(fontSize: 17, color: AppColors.textHint),
+                      style: TextStyle(fontSize: 20, color: Colors.red),
                     ),
                     Text(
-                      '${order.totalPrice - order.priceSale}đ',
+                      '${_formatMoney(order.totalPrice.toInt())}đ',
                       style: const TextStyle(
-                          fontSize: 17, color: AppColors.textHint),
+                          fontSize: 20, color: Colors.red),
                     ),
                   ],
                 ),
@@ -363,5 +365,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         ),
       ),
     );
+  }
+
+  String _formatMoney(int amount) {
+    final formatter = NumberFormat.decimalPattern('vi_VN');
+    return formatter.format(amount);
   }
 }
