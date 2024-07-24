@@ -29,7 +29,10 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       }),
       child: Scaffold(
-        appBar: AppBar(elevation: 0,),
+        appBar: AppBar(
+          elevation: 0,
+          automaticallyImplyLeading: false,
+        ),
         body: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -52,8 +55,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                     controller: _oldPassController,
                     decoration: const InputDecoration(
                       hintText: 'Nhập mật khẩu hiện tại',
-                      prefixIcon:
-                          Icon(Icons.key),
+                      prefixIcon: Icon(Icons.key),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide.none, // Remove the border
@@ -76,8 +78,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                     controller: _passwordController,
                     decoration: const InputDecoration(
                       hintText: 'Nhập mật khẩu mới',
-                      prefixIcon:
-                          Icon(Icons.key),
+                      prefixIcon: Icon(Icons.key),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide.none, // Remove the border
@@ -100,8 +101,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                     controller: _repassController,
                     decoration: const InputDecoration(
                       hintText: 'Nhập lại mật khẩu',
-                      prefixIcon:
-                          Icon(Icons.key),
+                      prefixIcon: Icon(Icons.key),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide.none, // Remove the border

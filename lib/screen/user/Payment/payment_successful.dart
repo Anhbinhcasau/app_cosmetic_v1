@@ -1,34 +1,32 @@
 import 'package:app_cosmetic/data/config.app.dart';
-import 'package:app_cosmetic/screen/user/Home/home.dart';
 import 'package:app_cosmetic/screen/user/profile/process_oder.dart';
-import 'package:app_cosmetic/screen/user/profile/profile_user.dart';
-import 'package:app_cosmetic/widgets/navbar_user.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MyApp extends StatelessWidget {
+class PaymentSuccessScreen extends StatefulWidget {
+  const PaymentSuccessScreen({super.key});
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: PaymentSuccessScreen(),
-    );
-  }
+  State<PaymentSuccessScreen> createState() => _PaymentSuccessScreenState();
 }
 
-class PaymentSuccessScreen extends StatelessWidget {
+class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
+  String? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   leading: IconButton(
-      //     icon: Icon(Icons.arrow_back, color: Colors.black),
-      //     onPressed: () {
-      //       // Xử lý khi nhấn nút quay lại
-      //     },
-      //   ),
-      //   title: Text('Payment', style: TextStyle(color: Colors.black)),
-      //   backgroundColor: Colors.white,
-      //   elevation: 0,
-      // ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -39,7 +37,7 @@ class PaymentSuccessScreen extends StatelessWidget {
           ),
           SizedBox(height: 20),
           Text(
-            'Order Successful!',
+            'Đặt hàng thành công!',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -47,7 +45,7 @@ class PaymentSuccessScreen extends StatelessWidget {
           ),
           SizedBox(height: 10),
           Text(
-            'Thank you for your purchase.',
+            'Cảm ơn bạn đã đặt hàng',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.text_notification,
@@ -62,21 +60,24 @@ class PaymentSuccessScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MainScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => ProcessOrder(
+                                userId: userId!,
+                              )),
                     );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 16),
                     minimumSize: Size(double.infinity, 50),
                   ),
-                  child: Text('View Order',
+                  child: Text('Xem đơn hàng của bạn',
                       style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.text,
+                        fontSize: 20,
+                        color: Colors.white,
                       )),
                 ),
               ],

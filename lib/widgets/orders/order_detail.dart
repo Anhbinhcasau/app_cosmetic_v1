@@ -1,19 +1,66 @@
 import 'package:app_cosmetic/data/config.app.dart';
 import 'package:app_cosmetic/model/order.model.dart';
+import 'package:app_cosmetic/model/product/product.model.dart';
+import 'package:app_cosmetic/services/product_service.dart';
+import 'package:app_cosmetic/services/user_service.dart';
+import 'package:app_cosmetic/widgets/orders/order_view_model.dart';
+import 'package:app_cosmetic/widgets/products/product_order_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class OrderDetailPage extends StatelessWidget {
+
+class OrderDetailPage extends StatefulWidget {
   final Order? order;
+  final String? userId;
 
-  const OrderDetailPage({required this.order, Key? key}) : super(key: key);
+  const OrderDetailPage({required this.order, required this.userId, Key? key})
+      : super(key: key);
+
+  @override
+  _OrderDetailPageState createState() => _OrderDetailPageState();
+}
+
+class _OrderDetailPageState extends State<OrderDetailPage> {
+  String? userId;
+  String? role;
+  Map<String, Product> productDetails = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+    _fetchProductDetails();
+  }
+
+  Future<void> _loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId');
+    final user = await UserServices.getDetail(userId!);
+    setState(() {
+      role = user!.userName;
+    });
+  }
+
+  Future<void> _fetchProductDetails() async {
+    for (var product in widget.order!.products) {
+      final productDetail =
+          await ProductService().getProductDetail(product.productId);
+      setState(() {
+        productDetails[product.productId] = productDetail;
+      });
+    }
+  }
+
+  OrderListViewModel orderListViewModel = OrderListViewModel();
 
   @override
   Widget build(BuildContext context) {
+    final order = widget.order;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: AppColors.primaryColor,
-        title: Text(
+        title: const Text(
           'CHI TIẾT ĐƠN HÀNG',
           style: TextStyle(
             color: Colors.white,
@@ -22,20 +69,20 @@ class OrderDetailPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Mã đơn: ${order?.id}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
               ),
-              Divider(),
-              SizedBox(height: 10),
-              Row(
+              const Divider(),
+              const SizedBox(height: 10),
+              const Row(
                 children: [
                   Icon(
                     Icons.local_shipping,
@@ -48,62 +95,101 @@ class OrderDetailPage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 8.0),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+              const SizedBox(height: 8.0),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(35, 0, 0, 0),
                 child: Text(
                   'Nhanh',
                   style: TextStyle(
                     fontSize: 17,
-                    color: AppColors.textHint
+                    color: AppColors.textHint,
                   ),
                 ),
               ),
-              SizedBox(height: 8.0),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+              const SizedBox(height: 8.0),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(35, 0, 0, 0),
                 child: Text(
                   'SPX Express - SPXVN20212025',
                   style: TextStyle(
                     fontSize: 17,
-                    color: AppColors.textHint
+                    color: AppColors.textHint,
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryColor,
+              if (role == 'admin' && order!.status != 3)
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          order.status == 1 ? Colors.blue : Colors.amber,
+                    ),
+                    onPressed: () async {
+                      final userId = order.userId;
+                      final orderId = order.id;
+                      if (order != null) {
+                        try {
+                          if (order.status == 1) {
+                            await orderListViewModel
+                                .updateOrderStatusToDelivering(orderId, userId);
+                          } else if (order.status == 2) {
+                            await orderListViewModel
+                                .updateOrderStatusToCompleted(orderId, userId);
+                          }
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  OrderDetailPage(order: order, userId: userId),
+                            ),
+                          );
+                        } catch (e) {
+                          // Handle exception
+                          print('Error updating order status: $e');
+                        }
+                      }
+                    },
+                    child: Text(
+                      order.status == 1 ? 'Xác nhận' : 'Giao hàng',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                      ),
+                    ),
                   ),
-                  onPressed: () {
-                    // Handle order confirmation
-                  },
+                )
+              else if (order!.status == 3)
+                const Center(
                   child: Text(
-                    'Giao hàng',
-                    style: TextStyle(color: Colors.white),
+                    'Đơn hàng đã hoàn thành',
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.green,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Padding(
                 padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
                 child: Text(
-                  'Ngày tạo đơn: ${order?.createdAt}',
-                  style: TextStyle(fontSize: 17, color: AppColors.textHint),
+                  'Ngày tạo đơn: ${order.createdAt}',
+                  style:
+                      const TextStyle(fontSize: 17, color: AppColors.textHint),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
                 child: Text(
-                  'Ngày nhận: ${order?.updatedAt}',
-                  style: TextStyle(fontSize: 17, color: AppColors.textHint),
+                  'Ngày nhận: ${order.updatedAt}',
+                  style:
+                      const TextStyle(fontSize: 17, color: AppColors.textHint),
                 ),
               ),
-              SizedBox(height: 16.0),
-              Row(
+              const SizedBox(height: 16.0),
+              const Row(
                 children: [
                   Icon(
                     Icons.location_on,
@@ -116,117 +202,161 @@ class OrderDetailPage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Padding(
                 padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
                 child: Text(
-                  order?.userId ?? '',
-                  style: TextStyle(fontSize: 17, color: AppColors.textHint),
+                  order.fullName,
+                  style:
+                      const TextStyle(fontSize: 17, color: AppColors.textHint),
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Padding(
                 padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
                 child: Text(
-                  '(+84)${order?.phoneNumber}',
-                  style: TextStyle(fontSize: 17, color: AppColors.textHint),
+                  '(+84)${order.phoneNumber}',
+                  style:
+                      const TextStyle(fontSize: 17, color: AppColors.textHint),
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Padding(
                 padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
                 child: Text(
-                  order?.address ?? '',
-                  style: TextStyle(fontSize: 17, color: AppColors.textHint),
+                  order.address,
+                  style:
+                      const TextStyle(fontSize: 17, color: AppColors.textHint),
                 ),
               ),
-              SizedBox(height: 10),
-              Divider(color: AppColors.primaryColor, thickness: 2),
-              ...order!.products.map((product) {
-                return Card(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(width: 12,),
-                      Image.network(
-                        "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-kem-duong-la-roche-posay-giup-phuc-hoi-da-da-cong-dung-40ml-1716439945_img_800x800_eb97c5_fit_center.jpg",
-                        width: 80.0,
-                        height: 90.0,
-                      ),
-                      SizedBox(width: 8.0),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(product.name, style: TextStyle(fontSize: 15),),
-                            Text('x${product.quantity}'),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        '${product.price}  ',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-              Divider(color: AppColors.primaryColor, thickness: 2),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              const SizedBox(height: 16.0),
+              const Row(
                 children: [
-                  Text(
-                    'Phụ phí:',
-                    style: TextStyle(fontSize: 18),
+                  Icon(
+                    Icons.shopping_bag,
+                    size: 25,
                   ),
+                  SizedBox(width: 8.0),
                   Text(
-                    '${order?.priceSale}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
-                      fontSize: 20,
+                    'Chi tiết đơn hàng',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8.0),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+                child: ListView.builder(
+                  itemCount: order.products.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final product = order.products[index];
+                    final productDetail = productDetails[product.productId];
+                    return ListTile(
+                      leading: productDetail != null
+                          ? Image.network(productDetail.imageBase.first)
+                          : const CircularProgressIndicator(),
+                      title: Text(
+                        productDetail != null
+                            ? productDetail.name.length > 20
+                                ? '${productDetail.name.substring(0, 20)}...'
+                                : productDetail.name
+                            : 'Loading...',
+                        style: const TextStyle(
+                            fontSize: 20, color: AppColors.textHint),
+                      ),
+                      subtitle: Text(
+                        '${product.quantity} x ${product.price}đ',
+                        style: const TextStyle(
+                            fontSize: 17, color: AppColors.textHint),
+                      ),
+                      trailing: Text(
+                        '${product.quantity * product.price}đ',
+                        style: const TextStyle(
+                            fontSize: 17, color: AppColors.textHint),
+                      ),
+                      onTap: productDetail != null
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetailPage(
+                                      product: productDetail),
+                                ),
+                              );
+                            }
+                          : null,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              const Row(
+                children: [
+                  Icon(
+                    Icons.payment,
+                    size: 25,
+                  ),
+                  SizedBox(width: 8.0),
+                  Text(
+                    'Thông tin thanh toán',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8.0),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Tổng tiền hàng:',
+                      style: TextStyle(fontSize: 17, color: AppColors.textHint),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Thành tiền:',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Text(
-                    '${order?.totalPrice}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                      fontSize: 30,
+                    Text(
+                      '${order.totalPrice}đ',
+                      style: const TextStyle(
+                          fontSize: 17, color: AppColors.textHint),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              SizedBox(height: 15.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Phương thức thanh toán:',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Text(
-                    '${order?.paymentMethod.toUpperCase()}',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
+              const SizedBox(height: 8.0),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Giảm giá:',
+                      style: TextStyle(fontSize: 17, color: AppColors.textHint),
+                    ),
+                    Text(
+                      '${order.priceSale}đ',
+                      style: const TextStyle(
+                          fontSize: 17, color: AppColors.textHint),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(
-                height: 50,
+              const SizedBox(height: 8.0),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Tổng tiền thanh toán:',
+                      style: TextStyle(fontSize: 17, color: AppColors.textHint),
+                    ),
+                    Text(
+                      '${order.totalPrice - order.priceSale}đ',
+                      style: const TextStyle(
+                          fontSize: 17, color: AppColors.textHint),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

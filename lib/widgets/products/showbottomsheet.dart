@@ -5,6 +5,7 @@ import 'package:app_cosmetic/model/product/atribute.model.dart';
 import 'package:app_cosmetic/model/product/product.model.dart';
 import 'package:app_cosmetic/services/cart_service.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddToCartSheet extends StatefulWidget {
   final List<Attribute> attributes;
@@ -42,60 +43,35 @@ class _AddToCartSheetState extends State<AddToCartSheet> {
 
   Future<void> _addToCart() async {
     try {
-      // Kiểm tra giá trị userId
       if (widget.userId.isEmpty) {
         throw Exception('User ID is null or empty');
       }
-      print('User ID: ${widget.userId}');
 
-      // Kiểm tra thông tin sản phẩm
-      if (widget.product.idPro == null || widget.product.idPro!.isEmpty) {
-        throw Exception('Product ID is null or empty');
-      }
-      if (_selectedType.price <= 0) {
-        throw Exception('Product price is invalid');
-      }
-      if (_selectedType.image.isEmpty) {
-        throw Exception('Product image is missing');
-      }
-
-      // Tạo đối tượng ItemCart
       final item = ItemCart(
         productId: widget.product.idPro!,
         quantity: _quantity,
-        id: widget.product.attributes
-            .indexOf(_selectedType), // Lấy id từ thuộc tính đã chọn
+        id: widget.product.attributes.indexOf(_selectedType),
         image: _selectedType.image,
         price: _selectedType.price,
         userId: widget.userId,
         typeProduct: _selectedType.name,
       );
 
-      print('Adding item to cart: $item');
-
-      // Gọi service để thêm sản phẩm vào giỏ hàng
       final cartService = CartService();
       final cart = await cartService.addToCart(item);
 
       if (cart != null) {
-        // Nếu thành công, điều hướng đến màn hình giỏ hàng
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ShoppingCartPage(
-                    userId: widget.userId,
-                  )),
-        );
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        int currentCount = prefs.getInt('cartItemCount') ?? 0;
+        prefs.setInt('cartItemCount', currentCount + _quantity);
+
+        Navigator.of(context).pop();
       } else {
-        // Xử lý khi không thể thêm sản phẩm vào giỏ hàng
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to add product to cart')),
         );
-        print('Failed to add product to cart: cart is null');
       }
     } catch (e) {
-      print('Error adding product to cart: $e');
-      // Xử lý lỗi khi thêm sản phẩm vào giỏ hàng
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error adding product to cart: $e')),
       );

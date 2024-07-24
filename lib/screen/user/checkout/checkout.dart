@@ -10,7 +10,7 @@ import 'package:app_cosmetic/services/checkout_service.dart';
 import 'package:intl/intl.dart';
 
 class CheckoutPage extends StatefulWidget {
-  final Cart cart;
+  Cart cart;
   final String userId;
   final int? priceSale;
   final int? percentSale;
@@ -33,7 +33,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
   late String phone;
   late String email;
   late String address;
-  late CheckoutService _checkoutService;
   VoucherDto? _appliedVoucher;
   late VoucherService _voucherService;
   int _discountedPrice = 0;
@@ -43,8 +42,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void initState() {
     super.initState();
-    _checkoutService = CheckoutService();
     _voucherService = VoucherService();
+    _calculateTotalPrice();
   }
 
   Future<void> _applyVoucher() async {
@@ -58,7 +57,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     try {
       final voucher = await _voucherService
-          .findVoucherByVoucherName(_voucherController.text);
+          .findVoucherByVoucherName(_voucherController.text.toUpperCase());
       if (voucher != null) {
         setState(() {
           _appliedVoucher = voucher;
@@ -71,7 +70,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       } else {
         setState(() {
           _appliedVoucher = null;
-          _discountedPrice = widget.cart?.totalPriceCart.toInt() ?? 0;
+          _discountedPrice = _calculateTotalPrice();
           _voucherValid = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +81,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       print('Error applying voucher: $e');
       setState(() {
         _appliedVoucher = null;
-        _discountedPrice = widget.cart?.totalPriceCart.toInt() ?? 0;
+        _discountedPrice = _calculateTotalPrice();
         _voucherValid = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -93,15 +92,33 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   int _calculateDiscountedPrice() {
     if (_appliedVoucher == null || widget.cart == null) {
-      return widget.cart?.totalPriceCart.toInt() ?? 0;
+      return _calculateTotalPrice();
     }
 
     final discount =
-        widget.cart!.totalPriceCart * _appliedVoucher!.percent_sale / 100;
+        widget.cart.totalPriceCart * _appliedVoucher!.percent_sale / 100;
     final maxDiscount = _appliedVoucher!.maxPriceSale.toInt();
     final actualDiscount =
         discount.toInt() > maxDiscount ? maxDiscount : discount.toInt();
-    return widget.cart!.totalPriceCart.toInt() - actualDiscount;
+    return _calculateTotalPrice() - actualDiscount;
+  }
+
+  int _calculateTotalPrice() {
+    int totalPrice = 0;
+    for (var item in widget.cart.itemsCart) {
+      totalPrice += item.price.toInt() * item.quantity;
+    }
+    return totalPrice;
+  }
+
+  Future<void> _refreshCart() async {
+    final cart = await CartService().getCartByUserId(widget.userId);
+    if (cart != null) {
+      setState(() {
+        widget.cart = cart;
+        _discountedPrice = _calculateDiscountedPrice();
+      });
+    }
   }
 
   void _confirmPayment() async {
@@ -150,6 +167,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
         return;
       }
 
+      // Gọi _refreshCart để cập nhật giỏ hàng và giá trị đơn hàng mới nhất
+      await _refreshCart();
+
       double finalPrice = widget.cart.totalPriceCart;
       if (widget.percentSale != null && widget.percentSale! > 0) {
         finalPrice = finalPrice;
@@ -172,14 +192,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
       );
 
       try {
-        final check = await _checkoutService.checkoutOrder(checkout);
-        if (check != null) {
+        final check = await CheckoutService.checkoutOrder(checkout);
+        print('kiểm tra dữ liệu: $check');
+        if (check == "201" || check == "200") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Đặt hàng thành công!')),
+          );
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => PaymentSuccessScreen()),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Đặt hàng thành công!')),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -203,198 +224,236 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    double finalPrice = widget.cart.totalPriceCart;
-    if (widget.percentSale != null && widget.percentSale! > 0) {
-      finalPrice = finalPrice;
-    }
-    if (widget.priceSale != null && widget.priceSale! > 0) {
-      finalPrice -= widget.priceSale!;
-    }
+    _discountedPrice =
+        _calculateDiscountedPrice(); // Tính giá trị sau khi giảm giá
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Thanh Toán'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  // Hiển thị thông tin sản phẩm đã đặt
-                  Text(
-                    'Sản phẩm đã đặt:',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  SizedBox(height: 8.0),
-                  ...widget.cart.itemsCart.map((item) {
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
-                      child: ListTile(
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.network(
-                            item.image,
-                            fit: BoxFit.cover,
-                            width: 60,
-                            height: 60,
+    return GestureDetector(
+      onTap: (() {
+        FocusManager.instance.primaryFocus?.unfocus();
+      }),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Thanh Toán'),
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    // Hiển thị thông tin sản phẩm đã đặt
+                    Text(
+                      'Sản phẩm đã đặt:',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    SizedBox(height: 8.0),
+                    ...widget.cart.itemsCart.map((item) {
+                      return Card(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        child: ListTile(
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.network(
+                              item.image,
+                              fit: BoxFit.cover,
+                              width: 60,
+                              height: 60,
+                            ),
                           ),
+                          title: Text(item.typeProduct),
+                          subtitle: Text(
+                              'Giá: ${_formatMoney(item.price.toInt())} đ x ${item.quantity}'),
                         ),
-                        title: Text(item.typeProduct),
-                        subtitle: Text(
-                            'Giá: ${_formatMoney(item.price.toInt())} đ x ${item.quantity}'),
+                      );
+                    }).toList(),
+                    SizedBox(height: 16.0),
+                    // Hiển thị thông tin thanh toán
+                    Text(
+                      'Thông tin thanh toán:',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    SizedBox(height: 16.0),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Họ tên',
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Vui lòng nhập họ tên';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              fullName = value!;
+                            },
+                          ),
+                          SizedBox(height: 16.0),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Số điện thoại',
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Vui lòng nhập số điện thoại';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              phone = value!;
+                            },
+                          ),
+                          SizedBox(height: 16.0),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Vui lòng nhập email';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              email = value!;
+                            },
+                          ),
+                          SizedBox(height: 16.0),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Địa chỉ',
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Vui lòng nhập địa chỉ';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              address = value!;
+                            },
+                          ),
+                        ],
                       ),
-                    );
-                  }).toList(),
-                  SizedBox(height: 16.0),
-                  // Hiển thị thông tin thanh toán
-                  Text(
-                    'Thông tin thanh toán:',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  SizedBox(height: 16.0),
-                  Form(
-                    key: _formKey,
-                    child: Column(
+                    ),
+                    SizedBox(height: 16.0),
+                    // Áp dụng mã giảm giá
+                    Text(
+                      'Mã giảm giá:',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    SizedBox(height: 8.0),
+                    Row(
                       children: [
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Họ tên',
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Vui lòng nhập họ và tên';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) => fullName = value!,
-                        ),
-                        SizedBox(height: 16.0),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Số điện thoại',
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Vui lòng nhập số điện thoại';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) => phone = value!,
-                        ),
-                        SizedBox(height: 16.0),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Vui lòng nhập email';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) => email = value!,
-                        ),
-                        SizedBox(height: 16.0),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Địa chỉ',
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Vui lòng nhập địa chỉ';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) => address = value!,
-                        ),
-                        SizedBox(height: 16.0),
-                        Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              TextField(
-                                controller: _voucherController,
-                                decoration: InputDecoration(
-                                  labelText: 'Nhập mã giảm giá',
-                                  errorText: _voucherValid
-                                      ? null
-                                      : 'Mã giảm giá không hợp lệ',
-                                  suffixIcon: ElevatedButton(
-                                    onPressed: _applyVoucher,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors
-                                          .primaryColor, // Thêm màu nền
-                                    ),
-                                    child: Text('Áp mã',
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: AppColors.text)),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                              Text(
-                                'Tổng đơn hàng: ${_formatMoney(widget.cart!.totalPriceCart.toInt())} đ',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              if (_appliedVoucher != null) ...[
-                                Text(
-                                  'Giảm giá: ${_formatMoney((widget.cart!.totalPriceCart - _discountedPrice).toInt())} đ',
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                                Text(
-                                  'Thanh Toán: ${_formatMoney(_discountedPrice.toInt())} đ',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ],
+                        Expanded(
+                          child: TextFormField(
+                            controller: _voucherController,
+                            decoration: InputDecoration(
+                              labelText: 'Nhập mã giảm giá',
+                              errorText: _voucherValid
+                                  ? null
+                                  : 'Mã giảm giá không hợp lệ',
+                            ),
                           ),
                         ),
-                        if (widget.priceSale != null)
-                          Text(
-                            'Mã giảm giá: ${_formatMoney(widget.priceSale ?? 0)} đ',
-                            style: TextStyle(fontSize: 16, color: Colors.green),
+                        SizedBox(width: 8.0),
+                        ElevatedButton(
+                          onPressed: _applyVoucher,
+                          child: Text(
+                            'Áp dụng',
+                            style: TextStyle(fontSize: 20),
                           ),
-                        if (widget.percentSale != null)
-                          Text(
-                            'Giảm giá: ${widget.percentSale ?? 0}%',
-                            style: TextStyle(fontSize: 16, color: Colors.green),
-                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
+                    SizedBox(height: 20.0),
+                    // Hiển thị tổng giá và giá trị giảm
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Tổng giá:',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        Text(
+                          '${_formatMoney(_calculateTotalPrice())} đ',
+                          style: TextStyle(fontSize: 24, color: Colors.red),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    _appliedVoucher != null
+                        ? Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Giảm giá:',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  Text(
+                                    '-${_formatMoney(_calculateTotalPrice() - _discountedPrice)} đ',
+                                    style: TextStyle(
+                                        fontSize: 24, color: Colors.green),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Giá sau giảm:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                  Text(
+                                    '${_formatMoney(_discountedPrice)} đ',
+                                    style: TextStyle(
+                                        fontSize: 24, color: Colors.blue),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        : SizedBox(height: 30),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _confirmPayment,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                padding: EdgeInsets.symmetric(vertical: 16),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _confirmPayment,
+                child: Text(
+                  'Xác nhận thanh toán',
+                  style: TextStyle(fontSize: 25),
+                ),
               ),
-              child: Text(
-                'Xác nhận thanh toán',
-                style: TextStyle(fontSize: 16, color: AppColors.text),
-              ),
-            ),
-          ],
+              SizedBox(height: 16.0),
+            ],
+          ),
         ),
       ),
     );
   }
 
   String _formatMoney(int amount) {
-    final formatter = NumberFormat.decimalPattern('vi_VN');
+    final formatter = NumberFormat("#,###");
     return formatter.format(amount);
   }
 }
