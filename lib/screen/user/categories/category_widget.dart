@@ -3,6 +3,7 @@ import 'package:app_cosmetic/model/category.model.dart';
 import 'package:app_cosmetic/screen/admin/categories/category_view_model.dart';
 import 'package:app_cosmetic/screen/user/Product/category.dart';
 import 'package:app_cosmetic/screen/user/categories/listcate.dart';
+import 'package:app_cosmetic/screen/user/categories/productlistcate.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -52,11 +53,22 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                       children: [
                         ...viewModel.categories
                             .take(5)
-                            .map((category) => Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: Chip(
-                                    label:
-                                        Text(category!.nameCate.toUpperCase()),
+                            .map((category) => InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProductItemCate(
+                                            categoryName: category.nameCate),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Chip(
+                                      label: Text(
+                                          category!.nameCate.toUpperCase()),
+                                    ),
                                   ),
                                 ))
                             .toList(),

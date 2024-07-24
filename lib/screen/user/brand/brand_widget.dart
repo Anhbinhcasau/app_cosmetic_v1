@@ -1,4 +1,6 @@
 import 'package:app_cosmetic/screen/admin/brands/brand_view_model.dart';
+import 'package:app_cosmetic/screen/user/brand/brandlist.dart';
+import 'package:app_cosmetic/screen/user/brand/productlistbrand.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -29,12 +31,25 @@ class _BrandWidgetState extends State<BrandWidget> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'Thương Hiệu',
-                  style: GoogleFonts.poppins(
-                    textStyle:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Thương Hiệu',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Brandlist()));
+                        },
+                        child: Text("Xem tất cả "))
+                  ],
                 ),
               ),
               const SizedBox(height: 10),
@@ -54,7 +69,14 @@ class _BrandWidgetState extends State<BrandWidget> {
                                       horizontal: 5.0),
                                   child: GestureDetector(
                                     onTap: () {
-                                      // Handle image tap
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              Productlistbrand(
+                                                  brandName: brand.name),
+                                        ),
+                                      );
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(4.0),
